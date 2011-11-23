@@ -1,0 +1,239 @@
+/**
+ * @Project: XEntityNode
+ * @Title: XEntityNode.java
+ * @Package com.hubo.xml
+ * @Description: TODO
+ * @author HUBO hubo.0508@gmail.com  
+ * @date 2011-3-12 PM 02:45:58
+ * @version V1.0  
+ */
+package org.hu.xnode.xml;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.hu.xnode.util.BasicType;
+
+import com.thoughtworks.xstream.XStream;
+
+/**
+ * @ClassName: XEntityNode
+ * @Description: 根据实体类产生XML数据
+ * @author HUBO hubo.0508@gmail.com
+ * @date 2011-3-12 PM 10:43:40
+ * 
+ */
+public class XEntityNode {
+
+	private static Map<String, Boolean> collection = new HashMap<String, Boolean>();
+
+	private static Map<String, Object> displayNode = new HashMap<String, Object>();
+
+	static {
+		collection.put("interface java.util.List", true);
+		collection.put("interface java.util.Map", true);
+		collection.put("interface java.util.Set", true);
+	}
+
+	public static String entitiesIntoNodeXML(Object entity,
+			Map<String, Object> setDisplayNode) {
+
+		displayNode = setDisplayNode;
+
+		XStream xs = null;
+		try {
+			xs = setNodeAttribute(new XStream(), entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return xs.toXML(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static String entitiesIntoNodeXMLInList(List list) {
+
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < list.size(); i++) {
+
+			Object entity = list.get(i);
+			XStream xs = null;
+			try {
+				xs = setNodeAttribute(new XStream(), entity);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			sb.append(xs.toXML(entity) + "\n");
+		}
+
+		return sb.toString();
+	}
+
+	public static String entitiesIntoNodeXML(Object entity) {
+		XStream xs = null;
+		try {
+			xs = setNodeAttribute(new XStream(), entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return xs.toXML(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static XStream setNodeAttribute(XStream xStream, Object entity)
+			throws Exception {
+
+		Class entityCls = null;
+		try {
+			entityCls = entity.getClass();
+		} catch (NullPointerException e) {
+			System.err.println("property is empty");
+			return xStream;
+		}
+
+		xStream.alias(getAliasName(entityCls.getName()), entityCls);
+
+		Field[] entityField = entityCls.getDeclaredFields();
+		for (int i = 0; i < entityField.length; i++) {
+			Field field = entityField[i];
+
+			String fieldTypeStr = field.getType().toString();
+
+			if (BasicType.isBasicType(field.getType())) {
+				xStream.aliasAttribute(entityCls, field.getName(), field
+						.getName());
+			} else {
+				Boolean collFlag = collection.get(fieldTypeStr);
+				if (collFlag != null) {
+					collectionHandler(xStream, entity, field.getName());
+				} else {
+
+				}
+			}
+		}
+
+		return xStream;
+	}
+
+	@SuppressWarnings( { "unchecked" })
+	private static void collectionHandler(XStream xStream, Object entity,
+			String fieldName) throws Exception {
+
+		Class entityCls = entity.getClass();
+
+		Boolean falg = (Boolean) displayNode.get(fieldName);
+		if (falg == null) {
+			xStream.addImplicitCollection(entityCls, fieldName);
+		} else {
+			if (!falg) {
+				xStream.addImplicitCollection(entityCls, fieldName);
+			}
+		}
+
+		String methodName = weaveMethodName("get", fieldName);
+		Method collMethod = entityCls.getMethod(methodName, new Class[] {});
+		Object collItem = collMethod.invoke(entity, new Object[] {});
+
+		// 判断具体类型
+		if (collItem instanceof List) {
+			List listObj = (List) collItem;
+			for (int j = 0; j < listObj.size(); j++) {
+				setNodeAttribute(xStream, listObj.get(j));
+			}
+		} else if (collItem instanceof Set) {
+			Set setObj = (Set) collItem;
+			for (Iterator iterator = setObj.iterator(); iterator.hasNext();) {
+				setNodeAttribute(xStream, iterator.next());
+			}
+		} else if (collItem instanceof Map) {
+
+		}
+	}
+
+	@SuppressWarnings( { "unchecked", "unused" })
+	private static XStream setNodeAttribute(XStream xStream, Object entity,
+			String rootName, Map<String, String> filtrate) throws Exception {
+
+		Class entityCls = null;
+		try {
+			entityCls = entity.getClass();
+		} catch (NullPointerException e) {
+			System.err.println("property is empty");
+			return xStream;
+		}
+
+		xStream.alias(rootName, entityCls);
+
+		Field[] entityField = entityCls.getDeclaredFields();
+		for (int i = 0; i < entityField.length; i++) {
+			Field field = entityField[i];
+
+			if (filtrateAttribute(field, filtrate)) {
+
+				if (BasicType.isBasicType(field.getType())) {
+					xStream.aliasAttribute(entityCls, field.getName(), field
+							.getName());
+				} else {
+
+					String methodName = weaveMethodName("get", field.getName());
+					Method getMethod = entityCls.getMethod(methodName,
+							new Class[] {});
+					Object childObj = getMethod.invoke(entity, new Object[] {});
+
+					setNodeAttribute(xStream, childObj, rootName, filtrate);
+				}
+			}
+
+		}
+
+		return xStream;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static boolean filtrateAttribute(Field field,
+			Map<String, String> filtrate) {
+
+		String fieldName = field.getName();
+		// String fieldType = field.getType().toString();
+
+		Set keys = filtrate.keySet();
+		Iterator it = keys.iterator();
+		while (it.hasNext()) {
+			String filtrateName = (String) it.next();
+			// String filtrateType = (String) filtrate.get(filtrateName);
+			if (filtrateName.equals(fieldName)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static String weaveMethodName(String methodPrefix, String fieldName) {
+		String firstLetter = fieldName.substring(0, 1).toUpperCase();
+		return methodPrefix + firstLetter + fieldName.substring(1);
+	}
+
+	private static String getAliasName(String path) {
+
+		String aliasName = (String) displayNode.get(path);
+
+		if (aliasName != null) {
+			return aliasName;
+		} else {
+			int lastIndex = path.lastIndexOf(".");
+			if (lastIndex < 0) {
+				return path.toLowerCase();
+			} else {
+				return path.substring(lastIndex + 1, path.length())
+						.toLowerCase();
+			}
+		}
+	}
+}
