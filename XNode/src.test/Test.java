@@ -3,14 +3,102 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hu.xnode.xml.XEntityNode;
+
 import com.vo.Categories;
 import com.vo.Chart;
-import com.vo.Dataset;
-import com.vo.Set;
 
 public class Test {
 
 	public static void main(String[] args) {
+
+		//entitiesIntoNode1();
+		//entitiesIntoNode2();
+		entitiesIntoNode3();
+		//entitiesIntoNodeList();
+	}
+
+	public static void entitiesIntoNodeList() {
+
+		List<Categories> listCategories = new ArrayList<Categories>();
+		listCategories.add(new Categories("A小区"));
+		listCategories.add(new Categories("B小区"));
+		listCategories.add(new Categories("C小区"));
+		listCategories.add(new Categories("D小区"));
+		listCategories.add(new Categories("E小区"));
+
+		// Map<String, Object> replaceNode = new HashMap<String, Object>();
+		// replaceNode.put("com.vo.Categories", "newNode");
+		// XEntityNode.replaceNode = replaceNode;
+
+		String xml = XEntityNode.entitiesIntoNodeList(listCategories);
+
+		System.err.println(xml);
+	}
+
+	/*
+	 * <chart caption="Business Results 25 v 26" xAxisName="Month"
+	 * yAxisName="Revenue" showValues="0" decimals="0" formatNumberScale="0"
+	 * palette="4"/>
+	 */
+	public static void entitiesIntoNode1() {
+
+		Chart chart = new Chart();
+		chart.setDefaultValue();
+		chart.setCaption("Business Results 25 v 26");
+		chart.setxAxisName("Month");
+		chart.setyAxisName("Revenue");
+		chart.setShowValues("0");
+		
+		String xml = XEntityNode.entitiesIntoNode(chart);
+
+		System.err.println(xml);
+	}
+	
+	/*
+		<chart caption="Business Results 25 v 26" xAxisName="Month" yAxisName="Revenue" showValues="0" decimals="0" formatNumberScale="0" palette="4">
+		  <categories label="A小区"/>
+		  <categories label="B小区"/>
+		  <categories label="C小区"/>
+		  <categories label="D小区"/>
+		  <categories label="E小区"/>
+		</chart>
+	 */
+	public static void entitiesIntoNode2() {
+
+		Chart chart = new Chart();
+		chart.setDefaultValue();
+		chart.setCaption("Business Results 25 v 26");
+		chart.setxAxisName("Month");
+		chart.setyAxisName("Revenue");
+		chart.setShowValues("0");
+
+		List<Categories> listCategories = new ArrayList<Categories>();
+		listCategories.add(new Categories("A小区"));
+		listCategories.add(new Categories("B小区"));
+		listCategories.add(new Categories("C小区"));
+		listCategories.add(new Categories("D小区"));
+		listCategories.add(new Categories("E小区"));
+
+		chart.setCategories(listCategories);		
+		
+		String xml = XEntityNode.entitiesIntoNode(chart);
+
+		System.err.println(xml);
+	}
+	
+	/*
+	 <chart caption="Business Results 25 v 26" xAxisName="Month" yAxisName="Revenue" showValues="0" decimals="0" formatNumberScale="0" palette="4">
+	  <categories>
+	    <categories label="A小区"/>
+	    <categories label="B小区"/>
+	    <categories label="C小区"/>
+	    <categories label="D小区"/>
+	    <categories label="E小区"/>
+	  </categories>
+	</chart>
+	 */
+	public static void entitiesIntoNode3() {
 
 		Chart chart = new Chart();
 		chart.setDefaultValue();
@@ -28,52 +116,13 @@ public class Test {
 
 		chart.setCategories(listCategories);
 
-		List<Dataset> listDataset = new ArrayList<Dataset>();
+		Map<String, Object> replaceNode = new HashMap<String, Object>();
+		replaceNode.put("categories", true);
+		//replaceNode.put("com.vo.Categories", "newNode");
+		XEntityNode.replaceNode = replaceNode;
 
-		Dataset datasetA = new Dataset("A26", "AFD8F8");
-		List<Set> listSetA = new ArrayList<Set>();
-		listSetA.add(new Set("223"));
-		listSetA.add(new Set("123"));
-		listSetA.add(new Set("241"));
-		listSetA.add(new Set("521"));
-		listSetA.add(new Set("352"));
-		listSetA.add(new Set("235"));
-		listSetA.add(new Set("123"));
-		datasetA.setSet(listSetA);
-		listDataset.add(datasetA);
+		String xml = XEntityNode.entitiesIntoNode(chart);
 
-		Dataset datasetB = new Dataset("A27", "F6BD0F");
-		List<Set> listSetB = new ArrayList<Set>();
-		listSetB.add(new Set("223"));
-		listSetB.add(new Set("123"));
-		listSetB.add(new Set("241"));
-		listSetB.add(new Set("521"));
-		listSetB.add(new Set("352"));
-		listSetB.add(new Set("235"));
-		listSetB.add(new Set("123"));
-		datasetB.setSet(listSetB);
-		listDataset.add(datasetB);
-
-		Dataset datasetC = new Dataset("A28", "8BBA00");
-		List<Set> listSetC = new ArrayList<Set>();
-		listSetC.add(new Set("223"));
-		listSetC.add(new Set("123"));
-		listSetC.add(new Set("241"));
-		listSetC.add(new Set("521"));
-		listSetC.add(new Set("352"));
-		listSetC.add(new Set("235"));
-		listSetC.add(new Set("123"));
-		datasetC.setSet(listSetC);
-		listDataset.add(datasetC);
-
-		chart.setDataset(listDataset);
-
-		Map<String, Boolean> displayNode = new HashMap<String, Boolean>();
-		displayNode.put("categories", true);
-
-//		String root = BuildEntityXML.setNodeAttributeInEntity(chart,
-//				displayNode);
-//		System.out.println(root);
-
+		System.err.println(xml);
 	}
 }

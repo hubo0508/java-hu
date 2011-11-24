@@ -28,11 +28,11 @@ import com.thoughtworks.xstream.XStream;
  * @date 2011-3-12 PM 10:43:40
  * 
  */
-public class XEntityNode {
+public class XEntityNode<T> {
 
 	private static Map<String, Boolean> collection = new HashMap<String, Boolean>();
 
-	private static Map<String, Object> displayNode = new HashMap<String, Object>();
+	public static Map<String, Object> replaceNode = new HashMap<String, Object>();
 
 	static {
 		collection.put("interface java.util.List", true);
@@ -40,53 +40,54 @@ public class XEntityNode {
 		collection.put("interface java.util.Set", true);
 	}
 
-	public static String entitiesIntoNodeXML(Object entity,
-			Map<String, Object> setDisplayNode) {
-
-		displayNode = setDisplayNode;
-
-		XStream xs = null;
-		try {
-			xs = setNodeAttribute(new XStream(), entity);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return xs.toXML(entity);
-	}
-
 	@SuppressWarnings("unchecked")
-	public static String entitiesIntoNodeXMLInList(List list) {
+	public static String entitiesIntoNodeList(List list) {
 
 		StringBuffer sb = new StringBuffer();
-
-		for (int i = 0; i < list.size(); i++) {
-
-			Object entity = list.get(i);
-			XStream xs = null;
-			try {
-				xs = setNodeAttribute(new XStream(), entity);
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			for (Object entity : list) {
+				XStream xs = setAttribute(new XStream(), entity);
+				sb.append(xs.toXML(entity) + "\n");
 			}
-
-			sb.append(xs.toXML(entity) + "\n");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			XEntityNode.replaceNode = null;
 		}
-
 		return sb.toString();
 	}
 
-	public static String entitiesIntoNodeXML(Object entity) {
-		XStream xs = null;
+	@SuppressWarnings("unchecked")
+	public static String entitiesIntoNodeList(List list,
+			Map<String, Object> replaceNode) {
+
+		XEntityNode.replaceNode = replaceNode;
+
+		StringBuffer sb = new StringBuffer();
 		try {
-			xs = setNodeAttribute(new XStream(), entity);
+			for (Object entity : list) {
+				XStream xs = setAttribute(new XStream(), entity);
+				sb.append(xs.toXML(entity) + "\n");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			XEntityNode.replaceNode = null;
 		}
-		return xs.toXML(entity);
+		return sb.toString();
+	}
+
+	public static String entitiesIntoNode(Object entity) {
+		try {
+			XStream xs = setAttribute(new XStream(), entity);
+			return xs.toXML(entity);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private static XStream setNodeAttribute(XStream xStream, Object entity)
+	private static XStream setAttribute(XStream xStream, Object entity)
 			throws Exception {
 
 		Class entityCls = null;
@@ -127,7 +128,7 @@ public class XEntityNode {
 
 		Class entityCls = entity.getClass();
 
-		Boolean falg = (Boolean) displayNode.get(fieldName);
+		Boolean falg = (Boolean) replaceNode.get(fieldName);
 		if (falg == null) {
 			xStream.addImplicitCollection(entityCls, fieldName);
 		} else {
@@ -144,12 +145,12 @@ public class XEntityNode {
 		if (collItem instanceof List) {
 			List listObj = (List) collItem;
 			for (int j = 0; j < listObj.size(); j++) {
-				setNodeAttribute(xStream, listObj.get(j));
+				setAttribute(xStream, listObj.get(j));
 			}
 		} else if (collItem instanceof Set) {
 			Set setObj = (Set) collItem;
 			for (Iterator iterator = setObj.iterator(); iterator.hasNext();) {
-				setNodeAttribute(xStream, iterator.next());
+				setAttribute(xStream, iterator.next());
 			}
 		} else if (collItem instanceof Map) {
 
@@ -157,7 +158,7 @@ public class XEntityNode {
 	}
 
 	@SuppressWarnings( { "unchecked", "unused" })
-	private static XStream setNodeAttribute(XStream xStream, Object entity,
+	private static XStream setAttribute(XStream xStream, Object entity,
 			String rootName, Map<String, String> filtrate) throws Exception {
 
 		Class entityCls = null;
@@ -186,7 +187,7 @@ public class XEntityNode {
 							new Class[] {});
 					Object childObj = getMethod.invoke(entity, new Object[] {});
 
-					setNodeAttribute(xStream, childObj, rootName, filtrate);
+					setAttribute(xStream, childObj, rootName, filtrate);
 				}
 			}
 
@@ -222,7 +223,7 @@ public class XEntityNode {
 
 	private static String getAliasName(String path) {
 
-		String aliasName = (String) displayNode.get(path);
+		String aliasName = (String) replaceNode.get(path);
 
 		if (aliasName != null) {
 			return aliasName;
