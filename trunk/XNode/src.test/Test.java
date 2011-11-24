@@ -14,11 +14,19 @@ public class Test {
 
 		//entitiesIntoNode1();
 		//entitiesIntoNode2();
-		entitiesIntoNode3();
-		//entitiesIntoNodeList();
+		//entitiesIntoNode3();
+		//entitiesIntoNodeList1();
+		entitiesIntoNodeList2();
 	}
-
-	public static void entitiesIntoNodeList() {
+	
+	/*
+	 <categories label="A小区"/>
+	<categories label="B小区"/>
+	<categories label="C小区"/>
+	<categories label="D小区"/>
+	<categories label="E小区"/>
+	 */
+	public static void entitiesIntoNodeList1() {
 
 		List<Categories> listCategories = new ArrayList<Categories>();
 		listCategories.add(new Categories("A小区"));
@@ -27,9 +35,30 @@ public class Test {
 		listCategories.add(new Categories("D小区"));
 		listCategories.add(new Categories("E小区"));
 
-		// Map<String, Object> replaceNode = new HashMap<String, Object>();
-		// replaceNode.put("com.vo.Categories", "newNode");
-		// XEntityNode.replaceNode = replaceNode;
+		String xml = XEntityNode.entitiesIntoNodeList(listCategories);
+
+		System.err.println(xml);
+	}
+	
+	/*
+	 <newNode label="A小区"/>
+	<newNode label="B小区"/>
+	<newNode label="C小区"/>
+	<newNode label="D小区"/>
+	<newNode label="E小区"/>
+	 */
+	public static void entitiesIntoNodeList2() {
+
+		List<Categories> listCategories = new ArrayList<Categories>();
+		listCategories.add(new Categories("A小区"));
+		listCategories.add(new Categories("B小区"));
+		listCategories.add(new Categories("C小区"));
+		listCategories.add(new Categories("D小区"));
+		listCategories.add(new Categories("E小区"));
+
+		Map<String, Object> replaceNode = new HashMap<String, Object>();
+		replaceNode.put("com.vo.Categories", "newNode");
+		XEntityNode.replaceNode = replaceNode;
 
 		String xml = XEntityNode.entitiesIntoNodeList(listCategories);
 
