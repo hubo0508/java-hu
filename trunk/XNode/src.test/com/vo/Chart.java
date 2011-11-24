@@ -13,6 +13,7 @@ public class Chart {
 	private String formatNumberScale;
 	private String palette;
 	
+	@SuppressWarnings("unused")
 	private Author author;
 
 	List<Categories> categories = new ArrayList<Categories>();
