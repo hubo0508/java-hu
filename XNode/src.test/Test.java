@@ -21,10 +21,10 @@ public class Test {
 	
 	/*
 	 <categories label="A小区"/>
-	<categories label="B小区"/>
-	<categories label="C小区"/>
-	<categories label="D小区"/>
-	<categories label="E小区"/>
+	 <categories label="B小区"/>
+	 <categories label="C小区"/>
+	 <categories label="D小区"/>
+	 <categories label="E小区"/>
 	 */
 	public static void entitiesIntoNodeList1() {
 
