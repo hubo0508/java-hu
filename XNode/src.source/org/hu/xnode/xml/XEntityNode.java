@@ -1,7 +1,7 @@
 /**
  * @Project: XEntityNode
  * @Title: XEntityNode.java
- * @Package com.hubo.xml
+ * @Package org.hu.xnode.xml
  * @Description: TODO
  * @author HUBO hubo.0508@gmail.com  
  * @date 2011-3-12 PM 02:45:58
@@ -42,26 +42,6 @@ public class XEntityNode<T> {
 
 	@SuppressWarnings("unchecked")
 	public static String entitiesIntoNodeList(List list) {
-
-		StringBuffer sb = new StringBuffer();
-		try {
-			for (Object entity : list) {
-				XStream xs = setAttribute(new XStream(), entity);
-				sb.append(xs.toXML(entity) + "\n");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			XEntityNode.replaceNode = null;
-		}
-		return sb.toString();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static String entitiesIntoNodeList(List list,
-			Map<String, Object> replaceNode) {
-
-		XEntityNode.replaceNode = replaceNode;
 
 		StringBuffer sb = new StringBuffer();
 		try {
