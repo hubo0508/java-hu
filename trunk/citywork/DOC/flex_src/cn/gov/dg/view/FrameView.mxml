@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%" height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import cn.gov.dg.view.VerticalListView;
+		]]>
+	</fx:Script>
+	<s:BorderContainer width="100%" height="100%" backgroundColor="green"
+					   horizontalCenter="0" verticalCenter="0">
+		
+		<!--
+		<mx:Panel width="200" height="200" backgroundColor="blue" headerHeight="0" alpha="0.5">
+		<mx:Button label="aaaaaaa" />
+		</mx:Panel>-->
+		
+		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+			
+			
+			<mx:Panel headerHeight="0" width="60%" height="60%" borderColor="blue"
+					  alpha="0.5" horizontalAlign="center" verticalAlign="middle">
+				<mx:HBox width="100%" height="100%">
+					<mx:VBox width="40%" height="100%">
+						<mx:Button label="我要结婚" />
+						<mx:Button label="》" />
+						<mx:Button label="广州本地" />
+						<mx:Button label="》" />
+						<mx:Button label="本地居民" />
+						<mx:Button label="》" />
+						<mx:Button label="aaaaa" />
+						<mx:Button label="》" />
+					</mx:VBox>
+					<mx:VBox width="60%" height="100%" verticalAlign="middle" horizontalAlign="center">
+						<mx:Button id="btn_up" label="up" />
+						<mx:Button id="btn1" label="办理结婚登记之前" cornerRadius="10"
+								   width="80%" height="35"/>
+						<mx:Button id="btn2" label="办理结婚登记之中" cornerRadius="10"
+								   width="80%" height="35" />
+						<mx:Button id="btn3" label="办理之后" cornerRadius="10"
+								   width="80%" height="35" />
+						<mx:Button id="btn4" label="相关信息" cornerRadius="10"
+								   width="80%" height="35" />
+						<mx:Button id="btn_down" label="down"  />
+					</mx:VBox>
+				</mx:HBox>
+				
+				
+			</mx:Panel>
+			<mx:Button label="返回" />
+		</s:VGroup>
+	</s:BorderContainer>
+</mx:Canvas>

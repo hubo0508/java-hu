@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 initialize="initializeHandler(event)"
+		 xmlns:view="com.dream.citywork.view.*"
+		 width="100%"
+		 height="100%">
+	
+	<fx:Declarations>
+		<s:RemoteObject id="sceneMenuControlRO" destination="sceneMenuControl" showBusyCursor="true" fault="sceneMenuControlRO_faultHandler(event)">
+			<s:method name="queryThreeMenuRightList" result="initial_results(event)"/>
+			<s:method name="querySubThreeMenuListByParentId" result="subThreeMenuList_results(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
+	
+	<fx:Metadata> 
+		[Event(name="changeMarkEvent",type="mx.events.DynamicEvent")]
+	</fx:Metadata>	
+	
+
+	<fx:Script>
+		<![CDATA[
+			import cn.gov.dg.bean.MenuBean;
+			
+			import com.dream.citywork.core.FlexResults;
+			import com.dream.citywork.core.util.PopUpUtil;
+			import com.dream.citywork.event.ClickNavMenu;
+			import com.dream.citywork.view.effects.ViewStackEffectExplorer;
+			import com.dream.citywork.view.subpage.AlertHTML;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.controls.Alert;
+			import mx.controls.Button;
+			import mx.events.DynamicEvent;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			public var sceneId:String;
+			public var sceneCode:String;
+			
+			public var clickTwoItemId:String;
+			
+			public static const CHANGE_MARK_EVENT:String = "changeMarkEvent";
+			public static const CLICK_RIGHT_MENU_EVENT:String = "clickRightMenuEvent";
+			
+			private var menuItem:ArrayCollection = new ArrayCollection();
+			
+			protected function initializeHandler(event:FlexEvent):void
+			{
+				this.initData();
+			}		
+			
+			protected function initData():void
+			{
+				sceneMenuControlRO.queryThreeMenuRightList(sceneId,sceneCode);			
+			}	
+
+			protected function leftMenu_clickNavMenuHandler(event:ClickNavMenu):void
+			{
+				sceneMenuControlRO.querySubThreeMenuListByParentId(clickTwoItemId,event.eventtype);
+				leftMenu.removeNextNode(event.id);
+				 
+				this.changeProEvent("MARK5");
+			}
+			
+			protected function rightMenu_clickNavMenuHandler(event:ClickNavMenu):void
+			{
+				if(menuItem.length > 0){
+					menuItem.removeAll();
+				}
+				
+				menuItem.addItem({id:event.id,eventtype:event.eventtype,label:event.menuName});
+				
+				//leftMenu.initMenuItem(menuItem);	 		
+				leftMenu.addNexNode(menuItem);
+				
+				sceneMenuControlRO.querySubThreeMenuListByParentId(clickTwoItemId,event.eventtype);
+				
+				this.changeProEvent("MARK4");	
+				
+				this.alertHTMLOrOpenURL(event.resources,event.menutype);
+			} 
+			
+			private function alertHTMLOrOpenURL(resources:String,type:String):void{
+				if(type == "URL"){
+					navigateToURL(new URLRequest(resources), "_blank");  
+				}else if(type == "HTML"){
+					var html:AlertHTML = new AlertHTML();
+					html.text = resources;
+					PopUpUtil.messageWindow(html,this);
+				}
+			}
+			
+			//query exception handling
+			protected function sceneMenuControlRO_faultHandler(event:FaultEvent):void
+			{
+				
+			} 
+			
+			//query results
+			private function initial_results(event:ResultEvent):void
+			{
+				var results:FlexResults=event.result as FlexResults;
+				if (results && results.success)
+				{
+					rightMenu.initMenuItem(results.list);
+					
+					this.changeProEvent(ViewStackEffectExplorer.MARK3);
+				}
+				else
+				{
+					
+				} 
+			}			
+			
+			//query results
+			private function subThreeMenuList_results(event:ResultEvent):void
+			{
+				var results:FlexResults=event.result as FlexResults;
+				if (results && results.success && results.list.length > 0)
+				{
+					rightMenu.initMenuItem(results.list);					
+				}
+				else
+				{
+					 
+				} 
+			}
+			
+			protected function changeProEvent(mark:String):void{
+				var dyE:DynamicEvent = new DynamicEvent(CHANGE_MARK_EVENT);
+				dyE.mark = mark;
+				
+				this.dispatchEvent(dyE);
+			}
+
+ 
+			public function returnUpMenu():void
+			{
+				if(this.leftMenu.getContent() == 1){
+					this.initData();
+					
+					var flag:int = this.leftMenu.removeLastMenu();
+					if(flag == 0){
+						this.changeProEvent(ViewStackEffectExplorer.MARK3);
+					} 
+				}else{
+					var item:Object = leftMenu.getLastTwoItem();
+					
+					sceneMenuControlRO.querySubThreeMenuListByParentId(clickTwoItemId,item.eventtype);
+					leftMenu.removeNextNode(item.id);
+					
+					this.changeProEvent("MARK6");
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<!--<mx:Image source="assets/image/001.jpg" verticalCenter="0" horizontalCenter="0"/>-->
+	
+	<view:LeftMenu id="leftMenu" clickNavMenu="leftMenu_clickNavMenuHandler(event)" left="10" verticalCenter="-35"/>
+	
+	<view:RightMenu id="rightMenu" clickNavMenu="rightMenu_clickNavMenuHandler(event)" source="assets/image/001.jpg" verticalCenter="-35" right="10"/>		
+	
+</s:Group>

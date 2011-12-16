@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:Button id="btn_up" label="up" />
+	<mx:Button id="btn1" label="办理结婚登记之前" cornerRadius="10"
+			   width="80%" height="35"/>
+	<mx:Button id="btn2" label="办理结婚登记之中" cornerRadius="10"
+			   width="80%" height="35" />
+	<mx:Button id="btn3" label="办理之后" cornerRadius="10"
+			   width="80%" height="35" />
+	<mx:Button id="btn4" label="相关信息" cornerRadius="10"
+			   width="80%" height="35" />
+	<mx:Button id="btn_down" label="down"  />
+</mx:VBox>

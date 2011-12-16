@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   mouseDown="mouseDownHandler(event)"
+				   mouseUp="mouseDownHandler(event)"
+				   cornerRadius="5"
+				   backgroundColor="#E6E6E6"
+				   borderColor="#FF9609"
+				   backgroundAlpha=".7"
+				   width="400"
+				   height="200">
+
+	<fx:Script>
+		<![CDATA[
+			import com.dream.citywork.core.util.PopUpUtil;
+			
+			private var _text:String;
+			
+			protected function close_clickHandler(event:MouseEvent):void
+			{
+				PopUpUtil.removeWindow(this);
+			}
+
+			protected function mouseDownHandler(event:MouseEvent):void
+			{
+				var bc:BorderContainer = event.currentTarget as BorderContainer;
+				switch(event.type){
+					
+					case MouseEvent.MOUSE_DOWN :
+						bc.startDrag();
+						break;
+					
+					case MouseEvent.MOUSE_UP :
+						bc.stopDrag();
+						break; 
+					
+					default:
+						break;
+					
+				}
+			}
+
+			[Bindable]
+			public function get text():String
+			{
+				return _text;
+			}
+
+			public function set text(value:String):void
+			{
+				_text = value;
+			}
+
+
+		]]>
+	</fx:Script>
+	
+	<mx:Text htmlText="{text}" fontSize="14" color="#000000"  fontFamily="微软雅黑,黑体" left="20" right="20" bottom="50" top="30"/>
+
+	<mx:LinkButton id="close" click="close_clickHandler(event)" icon="@Embed('assets/image/DeleteRed (1).png')" label="关闭"  bottom="10" horizontalCenter="0"/>
+
+</s:BorderContainer>

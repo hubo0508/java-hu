@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/flex 
+		http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+
+	<bean id="hibernate-object"
+		class="org.springframework.flex.core.ManageableComponentFactoryBean">
+		<constructor-arg
+			value="net.sf.gilead.blazeds.adapter.PersistentAdapter" />
+		<property name="properties">
+			<value>
+				{"persistence-factory":
+				{"class":"net.sf.gilead.core.hibernate.spring.HibernateSpringUtil",
+				"singleton" :"true", "method":"getSessionFactory" },
+				"stateless":"true" }
+			</value>
+		</property>
+	</bean>
+
+	<flex:message-broker>
+		<flex:message-service
+			default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf"
+			default-adapter-id="hibernate-object" />
+	</flex:message-broker>
+
+</beans>
