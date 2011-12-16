@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		.btnStyle{
+			cornerRadius:16;
+			
+		}
+	</fx:Style>
+	
+	<fx:Metadata> 
+		[Event(name="clickNavMenu",type="com.dream.citywork.event.ClickNavMenu")]
+	</fx:Metadata>	
+
+	<fx:Script>
+		<![CDATA[
+			import cn.gov.dg.bean.SceneBean;
+			import cn.gov.dg.service.SceneViewService;
+			import cn.gov.dg.service.impl.SceneViewServiceImpl;
+			import spark.components.Button;
+			
+			import com.dream.citywork.components.MenuGroup;
+			import com.dream.citywork.event.ClickNavMenu;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			
+			var sceneViewService:SceneViewService = new SceneViewServiceImpl();
+			private var menuItem:ArrayCollection = new ArrayCollection();
+			private var _menuItem:ArrayCollection;
+			private var _labelFiled:String = "label";			
+			
+			
+			
+			protected function id1_clickHandler(event:MouseEvent):void
+			{
+				var btn:Button = event.currentTarget as Button;
+				
+				var e:ClickNavMenu = new ClickNavMenu(ClickNavMenu.CLICK_NAV_MENU);
+				e.eventtype = btn.id;
+				
+				this.dispatchEvent(e);
+			}
+
+			/**
+			 * 初始化数据
+			 * */
+			public function initData(sceneType:String):void{
+				sceneViewService.getSceneListBySceneType(sceneType, function(data:Object){
+					var rs:ResultEvent = data as ResultEvent;
+					var arr:Array = rs.result as Array;
+					var sb:SceneBean;
+					
+					for each (var object:Object in arr)
+					{
+						sb = object as SceneBean;
+						//Alert.show("initData  SceneBean.sceneName:::"+mb.sceneName);
+						menuItem.addItem({type:sb.sceneType ,eventtype:"test",id:sb.sceneId,label:sb.sceneName});
+						
+					} 
+					initMenuItem(menuItem);
+					
+				});
+			}
+			/**
+			 * 构造button
+			 * */
+			public function initMenuItem(menuItem:ArrayCollection = null):void{
+				var _value:ArrayCollection;
+				if(menuItem){
+					_value = menuItem;
+				}else{
+					_value = this.menuItem;
+				}
+				
+				this.menuGroup.removeAllElements();
+				var _menu = null;
+				for(var i:int=0; i<_value.length; i++){
+					_menu =  _value.getItemAt(i);
+					var button:Button = new Button();
+					button.label = _menu.label;
+					button.id = _menu.id;
+					//var btn:MenuGroup = this.createMenuBtn(button);
+					button.useHandCursor = true;
+					button.buttonMode = true;
+					button.addEventListener(MouseEvent.CLICK,id1_clickHandler, false, 0, true);
+					this.menuGroup.addElement(button);
+				}
+				
+				this.validateNow();
+				//this.enableButtons();
+			}
+			
+			protected function navMenuBtn_clickHandler(event:MouseEvent):void
+			{
+				var btn:MenuGroup = event.currentTarget as MenuGroup;
+				
+				var e:ClickNavMenu = new ClickNavMenu(ClickNavMenu.CLICK_NAV_MENU);
+				e.eventtype = btn.name;
+				e.navmenutype = ClickNavMenu.NAV_MENU_TYPE_LEFT;
+				
+				this.dispatchEvent(e);
+			}		
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup id="menuGroup" width="100%" height="100%" horizontalAlign="center" verticalCenter="0" verticalAlign="middle">
+		<!--s:Button click="id1_clickHandler(event)" id="id1" width="350" height="50" styleName="btnStyle" label="企业场景1"/>
+		<s:Button click="id1_clickHandler(event)" id="id2" width="350" height="50" styleName="btnStyle" label="企业场景2" />
+		<s:Button click="id1_clickHandler(event)" id="id3" width="350" height="50" styleName="btnStyle" label="企业场景3" />
+		<s:Button click="id1_clickHandler(event)" id="id4" width="350" height="50" styleName="btnStyle" label="企业场景4" />
+		<s:Button click="id1_clickHandler(event)" id="id5" width="350" height="50" styleName="btnStyle" label="企业场景5" / -->
+	</s:VGroup>	
+</mx:Canvas>

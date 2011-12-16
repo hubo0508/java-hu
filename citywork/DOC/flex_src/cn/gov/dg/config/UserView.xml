@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<beans>
+	<bean id="userViewAction" className="com.project.action.UserViewAction">
+		<property name="userService" value="userService" type="bean" />
+	</bean>
+	
+	<bean id="userService" className="com.project.service.impl.UserServiceImpl">
+		<property name="serviceUrl" value="/projectName" type="value" />
+	</bean>
+</beans>

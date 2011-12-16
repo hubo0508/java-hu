@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:effects="com.dream.citywork.view.effects.*"
+				   xmlns:viewStackEffects="org.efflex.mx.viewStackEffects.*"
+				   xmlns:actions="org.flintparticles.twoD.actions.*"
+				   xmlns:view="com.dream.citywork.view.*"
+				   initialize="initializeHandler(event)"
+				   creationComplete="creationCompleteHandler(event)"
+				   borderVisible="false"
+				   width="100%"
+				   top="0"
+				   height="100%">
+	
+	<fx:Declarations>
+		<s:RemoteObject id="sceneMenuControlRO" destination="sceneMenuControl" showBusyCursor="true" fault="sceneMenuControlRO_faultHandler(event)">
+			<s:method name="queryInitialMenuList" result="initial_results(event)"/>
+			<s:method name="querySecondaryMenuListById" result="secondary_results(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import cn.gov.dg.bean.SceneBean;
+			import cn.gov.dg.view.NavigationView;
+			import cn.gov.dg.view.SceneList;
+			
+			import com.dream.citywork.core.FlexResults;
+			import com.dream.citywork.event.ClickMenuEvent;
+			import com.dream.citywork.event.ClickNavMenu;
+			import com.dream.citywork.view.ThreeMenu;
+			import com.dream.citywork.view.TwoMenu;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.DynamicEvent;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.efflex.mx.viewStackEffects.Flint2D;
+			import org.efflex.mx.viewStackEffects.Squash;
+			import org.flintparticles.twoD.zones.RectangleZone;
+			
+			import spark.components.Button;					
+			
+			private var currentMark:String = ViewStackEffectExplorer.MARK1;			
+			
+			private var twoFlag:String;			
+			
+			private var threeMenu:ThreeMenu;
+			
+			protected function initializeHandler(event:FlexEvent):void
+			{
+				this.initData();
+			}
+				
+			protected function initData():void
+			{
+				sceneMenuControlRO.queryInitialMenuList();			
+			}			
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{	
+				this.changeTopOrLeft();
+			}
+			
+			public function changeTopOrLeft(left:int = 210,top:int = 140):void
+			{
+				display_content.left = left;
+				display_content.top = top;
+			}
+			
+			protected function display_content_clickMenuEventHandler(event:ClickMenuEvent):void
+			{	
+				if(currentMark == ViewStackEffectExplorer.MARK1){
+					sceneMenuControlRO.querySecondaryMenuListById(event.id);
+					twoFlag = event.id;
+				}else if(currentMark == ViewStackEffectExplorer.MARK2){
+					threeMenu = new ThreeMenu();
+					threeMenu.horizontalCenter=0;
+					threeMenu.verticalCenter=0;
+					threeMenu.sceneId = event.id;
+					threeMenu.clickTwoItemId = event.id;
+					threeMenu.sceneCode = event.eventType;
+					threeMenu.addEventListener(ThreeMenu.CHANGE_MARK_EVENT,changeMarkEvent,false,0,true);
+					
+					this.display_content.initMenu(ViewStackEffectExplorer.MARK3,threeMenu);						
+				}				
+			}
+			
+			protected function changeMarkEvent(event:DynamicEvent):void
+			{
+				this.currentMark = event.mark as String;
+			}
+			
+			protected function returnBtn_clickHandler(event:MouseEvent):void
+			{
+				if(currentMark == ViewStackEffectExplorer.MARK2){
+					this.initData();
+				}else if(currentMark == ViewStackEffectExplorer.MARK3){
+					sceneMenuControlRO.querySecondaryMenuListById(this.twoFlag);
+				}else{
+					threeMenu.returnUpMenu();
+				}			
+			}
+			
+			public function setReturnBtnVisible(value:Boolean):void
+			{
+				if(returnBtn != value){
+					returnBtn.visible = value;
+				}
+			}
+
+			//query exception handling
+			protected function sceneMenuControlRO_faultHandler(event:FaultEvent):void
+			{
+
+			}
+			
+			//query results
+			private function initial_results(event:ResultEvent):void
+			{
+				this.currentMark = ViewStackEffectExplorer.MARK1;
+				
+				var results:FlexResults=event.result as FlexResults;
+				if (results && results.success)
+				{
+					this.display_content.initMenu(ViewStackEffectExplorer.MARK1,results.list);
+				}
+				else
+				{
+					
+				} 
+			}
+			
+			//query results
+			private function secondary_results(event:ResultEvent):void
+			{
+				this.currentMark = ViewStackEffectExplorer.MARK2;
+				
+				var results:FlexResults=event.result as FlexResults;
+				if (results && results.success)
+				{
+					this.display_content.initMenu(ViewStackEffectExplorer.MARK2,results.list);
+				}
+				else
+				{
+					
+				}
+			}
+
+			
+
+		]]>
+	</fx:Script>
+	
+	<mx:Image source="assets/image/001.jpg" horizontalCenter="0" verticalCenter="0"/>
+	
+	<mx:Image source="assets/image/bg_1.png" top="0" left="0"/>
+	
+	<s:BorderContainer width="1000" height="650" backgroundAlpha="0" borderVisible="false" horizontalCenter="0" verticalCenter="0">
+		<effects:ViewStackEffectExplorer id="display_content" paddingLeft="23" paddingTop="0"
+										 clickMenuEvent="display_content_clickMenuEventHandler(event)"
+										 width="580" height="360" left="210" top="140"
+										 verticalAlign="middle"> 
+			<effects:effect>
+				<viewStackEffects:Squash/>
+			</effects:effect>
+		</effects:ViewStackEffectExplorer>
+	</s:BorderContainer>	
+
+	<mx:Image id="returnBtn" click="returnBtn_clickHandler(event)" source="assets/image/return.png" horizontalCenter="0" bottom="100" useHandCursor="true" buttonMode="true"/>
+	
+	<mx:Image source="assets/image/bg_1.png" top="0" right="0"/>
+	
+</s:BorderContainer>

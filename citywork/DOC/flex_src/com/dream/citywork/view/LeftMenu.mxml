@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="creationCompleteHandler(event)"
+				   borderVisible="false"
+				   backgroundAlpha="0"
+				   width="155"
+				   height="250">
+	
+	<fx:Metadata> 
+		[Event(name="clickNavMenu",type="com.dream.citywork.event.ClickNavMenu")]
+	</fx:Metadata>	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.dream.citywork.components.MenuGroup;
+			import com.dream.citywork.event.ClickNavMenu;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.ScrollPolicy;
+			import mx.events.FlexEvent;
+			
+			import spark.components.Button;
+			import spark.components.Group;
+			
+			private const topEvet:String = "topEvent";
+			private const bottomeEvent:String = "bottomEvent";	
+			
+			[Bindable]
+			[Embed('assets/image/arraw-top.png')]
+			public static var arrawTop:Class;
+			
+			[Bindable]
+			[Embed('assets/image/arraw-top-gray.png')]
+			public static var arrawTopGray:Class;
+			
+			[Bindable]
+			[Embed('assets/image/arraw-bottom.png')]
+			public static var arrawBottom:Class;
+			
+			[Bindable]
+			[Embed('assets/image/arraw-bottom-gray.png')]
+			public static var arrawBottomGray:Class;
+			
+			private var _source:String;
+			
+			private var timer:Timer;			
+			
+			public var scrollSpeed:Number = 10;
+			public var scrollJump:Number = 10;
+			
+			private var _startScrollingEvent:String = MouseEvent.MOUSE_DOWN;
+			private var _stopScrollingEvent:String = MouseEvent.MOUSE_UP;
+			
+			private var _menuItem:ArrayCollection;
+			
+			private var _labelFiled:String = "label";
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				timer = new Timer(scrollSpeed);
+			}
+			
+			override protected function createChildren():void {
+				super.createChildren();
+				
+				if(menuItem){
+					this.initMenuItem();
+				}
+			}
+			
+			public function initMenuItem(menuItem:ArrayCollection = null):void{
+				var _value:ArrayCollection;
+				if(menuItem){
+					_value = menuItem;
+				}else{
+					_value = this.menuItem;
+				}
+				
+				this.menuGroup.removeAllElements();
+				
+				for(var i:int=0; i<_value.length; i++){
+					var btn:MenuGroup = this.createMenuBtn(_value.getItemAt(i));
+					this.menuGroup.addElement(btn);
+				}
+				
+				this.validateNow();
+				this.enableButtons();
+			}
+			
+			private function createMenuBtn(value:Object):MenuGroup
+			{
+				var btn:MenuGroup = new MenuGroup();
+				btn.text = value[labelFiled];
+				btn.name = value.eventtype;
+				btn.id = value.id;
+//				if(value.height == undefined){
+//					btn.height = value.height;
+//				}else{
+//					btn.height = 48;
+//				}
+//				if(value.width == undefined){
+//					btn.width = value.width;
+//				}else{
+//					btn.width = 353;
+//				}
+				if(value.useHand == undefined || value.useHand){
+					btn.useHandCursor = true;
+					btn.buttonMode = true;
+				}else{
+					btn.useHandCursor = false;
+					btn.buttonMode = false;
+				}
+				btn.addEventListener(MouseEvent.CLICK,navMenuBtn_clickHandler, false, 0, true);
+				
+				return btn;
+			}
+			
+			
+			protected function navMenuBtn_clickHandler(event:MouseEvent):void
+			{
+				var btn:MenuGroup = event.currentTarget as MenuGroup;
+				
+				var e:ClickNavMenu = new ClickNavMenu(ClickNavMenu.CLICK_NAV_MENU);
+				e.eventtype = btn.name;
+				e.navmenutype = ClickNavMenu.NAV_MENU_TYPE_LEFT;
+				e.menuName = btn.text;
+				e.id = btn.id;
+				
+				this.dispatchEvent(e);
+			}
+			
+			private function startScrolling(scrollFunction:Function):void {
+				if(timer.running) {
+					timer.stop();
+				}
+				
+				timer = new Timer(this.scrollSpeed);
+				timer.addEventListener(TimerEvent.TIMER, scrollFunction);
+				
+				timer.start();
+			}
+			
+			private function stopScrolling(event:Event):void {
+				if(timer.running) {
+					timer.stop();
+				}
+			}		
+			
+			protected function disableButtons():void {	
+				if(!arrawBottomBtn.visible){
+					arrawBottomBtn.visible = true;
+				}
+				if(!arrawTopBtn.visible){
+					arrawTopBtn.visible = true;
+				}
+			}
+			
+			protected function enableButtons():void {	
+				
+				//this.disableButtons();
+				
+				var arrawBottomEnabled:Boolean = menuCanvas.verticalScrollPosition > 0;
+				if(arrawBottomBtn.visible != arrawBottomEnabled){
+					arrawBottomBtn.visible = arrawBottomEnabled;
+				}
+				//Alert.show("arrawBottomEnabled = "+arrawBottomEnabled);
+				//				if(arrawBottomBtn.enabled != arrawBottomEnabled){
+				//					arrawBottomBtn.enabled = arrawBottomEnabled;		
+				//					if(arrawBottomEnabled){
+				//						setBtnStyle(arrawBottomBtn,arrawBottom);
+				//					}else{
+				//						setBtnStyle(arrawBottomBtn,arrawBottomGray);
+				//					}
+				//				} 
+				
+				var arrawTopEnabled:Boolean = menuCanvas.verticalScrollPosition < menuCanvas.maxVerticalScrollPosition;
+				if(arrawTopBtn.visible != arrawTopEnabled){
+					arrawTopBtn.visible = arrawTopEnabled;
+				}
+				//Alert.show("arrawTopEnabled = "+arrawTopEnabled);
+				//				if(arrawTopBtn.enabled != arrawTopEnabled){
+				//					arrawTopBtn.enabled = arrawTopEnabled;
+				//					if(arrawTopEnabled){
+				//						setBtnStyle(arrawTopBtn,arrawTop);
+				//					}else{
+				//						setBtnStyle(arrawTopBtn,arrawTopGray);
+				//					}
+				//				}
+				
+			}
+			
+			private function setBtnStyle(btn:LinkButton,classstr:Class):void{
+				btn.setStyle("icon",null);
+				btn.setStyle("icon",classstr);
+			}
+			
+			private function bottomScrollDown(event:TimerEvent=null):void
+			{
+				menuCanvas.verticalScrollPosition-=scrollJump;
+				enableButtons();
+			}
+			
+			private function topScrollDown(event:TimerEvent=null):void
+			{
+				menuCanvas.verticalScrollPosition+=scrollJump;
+				enableButtons();
+			}
+			
+			//bottom down
+			protected function arrawBottom_mouseDownHandler(event:MouseEvent):void
+			{
+				this.startScrolling(bottomScrollDown);
+			}
+			
+			//bottom up
+			protected function arrawBottom_mouseUpHandler(event:MouseEvent):void
+			{
+				this.stopScrolling(event);
+				this.removeListeners();
+			}
+			
+			//top down
+			protected function arrawTop_mouseDownHandler(event:MouseEvent):void
+			{
+				this.startScrolling(topScrollDown);
+			}
+			
+			//top up
+			protected function arrawTop_mouseUpHandler(event:MouseEvent):void
+			{
+				this.stopScrolling(event);
+				this.removeListeners();
+			}
+			
+			private function removeListeners():void {
+				try{
+					arrawBottom.removeEventListener(MouseEvent.MOUSE_UP, arrawBottom_mouseUpHandler); 
+					arrawBottom.removeEventListener(MouseEvent.MOUSE_DOWN, arrawTop_mouseDownHandler); 
+					arrawTop.removeEventListener(MouseEvent.MOUSE_UP, arrawTop_mouseUpHandler); 
+					arrawTop.removeEventListener(MouseEvent.MOUSE_DOWN, arrawTop_mouseDownHandler);  	
+				}catch(e:*){
+					trace(e);
+				}	 	 
+			}
+			
+			public function addNexNode(item:ArrayCollection):void
+			{
+				var obj:Object = item.getItemAt(0);
+				
+				if(this.onlyNode(obj.id)){
+					var mg:MenuGroup = createMenuBtn(obj);
+					
+					this.menuGroup.addElement(mg);
+					
+					this.menuGroup.validateNow();
+					this.enableButtons();
+				}				
+			}
+			
+			public function onlyNode(type:String):Boolean
+			{
+				var numEle:int = menuGroup.numElements;
+				for(var i:int=0; i<numEle; i++){
+					var _type:String = (menuGroup.getElementAt(i) as MenuGroup).id;
+					if(_type == type){
+						return false;
+					}
+				} 
+				
+				return true; 
+			}
+			
+			public function removeNextNode(currNode:String):void
+			{
+				var index:int = 0;
+				var numEle:int = menuGroup.numElements;
+				for(var i:int=0; i<numEle; i++){
+					var _type:String = (menuGroup.getElementAt(i) as MenuGroup).id;
+					if(_type == currNode){
+						index = i;
+						break;
+					}
+				}
+				
+				for(var j:int=numEle;j>index; j--){
+					try{
+						menuGroup.removeElementAt(j);
+					}catch(e:*){
+						trace(e);
+					}					
+				}
+			}
+			
+			[Bindable]
+			public function get source():String
+			{
+				return _source;
+			}
+			
+			public function set source(value:String):void
+			{
+				_source = value;
+			}
+			
+			public function get labelFiled():String
+			{
+				return _labelFiled;
+			}
+			
+			public function set labelFiled(value:String):void
+			{
+				_labelFiled = value;
+			}
+			
+			public function get menuItem():ArrayCollection
+			{
+				return _menuItem;
+			}
+			
+			public function set menuItem(value:ArrayCollection):void
+			{
+				_menuItem = value;
+				
+				//this.invalidateProperties();
+			}
+			
+			public function getContent():int
+			{
+				return menuGroup.numElements;
+			}
+			
+			public function removeLastMenu():int
+			{
+				var numEle:int = menuGroup.numElements;
+				if(numEle>=1){
+					menuGroup.removeElementAt(numEle-1);
+				}
+				
+				return numEle;
+			}
+			
+			public function getLastItem():Object
+			{
+				var numEle:int = menuGroup.numElements;
+				var mg:MenuGroup = menuGroup.getElementAt(numEle-1) as MenuGroup;
+				var obj:Object = new Object();
+				obj.eventtype = mg.name; 
+				obj.id = mg.id;
+
+				return obj;
+			}
+			
+			public function getLastTwoItem():Object
+			{
+				var numEle:int = menuGroup.numElements;
+				var mg:MenuGroup = menuGroup.getElementAt(numEle-2) as MenuGroup;
+				var obj:Object = new Object();
+				obj.eventtype = mg.name; 
+				obj.id = mg.id;
+				
+				return obj;
+			}
+			
+		]]>
+	</fx:Script> 	
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</s:layout>
+	
+	<mx:LinkButton visible="false" id="arrawTopBtn" mouseUp="arrawTop_mouseUpHandler(event)" mouseDown="arrawTop_mouseDownHandler(event)" icon="{arrawTop}" horizontalCenter="0"/>
+	
+	<mx:Canvas id="menuCanvas" verticalScrollPolicy="off" horizontalScrollPolicy="off" height="280">
+		<s:VGroup id="menuGroup" gap="15" horizontalAlign="center" paddingBottom="10" paddingTop="5" width="300"/>		
+	</mx:Canvas>
+	
+	<mx:LinkButton visible="false" id="arrawBottomBtn" mouseUp="arrawBottom_mouseUpHandler(event)" mouseDown="arrawBottom_mouseDownHandler(event)" icon="{arrawBottom}" horizontalCenter="0"/>
+	
+</s:BorderContainer>

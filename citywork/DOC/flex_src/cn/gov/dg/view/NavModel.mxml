@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup>
+		<s:HGroup>
+			<mx:Button id="lab_content" alpha="0.5" color="black" />
+			<mx:Button label="圆形" />
+		</s:HGroup>
+		<mx:Image source="@Embed('assets/image/mange_one_1.png')" name="箭头" />
+	</s:VGroup>
+</s:Group>
