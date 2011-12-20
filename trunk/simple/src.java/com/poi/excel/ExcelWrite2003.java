@@ -8,54 +8,21 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.util.Region;
 
+import com.poi.excel.vo.StatisticsVo;
+
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ExcelWrite2003 {
 
-	private static final String CATEGORY = "category";
-	private static final String APP_NAME = "applicationName";
-	private static final String DOW_NUM = "downloadsNumbers";
+	public static final String CATEGORY = "category";
+	public static final String APP_NAME = "applicationName";
+	public static final String DOW_NUM = "downloadsNumbers";
 
 	/** Excel 文件要存放的位置，假定在D盘JTest目录下 */
 
 	public static String outputFile = "C:/Users/HU/Desktop/gongye.xls";
-
-	public static void main(String argv[]) {
-
-		List<StatisticsVo> listvo = new ArrayList<StatisticsVo>();
-
-		StatisticsVo v1 = new StatisticsVo();
-		v1.setRankings(1);
-		v1.setProvince("四川");
-		v1.setHall("华北厅");
-		v1.setCategory("精品游戏");
-		v1.setApplicationName("软件A");
-		v1.setDownloadsNumbers(1);
-
-		StatisticsVo v2 = new StatisticsVo();
-		v2.setRankings(2);
-		v2.setProvince("四川");
-		v2.setHall("华北厅");
-		v2.setCategory("精品游戏");
-		v2.setApplicationName("软件B");
-		v2.setDownloadsNumbers(2);
-
-		listvo.add(v1);
-		listvo.add(v2);
-
-		ExcelWrite2003 excel = new ExcelWrite2003();
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(CATEGORY, 11);
-		map.put(APP_NAME, 11);
-		map.put(DOW_NUM, 11);
-
-		excel.highestLevelAppExcel(listvo, map, "集团应用统计", "集团应用统计");
-	}
 
 	/**
 	 * 
@@ -70,7 +37,7 @@ public class ExcelWrite2003 {
 	 * @param title
 	 *            標題
 	 */
-	private void highestLevelAppExcel(List<StatisticsVo> listvo,
+	void highestLevelAppExcel(List<StatisticsVo> listvo,
 			Map<String, Object> summary, String sheetname, String title) {
 
 		HSSFWorkbook workbook = new HSSFWorkbook();

@@ -82,13 +82,6 @@ public class ExcelParser2003 {
 			break;
 		case HSSFCell.CELL_TYPE_NUMERIC:
 			value = df.format(cell.getNumericCellValue());
-			// String decimalAfter = value.substring(value.lastIndexOf("."));
-			// for (int i = 0; i < zero.length; i++) {
-			// if (zero[i].equals(decimalAfter)) {
-			// value = value.substring(0, value.lastIndexOf("."));
-			// break;
-			// }
-			// }
 			break;
 		case HSSFCell.CELL_TYPE_BLANK:
 			value = "";
