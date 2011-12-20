@@ -1,21 +1,14 @@
+package com.random;
+
+/**
+ * <p>随即产生七位数</p>
+ * @User: HUBO
+ * @Date Dec 20, 2011 
+ * @Time 2:19:50 PM 
+ * 
+ * <p>Write a detailed description</p>
+ */
 public class RandomNumber {
-
-	public static void main(String[] args) throws InterruptedException {
-		RandomNumber.makeSevenRandomNumber(3);
-	}
-
-	public static void makeSevenRandomNumber(int dept)
-			throws InterruptedException {
-		for (int j = 0; j < dept; j++) {
-			int[] sevenDigit = RandomNumber.getSevenDigit(7, 1, 33, 16);
-			String[] sevenDigitDoubleDigit = RandomNumber
-					.assemblyDoubleDigit(sevenDigit);
-			for (int i = 0; i < sevenDigitDoubleDigit.length; i++) {
-				System.out.print(sevenDigitDoubleDigit[i] + " ");
-			}
-			System.out.println();
-		}
-	}
 
 	public static String[] assemblyDoubleDigit(int[] random) {
 
