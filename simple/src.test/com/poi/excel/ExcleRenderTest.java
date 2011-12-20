@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.poi.excel.vo.Device;
+import com.util.Util;
 
 public class ExcleRenderTest {
 
@@ -23,7 +24,7 @@ public class ExcleRenderTest {
 	public static void main(String[] args) throws Exception {
 		InputStream in = null;
 		try {
-			in = readFileByStream("D:/temp/device.xls");
+			in = readFileByStream(Util.getRealURL() + "device.xls");
 			List<Device> listDevice = getDeviceInfo(in);
 			for (Device device : listDevice) {
 				System.err.println(device.getDeviceCode());
@@ -33,11 +34,6 @@ public class ExcleRenderTest {
 		} finally {
 			in.close();
 		}
-
-		// String url = "D:/temp/devic.xls.xls";
-		// System.out.println(url.lastIndexOf(".xls")+"|"+(url.length()-4));
-		//		
-
 	}
 
 	/**
