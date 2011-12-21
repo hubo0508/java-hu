@@ -11,15 +11,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
+import com.core.Test;
 import com.poi.excel.vo.Device;
 import com.util.Util;
 
-public class ExcleRenderTest {
+public class ExcleRenderTest extends Test{
 
-	protected Log logger = LogFactory.getLog(ExcleRenderTest.class);
+	public ExcleRenderTest(){
+
+	}
 
 	public static void main(String[] args) throws Exception {
 		InputStream in = null;
@@ -69,6 +70,7 @@ public class ExcleRenderTest {
 	 * 以字节为单位读取文件，常用于读二进制文件，如图片、声音、影像等文件。
 	 */
 	public static InputStream readFileByStream(String fileName) {
+		log.info("fileRealPath:"+fileName);
 		InputStream in = null;
 		try {
 			in = new FileInputStream(fileName);
