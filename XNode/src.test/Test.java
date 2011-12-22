@@ -14,9 +14,9 @@ public class Test {
 
 		//entitiesIntoNode1();
 		//entitiesIntoNode2();
-		//entitiesIntoNode3();
+		entitiesIntoNode3();
 		//entitiesIntoNodeList1();
-		entitiesIntoNodeList2();
+		//entitiesIntoNodeList2();
 	}
 	
 	/*
@@ -147,9 +147,9 @@ public class Test {
 
 		Map<String, Object> replaceNode = new HashMap<String, Object>();
 		replaceNode.put("categories", true);
-		//replaceNode.put("com.vo.Categories", "newNode");
+		replaceNode.put("com.vo.Categories", "newNode");
+		
 		XEntityNode.replaceNode = replaceNode;
-
 		String xml = XEntityNode.entitiesIntoNode(chart);
 
 		System.err.println(xml);
