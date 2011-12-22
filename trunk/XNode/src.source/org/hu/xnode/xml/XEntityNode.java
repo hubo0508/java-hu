@@ -73,7 +73,7 @@ public class XEntityNode<T> {
 	private static XStream setAttribute(XStream xStream, Object entity)
 			throws Exception {
 
-		Class entityCls = entity.getClass();
+		Class entityCls = entity.getClass();		
 		String aliasName = getAliasName(entityCls.getName());
 		if (aliasName != null) {
 			xStream.alias(aliasName, entityCls);
