@@ -116,4 +116,28 @@ public class Chart {
 		this.dataset = dataset;
 	}
 
+	public String getXAxisName() {
+		return xAxisName;
+	}
+
+	public void setXAxisName(String axisName) {
+		xAxisName = axisName;
+	}
+
+	public String getYAxisName() {
+		return yAxisName;
+	}
+
+	public void setYAxisName(String axisName) {
+		yAxisName = axisName;
+	}
+
+	public Author getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(Author author) {
+		this.author = author;
+	}
+
 }
