@@ -210,6 +210,7 @@ public class XEntityNode<T> {
 	}
 
 	private static String getAliasName(String path) {
+		
 		String aliasName = (String) replaceNode.get(path);
 
 		if (aliasName == null) {
