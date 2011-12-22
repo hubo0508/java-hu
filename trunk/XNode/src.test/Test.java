@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.hu.xnode.xml.XEntityNode;
 
-import com.vo.Categories;
-import com.vo.Chart;
+import com.xnode.vo.Categories;
+import com.xnode.vo.Chart;
 
 public class Test {
 
