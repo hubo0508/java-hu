@@ -70,9 +70,10 @@ public class Simple2 {
 		chart.setSet(listSet);
 		chart.setLine(new Line("2","FF5904"));
 		
-		Map<String, Object> replaceNode = new HashMap<String, Object>();
-		replaceNode.put("com.xnode.domain.Set", "newNode");
-		XEntityNode.replaceNode = replaceNode;
+		Map<String, Object> node = new HashMap<String, Object>();
+		node.put("com.xnode.domain.Line", "vLine");
+		node.put("categories", true);
+		XEntityNode.node = node;
 		String xml = XEntityNode.entitiesIntoNode(chart);
 
 		System.err.println(xml);
