@@ -2,7 +2,7 @@ package com.random;
 
 public class RandomNumberTest {
 	public static void main(String[] args) {
-		RandomNumberTest.makeSevenRandomNumber(3);
+		RandomNumberTest.makeSevenRandomNumber(2);
 	}
 
 	public static void makeSevenRandomNumber(int dept) {
