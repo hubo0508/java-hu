@@ -106,15 +106,7 @@ public class XEntityNode<T> {
 			String fieldName) throws Exception {
 
 		Class entityCls = entity.getClass();
-		// xStream.addImplicitCollection(entityCls, fieldName);
-		Boolean falg = (Boolean) replaceNode.get(fieldName);
-		if (falg == null) {
-			xStream.addImplicitCollection(entityCls, fieldName);
-		} else {
-			if (!falg) {
-				xStream.addImplicitCollection(entityCls, fieldName);
-			}
-		}
+		xStream.addImplicitCollection(entityCls, fieldName);
 		Object subCollectionItem = getSubCollectionItemOrSubEntity(entity,
 				fieldName);
 
