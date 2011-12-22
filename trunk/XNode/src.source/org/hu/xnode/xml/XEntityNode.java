@@ -10,6 +10,7 @@
 package org.hu.xnode.xml;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,35 +67,33 @@ public class XEntityNode<T> {
 		}
 	}
 
+	// ///////////////////////////////////////////////////////////////////////////////////
+
 	@SuppressWarnings("unchecked")
 	private static XStream setAttribute(XStream xStream, Object entity)
 			throws Exception {
 
-		Class entityCls = null;
-		try {
-			entityCls = entity.getClass();
-		} catch (NullPointerException e) {
-			System.err.println("property is empty");
-			return xStream;
-		}
-
+		Class entityCls = entity.getClass();
 		xStream.alias(getAliasName(entityCls.getName()), entityCls);
 
 		Field[] entityField = entityCls.getDeclaredFields();
-		for (int i = 0; i < entityField.length; i++) {
+		int len = entityField.length;
+		for (int i = 0; i < len; i++) {
 			Field field = entityField[i];
-
-			String fieldTypeStr = field.getType().toString();
-
+			String classStr = field.getType().toString();
 			if (BasicType.isBasicType(field.getType())) {
 				xStream.aliasAttribute(entityCls, field.getName(), field
 						.getName());
 			} else {
-				Boolean collFlag = collection.get(fieldTypeStr);
+				Boolean collFlag = collection.get(classStr);
 				if (collFlag != null) {
 					collectionHandler(xStream, entity, field.getName());
 				} else {
-
+					Object subEntityItem = getSubCollectionItemOrSubEntity(
+							entity, field.getName());
+					if (subEntityItem != null) {
+						setAttribute(xStream, subEntityItem);
+					}
 				}
 			}
 		}
@@ -107,7 +106,7 @@ public class XEntityNode<T> {
 			String fieldName) throws Exception {
 
 		Class entityCls = entity.getClass();
-
+		// xStream.addImplicitCollection(entityCls, fieldName);
 		Boolean falg = (Boolean) replaceNode.get(fieldName);
 		if (falg == null) {
 			xStream.addImplicitCollection(entityCls, fieldName);
@@ -116,25 +115,40 @@ public class XEntityNode<T> {
 				xStream.addImplicitCollection(entityCls, fieldName);
 			}
 		}
-
-		String methodName = weaveMethodName("get", fieldName);
-		Method collMethod = entityCls.getMethod(methodName, new Class[] {});
-		Object collItem = collMethod.invoke(entity, new Object[] {});
+		Object subCollectionItem = getSubCollectionItemOrSubEntity(entity,
+				fieldName);
 
 		// 判断具体类型
-		if (collItem instanceof List) {
-			List listObj = (List) collItem;
-			for (int j = 0; j < listObj.size(); j++) {
-				setAttribute(xStream, listObj.get(j));
+		if (subCollectionItem instanceof List) {
+			List subListItem = (List) subCollectionItem;
+			for (int j = 0; j < subListItem.size(); j++) {
+				setAttribute(xStream, subListItem.get(j));
 			}
-		} else if (collItem instanceof Set) {
-			Set setObj = (Set) collItem;
-			for (Iterator iterator = setObj.iterator(); iterator.hasNext();) {
+		} else if (subCollectionItem instanceof Set) {
+			Set subSetItem = (Set) subCollectionItem;
+			for (Iterator iterator = subSetItem.iterator(); iterator.hasNext();) {
 				setAttribute(xStream, iterator.next());
 			}
-		} else if (collItem instanceof Map) {
+		} else if (subCollectionItem instanceof Map) {
 
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Object getSubCollectionItemOrSubEntity(Object entity,
+			String fieldName) throws SecurityException, NoSuchMethodException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+
+		Class entityCls = entity.getClass();
+
+		String getMethodName = combinationMethod("get", fieldName);
+		Method instanceMethod = entityCls.getMethod(getMethodName,
+				new Class[] {});
+		Object subCollectionItem = instanceMethod.invoke(entity,
+				new Object[] {});
+
+		return subCollectionItem;
 	}
 
 	@SuppressWarnings( { "unchecked", "unused" })
@@ -162,7 +176,8 @@ public class XEntityNode<T> {
 							.getName());
 				} else {
 
-					String methodName = weaveMethodName("get", field.getName());
+					String methodName = combinationMethod("get", field
+							.getName());
 					Method getMethod = entityCls.getMethod(methodName,
 							new Class[] {});
 					Object childObj = getMethod.invoke(entity, new Object[] {});
@@ -196,18 +211,16 @@ public class XEntityNode<T> {
 		return true;
 	}
 
-	private static String weaveMethodName(String methodPrefix, String fieldName) {
+	private static String combinationMethod(String methodPrefix,
+			String fieldName) {
 		String firstLetter = fieldName.substring(0, 1).toUpperCase();
 		return methodPrefix + firstLetter + fieldName.substring(1);
 	}
 
 	private static String getAliasName(String path) {
-
 		String aliasName = (String) replaceNode.get(path);
 
-		if (aliasName != null) {
-			return aliasName;
-		} else {
+		if (aliasName == null) {
 			int lastIndex = path.lastIndexOf(".");
 			if (lastIndex < 0) {
 				return path.toLowerCase();
@@ -215,6 +228,8 @@ public class XEntityNode<T> {
 				return path.substring(lastIndex + 1, path.length())
 						.toLowerCase();
 			}
+		} else {
+			return aliasName;
 		}
 	}
 }
