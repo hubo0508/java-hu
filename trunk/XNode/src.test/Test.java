@@ -58,7 +58,7 @@ public class Test {
 
 		Map<String, Object> replaceNode = new HashMap<String, Object>();
 		replaceNode.put("com.vo.Categories", "newNode");
-		XEntityNode.replaceNode = replaceNode;
+		XEntityNode.node = replaceNode;
 
 		String xml = XEntityNode.entitiesIntoNodeList(listCategories);
 
@@ -145,11 +145,11 @@ public class Test {
 
 		chart.setCategories(listCategories);
 
-		Map<String, Object> replaceNode = new HashMap<String, Object>();
-		replaceNode.put("categories", true);
-		replaceNode.put("com.vo.Categories", "newNode");
+		Map<String, Object> node = new HashMap<String, Object>();
+		node.put("com.vo.Categories", "newNode");
+		node.put("categories", true);
 		
-		XEntityNode.replaceNode = replaceNode;
+		XEntityNode.node = node;
 		String xml = XEntityNode.entitiesIntoNode(chart);
 
 		System.err.println(xml);
