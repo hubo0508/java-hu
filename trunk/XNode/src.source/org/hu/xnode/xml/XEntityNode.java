@@ -33,7 +33,7 @@ public class XEntityNode<T> {
 
 	private static Map<String, Boolean> collection = new HashMap<String, Boolean>();
 
-	public static Map<String, Object> replaceNode = new HashMap<String, Object>();
+	public static Map<String, Object> node = new HashMap<String, Object>();
 
 	static {
 		collection.put("interface java.util.List", true);
@@ -53,7 +53,7 @@ public class XEntityNode<T> {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
-			XEntityNode.replaceNode = null;
+			node = null;
 		}
 		return sb.toString();
 	}
@@ -74,7 +74,10 @@ public class XEntityNode<T> {
 			throws Exception {
 
 		Class entityCls = entity.getClass();
-		xStream.alias(getAliasName(entityCls.getName()), entityCls);
+		String aliasName = getAliasName(entityCls.getName());
+		if (aliasName != null) {
+			xStream.alias(aliasName, entityCls);
+		}
 
 		Field[] entityField = entityCls.getDeclaredFields();
 		int len = entityField.length;
@@ -106,7 +109,10 @@ public class XEntityNode<T> {
 			String fieldName) throws Exception {
 
 		Class entityCls = entity.getClass();
-		xStream.addImplicitCollection(entityCls, fieldName);
+		if (node.get(fieldName) != null && (Boolean) node.get(fieldName)) {
+		} else {
+			xStream.addImplicitCollection(entityCls, fieldName);
+		}
 		Object subCollectionItem = getSubCollectionItemOrSubEntity(entity,
 				fieldName);
 
@@ -210,8 +216,12 @@ public class XEntityNode<T> {
 	}
 
 	private static String getAliasName(String path) {
-		
-		String aliasName = (String) replaceNode.get(path);
+
+		Object aliasName = node.get(path);
+
+		if (aliasName instanceof Boolean && (Boolean) aliasName) {
+			return null;
+		}
 
 		if (aliasName == null) {
 			int lastIndex = path.lastIndexOf(".");
@@ -222,7 +232,7 @@ public class XEntityNode<T> {
 						.toLowerCase();
 			}
 		} else {
-			return aliasName;
+			return aliasName.toString();
 		}
 	}
 }
