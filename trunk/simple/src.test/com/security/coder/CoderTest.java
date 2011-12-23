@@ -1,10 +1,12 @@
-package com.security;
+package com.security.coder;
 
 import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 
 import org.junit.Test;
+
+import com.security.coder.Coder;
 
 public class CoderTest {
 	@Test
