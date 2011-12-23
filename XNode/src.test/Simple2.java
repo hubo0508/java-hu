@@ -5,8 +5,12 @@ import java.util.Map;
 
 import org.hu.xnode.xml.XEntityNode;
 
+import com.xnode.domain.Application;
 import com.xnode.domain.Chart;
-import com.xnode.domain.Line;
+import com.xnode.domain.Definition;
+import com.xnode.domain.Styles;
+import com.xnode.domain.Trendlines;
+import com.xnode.domain.VLine;
 import com.xnode.domain.Set;
 
 /*
@@ -67,12 +71,28 @@ public class Simple2 {
 		listSet.add(new Set("November","11"));
 		listSet.add(new Set("December","12"));
 		
+		List<Trendlines> trendlines = new ArrayList<Trendlines>();
+		trendlines.add(new Trendlines("22000","00cc00","Average"));
+		
+		List<Definition> definition = new ArrayList<Definition>();
+		definition.add(new Definition("CanvasAnim","animation","_xScale","0","1"));
+		
+		List<Application> application = new ArrayList<Application>();
+		application.add(new Application("Canvas","CanvasAnim"));
+		
 		chart.setSet(listSet);
-		chart.setLine(new Line("2","FF5904"));
+		chart.setVLine(new VLine("2","FF5904"));
+		chart.setTrendlines(trendlines);
+		chart.setStyles(new Styles(definition,application));
 		
 		Map<String, Object> node = new HashMap<String, Object>();
-		node.put("com.xnode.domain.Line", "vLine");
-		node.put("categories", true);
+		node.put("com.xnode.domain.Trendlines", "line");
+		node.put("com.xnode.domain.Definition", "style");
+		node.put("com.xnode.domain.Application", "apply");
+		node.put("trendlines", true);
+//		node.put("styles", true);
+		node.put("definition", true);
+		node.put("application", true);
 		XEntityNode.node = node;
 		String xml = XEntityNode.entitiesIntoNode(chart);
 

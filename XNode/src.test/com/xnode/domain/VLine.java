@@ -13,12 +13,12 @@ package com.xnode.domain;
  * Write a detailed description
  * </p>
  */
-public class Line {
+public class VLine {
 
 	private String thickness;
 	private String color;
 
-	public Line(String thickness, String color) {
+	public VLine(String thickness, String color) {
 		super();
 		this.thickness = thickness;
 		this.color = color;
