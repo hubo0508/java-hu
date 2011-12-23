@@ -64,6 +64,8 @@ public class XEntityNode<T> {
 			return xs.toXML(entity);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			node = null;
 		}
 	}
 
@@ -109,10 +111,13 @@ public class XEntityNode<T> {
 			String fieldName) throws Exception {
 
 		Class entityCls = entity.getClass();
-		if (node.get(fieldName) != null && (Boolean) node.get(fieldName)) {
+		Object nodeMark = node.get(fieldName);
+		if ((nodeMark != null && (Boolean) nodeMark)) {
+
 		} else {
 			xStream.addImplicitCollection(entityCls, fieldName);
 		}
+
 		Object subCollectionItem = getSubCollectionItemOrSubEntity(entity,
 				fieldName);
 

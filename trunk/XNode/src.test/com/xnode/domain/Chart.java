@@ -24,15 +24,36 @@ public class Chart {
 	private String yAxisName;
 	private String numberPrefix;
 
-	private List<Set> set = new ArrayList<Set>();
-	private Line line;
+	private VLine vLine;
 
-	public Line getLine() {
-		return line;
+	private List<Set> set;
+	private List<Trendlines> trendlines;
+	
+	private Styles styles;
+
+
+	public Styles getStyles() {
+		return styles;
 	}
 
-	public void setLine(Line line) {
-		this.line = line;
+	public void setStyles(Styles styles) {
+		this.styles = styles;
+	}
+
+	public List<Trendlines> getTrendlines() {
+		return trendlines;
+	}
+
+	public void setTrendlines(List<Trendlines> trendlines) {
+		this.trendlines = trendlines;
+	}
+
+	public VLine getVLine() {
+		return vLine;
+	}
+
+	public void setVLine(VLine line) {
+		vLine = line;
 	}
 
 	public List<Set> getSet() {
