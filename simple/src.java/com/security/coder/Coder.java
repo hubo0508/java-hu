@@ -1,4 +1,4 @@
-package com.security;
+package com.security.coder;
 
 import java.security.MessageDigest;
 
