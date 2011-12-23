@@ -37,6 +37,7 @@ public class ExcelWrite2003 {
 	 * @param title
 	 *            標題
 	 */
+	@SuppressWarnings("deprecation")
 	void highestLevelAppExcel(List<StatisticsVo> listvo,
 			Map<String, Object> summary, String sheetname, String title) {
 

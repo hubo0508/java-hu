@@ -1,5 +1,11 @@
 package com.security;
 
+import static org.junit.Assert.*;
+
+import java.math.BigInteger;
+
+import org.junit.Test;
+
 public class CoderTest {
 	@Test
 	public void test() throws Exception {
