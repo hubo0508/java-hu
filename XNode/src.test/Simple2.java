@@ -80,10 +80,10 @@ public class Simple2 {
 		List<Application> application = new ArrayList<Application>();
 		application.add(new Application("Canvas","CanvasAnim"));
 		
-		chart.setSet(listSet);
-		chart.setVLine(new VLine("2","FF5904"));
-		chart.setTrendlines(trendlines);
-		chart.setStyles(new Styles(definition,application));
+//		chart.setSet(listSet);
+//		chart.setVLine(new VLine("2","FF5904"));
+//		chart.setTrendlines(trendlines);
+//		chart.setStyles(new Styles(definition,application));
 		
 		Map<String, Object> node = new HashMap<String, Object>();
 		node.put("com.xnode.domain.Trendlines", "line");
