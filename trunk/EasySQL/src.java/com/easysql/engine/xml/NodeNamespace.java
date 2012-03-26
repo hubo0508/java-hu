@@ -20,4 +20,6 @@ public class NodeNamespace {
 	public static final String GENERATOR = "easy-mapping/generator";
 	
 	public static final String ENTITY = "easy-mapping/entitys/entity";
+	
+	public static final String FIELD_RULE = "easy-mapping/";
 }

@@ -18,7 +18,7 @@ public class SqlMap {
 	private static SqlMap sqlMap;
 
 	public SqlMap() {
-		// new NodeEngine().init();
+
 	}
 
 	public static SqlMap getInstance() {
@@ -28,6 +28,10 @@ public class SqlMap {
 			}
 		}
 		return sqlMap;
+	}
+	
+	public Map getSqlMap(){
+		return map;
 	}
 
 	public void clear() {
