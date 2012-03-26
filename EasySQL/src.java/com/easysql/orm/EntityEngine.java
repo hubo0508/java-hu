@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
-import com.easysql.core.SqlMap;
+import com.easysql.core.Mapping;
 
 public class EntityEngine extends ObjectManage {
 
@@ -19,7 +19,7 @@ public class EntityEngine extends ObjectManage {
 
 	public String[] getRowField() {
 
-		SqlMap filterConditions = (SqlMap) SqlMap.getInstance().get(
+		Mapping filterConditions = (Mapping) Mapping.getInstance().get(
 				super.getCanonicalName() + "." + Entity.NOT_TAKE);
 
 		Field[] fields = getClazz().getDeclaredFields();
