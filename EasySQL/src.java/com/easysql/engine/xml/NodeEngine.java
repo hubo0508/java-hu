@@ -10,23 +10,42 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.easysql.core.ObjectManage;
+
 @SuppressWarnings("unchecked")
-public class NodeEngine {
+public class NodeEngine extends ObjectManage {
 
 	private static Object initLock = new Object();
 
 	private static NodeEngine nodeEngine = null;
 
-	private Map<String, Object> node = new HashMap<String, Object>();
+	public Map<String, Object> node = new HashMap<String, Object>();
 
 	static {
+		NodeEngine.getInstance().init();
+	}
+
+	private void init() {
 		Document doc = createDocument();
 
 		putSinge(doc.selectNodes(NodeNamespace.GENERATOR),
 				NodeNamespace.GENERATOR, "class");
-		putSinge(doc.selectNodes(NodeNamespace.ENTITY), NodeNamespace.ENTITY,
-				"class");
 
+		initEntitys(doc);
+	}
+
+	private void initEntitys(Document doc) {
+		List<Element> list = doc.selectNodes(NodeNamespace.ENTITY);
+		for (Element e : list) {
+			String className = e.attributeValue("class");
+			try {
+				Object instance = Class.forName(className).newInstance();
+
+				NodeEngine.getInstance().node.put(className, instance);
+			} catch (Exception e1) {
+				log.error(e1.getMessage(), e1);
+			}
+		}
 	}
 
 	public static NodeEngine getInstance() {
@@ -39,15 +58,14 @@ public class NodeEngine {
 	}
 
 	@SuppressWarnings("unused")
-	private static void putSinge(List<Element> list, String keymap,
-			String keyatt) {
+	private void putSinge(List<Element> list, String keymap, String keyatt) {
 		for (Element ele : list) {
 			NodeEngine.getInstance().node.put(keymap, ele
 					.attributeValue(keyatt));
 		}
 	}
 
-	private static Document createDocument() {
+	private Document createDocument() {
 
 		String file = "D:\\work\\myeclipse6.6\\easySQL\\src.config\\easySQL.xml";
 		try {
