@@ -1,10 +1,8 @@
-package com.easysql.core.object;
+package com.easysql.core;
 
 import java.util.HashMap;
-import java.util.Map;
 
-@SuppressWarnings("unchecked")
-public class SqlMap extends HashMap implements Map {
+public class SqlMap extends HashMap<Object, Object> {
 
 	private static final long serialVersionUID = -6311099281884071158L;
 
