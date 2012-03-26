@@ -1,8 +1,6 @@
 package com.easysql.orm;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
@@ -29,14 +27,17 @@ public class EntityEngine extends ObjectManage {
 
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
+			String value = null;
 			if (filterConditions == null) {
-				filedsStr[i] = field.getName();
+				value = field.getName();
 			} else {
 				Object obj = filterConditions.get(field.getName());
 				if (obj == null || (Boolean) obj) {
-					filedsStr[i] = field.getName();
+					value = field.getName();
 				}
 			}
+
+			filedsStr[i] = value;
 		}
 
 		return filedsStr;
