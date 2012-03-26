@@ -29,6 +29,12 @@ public class EntityEngine extends ObjectManage {
 
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
+
+			Object isFalg = collection.get(field.getType().toString());
+			if (isFalg != null && (Boolean) isFalg) {
+				count++;
+				continue;
+			}
 			String value = null;
 			if (filterConditions == null) {
 				value = field.getName();
@@ -44,15 +50,16 @@ public class EntityEngine extends ObjectManage {
 			}
 			elements[i] = value;
 		}
-		
+
 		return removeNullElements(count, elements);
 	}
 
 	private String[] removeNullElements(int count, String[] elements) {
 
-		String[] newElements = new String[elements.length - count];
+		String[] newElements = new String[(elements.length - count)+1];
+		newElements[0] = getClazz().getSimpleName();
 
-		count = 0;
+		count = 1;
 		for (String e : elements) {
 			if (e != null) {
 				newElements[count] = e;
