@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.SqlMap;
 
@@ -20,7 +21,8 @@ public class EntityEngine extends ObjectManage {
 
 	public String[] getRowField() {
 
-		SqlMap filterConditions = getFilterConditions();
+		SqlMap filterConditions = (SqlMap) SqlMap.getInstance().get(
+				super.getCanonicalName() + "." + Entity.NOT_TAKE);
 
 		Field[] fields = getClazz().getDeclaredFields();
 		String[] filedsStr = new String[fields.length];
@@ -40,31 +42,4 @@ public class EntityEngine extends ObjectManage {
 		return filedsStr;
 	}
 
-	@SuppressWarnings("unchecked")
-	private SqlMap getFilterConditions() {
-
-		try {
-
-			Object instance = SqlMap.getInstance().get(getCanonicalName());
-			Method getOldMethod = getClazz().getMethod("notTake",
-					new Class[] {});
-			SqlMap sqlMap = (SqlMap) getOldMethod.invoke(instance,
-					new Object[] {});
-
-			return sqlMap;
-
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

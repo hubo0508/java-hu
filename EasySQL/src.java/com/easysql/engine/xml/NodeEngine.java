@@ -1,6 +1,8 @@
 package com.easysql.engine.xml;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -8,6 +10,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.SqlMap;
 
@@ -21,6 +24,13 @@ public class NodeEngine extends ObjectManage {
 				NodeNamespace.GENERATOR, "class");
 
 		initEntitys(doc);
+
+		initFieldRule(doc);
+	}
+
+	private void initFieldRule(Document doc) {
+		putSinge(doc.selectNodes(NodeNamespace.GENERATOR),
+				NodeNamespace.FIELD_RULE, "class");
 	}
 
 	private void initEntitys(Document doc) {
@@ -28,13 +38,28 @@ public class NodeEngine extends ObjectManage {
 		for (Element e : list) {
 			String className = e.attributeValue("class");
 			try {
-				Object instance = Class.forName(className).newInstance();
+				Class clazz = Class.forName(className);
+				Object instance = clazz.newInstance();
 
 				SqlMap.getInstance().put(className, instance);
+
+				initFilterConditions(clazz, instance);
 			} catch (Exception e1) {
 				log.error(e1.getMessage(), e1);
 			}
 		}
+	}
+
+	private void initFilterConditions(Class clazz, Object instance)
+			throws SecurityException, NoSuchMethodException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+		
+		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
+		SqlMap sqlMap = (SqlMap) getOldMethod.invoke(instance, new Object[] {});
+
+		String key = clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
+		SqlMap.getInstance().put(key, sqlMap);
 	}
 
 	@SuppressWarnings("unused")

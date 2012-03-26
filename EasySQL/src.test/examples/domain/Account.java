@@ -9,8 +9,10 @@ public class Account extends Entity {
 
 	@Override
 	public SqlMap notTake() {
-		map.notTask("serialVersionUID");		
-		return map;
+		SqlMap sqlMap = new SqlMap();
+		sqlMap.notTask("serialVersionUID");
+		
+		return sqlMap;
 	}
 
 	private long id;
