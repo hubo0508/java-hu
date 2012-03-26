@@ -1,9 +1,7 @@
 package com.easysql.engine.xml;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -11,21 +9,12 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.easysql.core.ObjectManage;
+import com.easysql.core.SqlMap;
 
 @SuppressWarnings("unchecked")
 public class NodeEngine extends ObjectManage {
 
-	private static Object initLock = new Object();
-
-	private static NodeEngine nodeEngine = null;
-
-	public Map<String, Object> node = new HashMap<String, Object>();
-
-	static {
-		NodeEngine.getInstance().init();
-	}
-
-	private void init() {
+	public void init() {
 		Document doc = createDocument();
 
 		putSinge(doc.selectNodes(NodeNamespace.GENERATOR),
@@ -41,27 +30,17 @@ public class NodeEngine extends ObjectManage {
 			try {
 				Object instance = Class.forName(className).newInstance();
 
-				NodeEngine.getInstance().node.put(className, instance);
+				SqlMap.getInstance().put(className, instance);
 			} catch (Exception e1) {
 				log.error(e1.getMessage(), e1);
 			}
 		}
 	}
 
-	public static NodeEngine getInstance() {
-		if (nodeEngine == null) {
-			synchronized (initLock) {
-				nodeEngine = new NodeEngine();
-			}
-		}
-		return nodeEngine;
-	}
-
 	@SuppressWarnings("unused")
 	private void putSinge(List<Element> list, String keymap, String keyatt) {
 		for (Element ele : list) {
-			NodeEngine.getInstance().node.put(keymap, ele
-					.attributeValue(keyatt));
+			SqlMap.getInstance().put(keymap, ele.attributeValue(keyatt));
 		}
 	}
 
@@ -82,9 +61,7 @@ public class NodeEngine extends ObjectManage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DocumentException {
-		System.out.println(NodeEngine.getInstance().node
-				.get(NodeNamespace.GENERATOR));
-		System.out.println(NodeEngine.getInstance().node
-				.get(NodeNamespace.ENTITY));
+		System.out.println(SqlMap.getInstance().get(NodeNamespace.GENERATOR));
+		System.out.println(SqlMap.getInstance().get(NodeNamespace.ENTITY));
 	}
 }

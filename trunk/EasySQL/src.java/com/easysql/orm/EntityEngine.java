@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 
 import com.easysql.core.ObjectManage;
 import com.easysql.core.SqlMap;
-import com.easysql.engine.xml.NodeEngine;
 
 public class EntityEngine extends ObjectManage {
 
@@ -46,8 +45,7 @@ public class EntityEngine extends ObjectManage {
 
 		try {
 
-			Object instance = NodeEngine.getInstance().node
-					.get(getCanonicalName());
+			Object instance = SqlMap.getInstance().get(getCanonicalName());
 			Method getOldMethod = getClazz().getMethod("notTake",
 					new Class[] {});
 			SqlMap sqlMap = (SqlMap) getOldMethod.invoke(instance,
