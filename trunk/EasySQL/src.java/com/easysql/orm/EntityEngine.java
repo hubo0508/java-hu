@@ -23,7 +23,9 @@ public class EntityEngine extends ObjectManage {
 				super.getCanonicalName() + "." + Entity.NOT_TAKE);
 
 		Field[] fields = getClazz().getDeclaredFields();
-		String[] filedsStr = new String[fields.length];
+		String[] elements = new String[fields.length];
+
+		int count = 0;
 
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
@@ -37,10 +39,27 @@ public class EntityEngine extends ObjectManage {
 				}
 			}
 
-			filedsStr[i] = value;
+			if (value == null) {
+				count++;
+			}
+			elements[i] = value;
 		}
-
-		return filedsStr;
+		
+		return removeNullElements(count, elements);
 	}
 
+	private String[] removeNullElements(int count, String[] elements) {
+
+		String[] newElements = new String[elements.length - count];
+
+		count = 0;
+		for (String e : elements) {
+			if (e != null) {
+				newElements[count] = e;
+				count++;
+			}
+		}
+
+		return newElements;
+	}
 }
