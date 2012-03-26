@@ -1,22 +1,39 @@
 package com.easysql.engine.sql;
 
-public class SQLEngine<T> {
+public class SQLEngine {
 
-	private Class<T> clazz;
+	public static String getInsertSQL(String tableName, String[] fields) {
+		StringBuffer sb = new StringBuffer();
 
-	public String insertForClass() {
-
+		sb.append("INSERT INTO ");
+		sb.append(tableName);
+		sb.append(" (");
+		setInsertKey(fields, sb);
+		sb.append(") VALUES (");
+		setInsertValue(fields,sb);
+		sb.append(")");
 		
-		
-		return null;
+		return sb.toString();
 	}
 
-	public Class<T> getClazz() {
-		return clazz;
+	private static void setInsertKey(String[] fields, StringBuffer sb) {
+		int len = fields.length;
+		for (int i = 0; i < len; i++) {
+			String field = fields[i];
+			sb.append(field);
+			if (i < len - 1) {
+				sb.append(", ");
+			}
+		}
 	}
 
-	public void setClazz(Class<T> clazz) {
-		this.clazz = clazz;
+	private static void setInsertValue(String[] fields, StringBuffer sb) {
+		int len = fields.length;
+		for (int i = 0; i < len; i++) {
+			sb.append("?");
+			if (i < len - 1) {
+				sb.append(", ");
+			}
+		}
 	}
-
 }

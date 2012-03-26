@@ -1,5 +1,8 @@
 package examples.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.easysql.core.Entity;
 import com.easysql.core.object.SqlMap;
 
@@ -10,16 +13,34 @@ public class User extends Entity {
 	private long id;
 	private String username;
 	private String password;
+	private String testRow;
+
+	private List<Account> listAccount = new ArrayList<Account>();
 
 	@Override
 	public SqlMap notTake() {
 
-		log.info("serialVersionUID");
-
 		SqlMap map = new SqlMap();
 		map.notTask("serialVersionUID");
+		map.notTask("testRow");
 
 		return map;
+	}
+
+	public List<Account> getListAccount() {
+		return listAccount;
+	}
+
+	public void setListAccount(List<Account> listAccount) {
+		this.listAccount = listAccount;
+	}
+
+	public String getTestRow() {
+		return testRow;
+	}
+
+	public void setTestRow(String testRow) {
+		this.testRow = testRow;
 	}
 
 	public long getId() {

@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import com.easysql.core.ObjectManage;
 import com.easysql.core.object.SqlMap;
+import com.easysql.engine.xml.NodeEngine;
 
 public class EntityEngine extends ObjectManage {
 
@@ -20,15 +21,21 @@ public class EntityEngine extends ObjectManage {
 
 	public String[] getRowField() {
 
-		getFilterConditions();
+		SqlMap filterConditions = getFilterConditions();
 
 		Field[] fields = getClazz().getDeclaredFields();
-
 		String[] filedsStr = new String[fields.length];
 
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
-			filedsStr[i] = field.getName();
+			if (filterConditions == null) {
+				filedsStr[i] = field.getName();
+			} else {
+				Object obj = filterConditions.get(field.getName());
+				if (obj == null || (Boolean) obj) {
+					filedsStr[i] = field.getName();
+				}
+			}
 		}
 
 		return filedsStr;
@@ -36,25 +43,17 @@ public class EntityEngine extends ObjectManage {
 
 	@SuppressWarnings("unchecked")
 	private SqlMap getFilterConditions() {
-		// CopyOfUser x = null;
-		// if (x instanceof CopyOfUser) {
-		//
-		// }
-		// if (!getClazz().isInstance(Entity.class)) {
-		// throw new RuntimeException("类型错误");
-		// }
 
 		try {
 
-			Object instance = getClazz().newInstance();
-
+			Object instance = NodeEngine.getInstance().node
+					.get(getCanonicalName());
 			Method getOldMethod = getClazz().getMethod("notTake",
 					new Class[] {});
-			@SuppressWarnings("unused")
 			SqlMap sqlMap = (SqlMap) getOldMethod.invoke(instance,
 					new Object[] {});
-			
-			System.out.println(sqlMap.get("serialVersionUID"));
+
+			return sqlMap;
 
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -65,9 +64,6 @@ public class EntityEngine extends ObjectManage {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
