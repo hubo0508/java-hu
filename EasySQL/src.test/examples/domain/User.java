@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.easysql.core.Entity;
-import com.easysql.core.object.SqlMap;
+import com.easysql.core.SqlMap;
 
 public class User extends Entity {
 

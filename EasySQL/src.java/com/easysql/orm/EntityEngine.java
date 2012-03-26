@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.easysql.core.ObjectManage;
-import com.easysql.core.object.SqlMap;
+import com.easysql.core.SqlMap;
 import com.easysql.engine.xml.NodeEngine;
 
 public class EntityEngine extends ObjectManage {
