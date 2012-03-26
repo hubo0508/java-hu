@@ -12,7 +12,7 @@ import org.dom4j.io.SAXReader;
 
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
-import com.easysql.core.SqlMap;
+import com.easysql.core.Mapping;
 
 @SuppressWarnings("unchecked")
 public class NodeEngine extends ObjectManage {
@@ -41,7 +41,7 @@ public class NodeEngine extends ObjectManage {
 				Class clazz = Class.forName(className);
 				Object instance = clazz.newInstance();
 
-				SqlMap.getInstance().put(className, instance);
+				Mapping.getInstance().put(className, instance);
 
 				initFilterConditions(clazz, instance);
 			} catch (Exception e1) {
@@ -56,16 +56,16 @@ public class NodeEngine extends ObjectManage {
 			InvocationTargetException {
 		
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
-		SqlMap sqlMap = (SqlMap) getOldMethod.invoke(instance, new Object[] {});
+		Mapping sqlMap = (Mapping) getOldMethod.invoke(instance, new Object[] {});
 
 		String key = clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
-		SqlMap.getInstance().put(key, sqlMap);
+		Mapping.getInstance().put(key, sqlMap);
 	}
 
 	@SuppressWarnings("unused")
 	private void putSinge(List<Element> list, String keymap, String keyatt) {
 		for (Element ele : list) {
-			SqlMap.getInstance().put(keymap, ele.attributeValue(keyatt));
+			Mapping.getInstance().put(keymap, ele.attributeValue(keyatt));
 		}
 	}
 
@@ -86,7 +86,7 @@ public class NodeEngine extends ObjectManage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DocumentException {
-		System.out.println(SqlMap.getInstance().get(NodeNamespace.GENERATOR));
-		System.out.println(SqlMap.getInstance().get(NodeNamespace.ENTITY));
+		System.out.println(Mapping.getInstance().get(NodeNamespace.GENERATOR));
+		System.out.println(Mapping.getInstance().get(NodeNamespace.ENTITY));
 	}
 }

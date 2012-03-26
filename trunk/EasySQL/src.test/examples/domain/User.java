@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.easysql.core.Entity;
-import com.easysql.core.SqlMap;
+import com.easysql.core.Mapping;
 
 public class User extends Entity {
 
@@ -18,9 +18,9 @@ public class User extends Entity {
 	private List<Account> listAccount = new ArrayList<Account>();
 
 	@Override
-	public SqlMap notTake() {
+	public Mapping notTake() {
 
-		SqlMap map = new SqlMap();
+		Mapping map = new Mapping();
 		map.notTask("serialVersionUID");
 		map.notTask("testRow");
 

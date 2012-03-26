@@ -7,5 +7,5 @@ public abstract class Entity extends ObjectManage implements
 
 	private static final long serialVersionUID = 1L;
 
-	public abstract SqlMap notTake();
+	public abstract Mapping notTake();
 }

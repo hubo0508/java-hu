@@ -7,7 +7,7 @@ import java.util.Set;
 
 
 @SuppressWarnings("unchecked")
-public class SqlMap {
+public class Mapping {
 
 	private static Map<String, Object> map = new HashMap<String, Object>();
 
@@ -15,16 +15,16 @@ public class SqlMap {
 
 	private static Object initLock = new Object();
 
-	private static SqlMap sqlMap;
+	private static Mapping sqlMap;
 
-	public SqlMap() {
+	public Mapping() {
 
 	}
 
-	public static SqlMap getInstance() {
+	public static Mapping getInstance() {
 		if (sqlMap == null) {
 			synchronized (initLock) {
-				sqlMap = new SqlMap();
+				sqlMap = new Mapping();
 			}
 		}
 		return sqlMap;
