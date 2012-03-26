@@ -4,6 +4,7 @@ import com.easysql.engine.sql.SQLEngine;
 import com.easysql.engine.xml.NodeEngine;
 import com.easysql.orm.EntityEngine;
 
+import examples.domain.Account;
 import examples.domain.User;
 
 public class Test {
@@ -12,9 +13,9 @@ public class Test {
 
 		new NodeEngine().init();
 
-		EntityEngine ref = new EntityEngine(User.class);
+		EntityEngine ref = new EntityEngine(Account.class);
 
-		String sql = SQLEngine.getInsertSQL("User", ref.getRowField());
+		String sql = SQLEngine.getInsertSQL(ref.getRowField());
 
 		System.out.println(sql);
 	}
