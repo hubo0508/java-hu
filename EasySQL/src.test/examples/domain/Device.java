@@ -2,7 +2,7 @@ package examples.domain;
 
 import java.util.Date;
 
-import com.easysql.IfMap;
+import com.easysql.MapHandler;
 import com.easysql.core.Entity;
 
 /**
@@ -26,16 +26,16 @@ public class Device extends Entity {
 	private String activeStr;// 设备状态(未存储数据库)
 
 	@Override
-	public IfMap notTake() {
+	public MapHandler notTake() {
 
-		IfMap ifmap = new IfMap();
+		MapHandler ifmap = new MapHandler();
 
 		// 不作表字段
 		ifmap.notTask("serialVersionUID");
 		ifmap.notTask("activeStr");
 
 		// 当前字段与数据库字段不一样，需替换
-		ifmap.put(IfMap.REPLACE,
+		ifmap.put(MapHandler.REPLACE,
 				new String[] { "factoryCode:factoryCodeReplace" });
 
 		return ifmap;

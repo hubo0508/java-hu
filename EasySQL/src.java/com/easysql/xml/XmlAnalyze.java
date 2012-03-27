@@ -11,7 +11,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.easysql.EasySQL;
-import com.easysql.IfMap;
+import com.easysql.MapHandler;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
@@ -57,9 +57,9 @@ public class XmlAnalyze extends ObjectManage {
 			InvocationTargetException {
 
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
-		IfMap ifmap = (IfMap) getOldMethod.invoke(instance, new Object[] {});
+		MapHandler ifmap = (MapHandler) getOldMethod.invoke(instance, new Object[] {});
 		if (ifmap.isEmpty()) {
-			ifmap = new IfMap();
+			ifmap = new MapHandler();
 		}
 
 		Mapping.getInstance().put(EasySQL.key(clazz), ifmap);

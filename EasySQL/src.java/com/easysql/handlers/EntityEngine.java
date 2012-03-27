@@ -2,7 +2,7 @@ package com.easysql.handlers;
 
 import java.lang.reflect.Field;
 
-import com.easysql.IfMap;
+import com.easysql.MapHandler;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
@@ -27,7 +27,7 @@ public class EntityEngine extends ObjectManage {
 		}
 
 		// 取得过滤条件
-		IfMap ifmap = (IfMap) Mapping.getInstance().get(
+		MapHandler ifmap = (MapHandler) Mapping.getInstance().get(
 				super.getCanonicalName() + "." + Entity.NOT_TAKE);
 
 		Field[] fields = getClazz().getDeclaredFields();
