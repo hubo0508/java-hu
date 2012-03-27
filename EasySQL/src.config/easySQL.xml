@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sql-mapping>
+<easysql-mapping>
 
 	<!-- 数据库类型 mysql sqlserver oracle -->
 	<database class="mysql" />
@@ -19,4 +19,4 @@
 		<entity class="examples.domain.Device" />
 	</entitys>
 
-</sql-mapping>
+</easysql-mapping>

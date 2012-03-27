@@ -12,7 +12,7 @@ public class EasySQL {
 	public final static String FIELD_RULE_HUMP = "hump";
 
 	public final static String FIELD_RULE_SEGMENTATION = "segmentation";
-	
+
 	/**
 	 * 
 	 * 1) assigned 主键由外部程序负责生成，无需Hibernate参与。 2) hilo 通过hi/lo
@@ -28,16 +28,25 @@ public class EasySQL {
 	 * 与uuid.hex 类似，只是生成的主键未进行编码（长度16）。在某些 数据库中可能出现问题（如PostgreSQL）。 10) foreign
 	 * 使用外部表的字段作为主键。 一般而言，利用uuid.hex方式生成主键将提供最好的性能和数据库平台适 应性。
 	 */
-	public static final String GENERATOR = "sql-mapping/generator";
+
+	/** ************************************************************************************************************************************** */
+
+	public static final String GENERATOR = "easysql-mapping/generator";
 	
-	public static final String ENTITY = "sql-mapping/entitys/entity";
-	
-	public static final String FIELD_RULE = "sql-mapping/field-rule";
+	public static final String GENERATOR_SEQUENCE = "easysql-mapping/generator/sequence";
+
+	public static final String ENTITY = "easysql-mapping/entitys/entity";
+
+	public static final String FIELD_RULE = "easysql-mapping/field-rule";
+
+	public static final String DATABASE = "easysql-mapping/database";
+
+	/** ************************************************************************************************************************************** */
 
 	public static String key(Class<?> clazz) {
 		return clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
 	}
-	
+
 	public static String replaceFiled(String[] replaceValue, String text) {
 
 		String returnvalue = text;
