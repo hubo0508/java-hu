@@ -28,11 +28,16 @@ public class Device extends Entity {
 	@Override
 	public IfMap notTake() {
 
-		IfMap sqlMap = new IfMap();
-		sqlMap.notTask("serialVersionUID");
-		sqlMap.notTask("activeStr");
+		IfMap ifmap = new IfMap();
 
-		return sqlMap;
+		// 不作表字段
+		ifmap.notTask("serialVersionUID");
+		ifmap.notTask("activeStr");
+
+		// 当前字段与数据库字段不一样，需替换
+		ifmap.put(IfMap.REPLACE, new String[] { "factoryCode:xxx" });
+
+		return ifmap;
 	}
 
 	public Long getId() {
