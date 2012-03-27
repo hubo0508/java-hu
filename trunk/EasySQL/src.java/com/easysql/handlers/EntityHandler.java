@@ -7,13 +7,13 @@ import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
 
-public class EntityEngine extends ObjectManage {
+public class EntityHandler extends ObjectManage {
 
-	public EntityEngine() {
+	public EntityHandler() {
 		super();
 	}
 
-	public EntityEngine(Class<?> clazz) {
+	public EntityHandler(Class<?> clazz) {
 		super.setCanonicalName(clazz.getCanonicalName());
 		super.setClazz(clazz);
 	}
