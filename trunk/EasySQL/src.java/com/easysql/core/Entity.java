@@ -1,6 +1,6 @@
 package com.easysql.core;
 
-import com.easysql.core.object.IfMap;
+import com.easysql.IfMap;
 
 public abstract class Entity extends ObjectManage implements
 		java.io.Serializable {
