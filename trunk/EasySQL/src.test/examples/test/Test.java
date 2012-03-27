@@ -17,5 +17,13 @@ public class Test {
 		String sql = SQLEngine.getInsertSQL(ref.getRowField());
 
 		System.out.println(sql);
+		
+		Device ob =null;
+		
+		if(Device.class.getSuperclass().isInstance(ob)){
+			System.out.println("'");
+		}
+				
+		System.out.println(Device.class.getSuperclass().getCanonicalName());
 	}
 }
