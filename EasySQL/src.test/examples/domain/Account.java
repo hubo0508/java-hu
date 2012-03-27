@@ -1,7 +1,7 @@
 package examples.domain;
 
+import com.easysql.IfMap;
 import com.easysql.core.Entity;
-import com.easysql.core.object.IfMap;
 
 public class Account extends Entity {
 
