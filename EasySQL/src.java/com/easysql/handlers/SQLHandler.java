@@ -30,7 +30,7 @@ public class SQLHandler {
 		sb.append("INSERT INTO ");
 		sb.append(fields[0]);
 		sb.append(" (");
-		setInsertKey(fields, sb);
+		setInsertKey(database, fields, sb);
 		sb.append(") VALUES (");
 		setInsertValue(database, geneValue, fields, sb);
 		sb.append(")");
@@ -38,9 +38,17 @@ public class SQLHandler {
 		return sb.toString();
 	}
 
-	private static void setInsertKey(String[] fields, StringBuffer sb) {
+	private static void setInsertKey(String database, String[] fields,
+			StringBuffer sb) {
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
+			if (i == 1 && getGenerationOfPrimaryKey(database)) {
+				if ("mysql".equals(database)) {
+					continue;
+				} else if ("sqlserver".equals(database)) {
+					continue;
+				}
+			}
 			String field = fields[i];
 			sb.append(field);
 			if (i < len - 1) {
@@ -58,6 +66,10 @@ public class SQLHandler {
 				if ("oracle".equals(database)) {
 					sb.append(geneValue);
 					sb.append(".NEXTVAL");
+				} else if ("mysql".equals(database)) {
+					continue;
+				} else if ("sqlserver".equals(database)) {
+					continue;
 				}
 			} else {
 				sb.append("?");
@@ -83,8 +95,10 @@ public class SQLHandler {
 
 		}
 
-		if ("oracle".equals(databasename)) {
-
+		if ("mysql".equals(databasename)) {
+			if ("native".equals(generator) || "identity".equals(generator)) {
+				return true;
+			}
 		}
 
 		return false;
