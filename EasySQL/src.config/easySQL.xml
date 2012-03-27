@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sql-mapping>
-	<generator class="native" />
+
+	<generator class="native" >
+		
+	</generator>
+	
 	<!-- hump OR segmentation -->
 	<field-rule class="segmentation"/>
+	
 	<entitys>
 		<entity class="examples.domain.User"/>
 		<entity class="examples.domain.Account"/>
+		<entity class="examples.domain.Device"/>
 	</entitys>
+	
 </sql-mapping>

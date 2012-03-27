@@ -18,6 +18,11 @@ public class EntityEngine extends ObjectManage {
 	}
 
 	public String[] getRowField() {
+		
+		boolean flag = isExtendsEntity(getClazz());
+		if(!flag){
+			throw new RuntimeException(getClazz().getCanonicalName()+"未继承基类com.easysql.core.Entity");
+		}
 
 		Mapping filterConditions = (Mapping) Mapping.getInstance().get(
 				super.getCanonicalName() + "." + Entity.NOT_TAKE);
@@ -56,7 +61,7 @@ public class EntityEngine extends ObjectManage {
 
 	private String[] removeNullElements(int count, String[] elements) {
 
-		String[] newElements = new String[(elements.length - count)+1];
+		String[] newElements = new String[(elements.length - count) + 1];
 		newElements[0] = getClazz().getSimpleName();
 
 		count = 1;
@@ -68,5 +73,18 @@ public class EntityEngine extends ObjectManage {
 		}
 
 		return newElements;
+	}
+
+	public boolean isExtendsEntity(Class<?> clazz) {
+
+		if (clazz == null) {
+			throw new RuntimeException("clazz对象为NULL");
+		}
+
+		if (clazz.getSuperclass().toString().equals("com.easysql.core.Entity")) {
+			return true;
+		}
+
+		return false;
 	}
 }
