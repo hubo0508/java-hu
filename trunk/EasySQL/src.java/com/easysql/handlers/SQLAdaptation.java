@@ -1,9 +1,9 @@
 package com.easysql.handlers;
 
 import com.easysql.Const;
+import com.easysql.IfMap;
 import com.easysql.StringUtil;
 import com.easysql.core.Mapping;
-import com.easysql.core.object.IfMap;
 import com.easysql.engine.xml.XmlNamespace;
 
 public class SQLAdaptation {

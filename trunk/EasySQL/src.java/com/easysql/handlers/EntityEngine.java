@@ -2,10 +2,10 @@ package com.easysql.handlers;
 
 import java.lang.reflect.Field;
 
+import com.easysql.IfMap;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
-import com.easysql.core.object.IfMap;
 
 public class EntityEngine extends ObjectManage {
 
