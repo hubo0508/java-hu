@@ -10,8 +10,6 @@ public class SQLHandler {
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);
 
-		String mapping = (String) Mapping.getInstance().get(EasySQL.DATABASE);
-
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("INSERT INTO ");
@@ -37,12 +35,47 @@ public class SQLHandler {
 	}
 
 	private static void setInsertValue(String[] fields, StringBuffer sb) {
+
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+		String generatorName = (String) Mapping.getInstance().get(
+				EasySQL.GENERATOR_SEQUENCE);
+
 		int len = fields.length;
 		for (int i = 0; i < len; i++) {
-			sb.append("?");
+			if (i == 0 && getGenerationOfPrimaryKey()) {
+				if ("oracle".equals(database)) {
+					sb.append(generatorName);
+					sb.append(".NEXTVAL");
+				}
+			} else {
+				sb.append("?");
+			}
 			if (i < len - 1) {
 				sb.append(", ");
 			}
 		}
+	}
+
+	private static boolean getGenerationOfPrimaryKey() {
+
+		Mapping mapping = Mapping.getInstance();
+		String databasename = (String) mapping.get(EasySQL.DATABASE);
+		String generator = (String) mapping.get(EasySQL.GENERATOR);
+
+		if ("oracle".equals(databasename)) {
+			if ("native".equals(generator) || "sequence".equals(generator)) {
+				return true;
+			}
+		}
+
+		if ("sqlserver".equals(databasename)) {
+
+		}
+
+		if ("oracle".equals(databasename)) {
+
+		}
+
+		return false;
 	}
 }

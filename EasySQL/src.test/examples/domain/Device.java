@@ -38,6 +38,9 @@ public class Device extends Entity {
 		ifmap.put(MapHandler.REPLACE,
 				new String[] { "factoryCode:factoryCodeReplace" });
 
+		// 對每張表單獨設值虛列
+		ifmap.put(MapHandler.GENERATOR, "deviceSeq");
+
 		return ifmap;
 	}
 
