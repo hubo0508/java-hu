@@ -1,7 +1,9 @@
 package examples.service;
 
+import com.easysql.core.Mapping;
 import com.easysql.engine.sql.SQLEngine;
-import com.easysql.engine.xml.NodeEngine;
+import com.easysql.engine.xml.XmlAnalyze;
+import com.easysql.engine.xml.XmlNamespace;
 import com.easysql.orm.EntityEngine;
 
 import examples.domain.Account;
@@ -11,7 +13,7 @@ public class Test {
 	public static void main(String[] args) throws InstantiationException,
 			IllegalAccessException {
 
-		new NodeEngine().init();
+		new XmlAnalyze().init();		
 
 		EntityEngine ref = new EntityEngine(Account.class);
 
