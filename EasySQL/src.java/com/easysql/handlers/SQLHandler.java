@@ -1,9 +1,9 @@
 package com.easysql.handlers;
 
 
-public class SQLEngine {
+public class SQLHandler {
 
-	public static String getInsertSQL(EntityEngine ref) {
+	public static String getInsertSQL(EntityHandler ref) {
 
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);

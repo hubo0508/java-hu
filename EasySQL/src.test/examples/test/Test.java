@@ -1,7 +1,7 @@
 package examples.test;
 
-import com.easysql.handlers.EntityEngine;
-import com.easysql.handlers.SQLEngine;
+import com.easysql.handlers.EntityHandler;
+import com.easysql.handlers.SQLHandler;
 import com.easysql.xml.XmlAnalyze;
 
 import examples.domain.Device;
@@ -12,7 +12,7 @@ public class Test {
 
 		new XmlAnalyze().init();		
 
-		String sql = SQLEngine.getInsertSQL(new EntityEngine(Device.class));
+		String sql = SQLHandler.getInsertSQL(new EntityHandler(Device.class));
 
 		System.out.println(sql);
 
