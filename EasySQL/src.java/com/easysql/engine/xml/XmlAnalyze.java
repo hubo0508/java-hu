@@ -11,10 +11,10 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.easysql.Const;
+import com.easysql.IfMap;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
-import com.easysql.core.object.IfMap;
 
 @SuppressWarnings("unchecked")
 public class XmlAnalyze extends ObjectManage {
