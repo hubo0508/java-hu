@@ -35,7 +35,7 @@ public class EasySQL {
 	// 
 	public static final String GENERATOR = "easysql-mapping/generator";
 
-	public static final String GENERATOR_SEQUENCE = "easysql-mapping/generator/param";
+	public static final String GENERATOR_SEQ_VALUE = "easysql-mapping/generator/param";
 
 	public static final String ENTITY = "easysql-mapping/entitys/entity";
 

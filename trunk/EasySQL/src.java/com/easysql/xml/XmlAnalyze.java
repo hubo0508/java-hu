@@ -27,8 +27,8 @@ public class XmlAnalyze extends ObjectManage {
 
 		putSinge(doc.selectNodes(EasySQL.GENERATOR), EasySQL.GENERATOR, "class");
 		putSinge(doc.selectNodes(EasySQL.DATABASE), EasySQL.DATABASE, "class");
-		putSinge(doc.selectNodes(EasySQL.GENERATOR_SEQUENCE),
-				EasySQL.GENERATOR_SEQUENCE, "value");
+		putSinge(doc.selectNodes(EasySQL.GENERATOR_SEQ_VALUE),
+				EasySQL.GENERATOR_SEQ_VALUE, "value");
 
 		initEntitys(doc);
 
@@ -105,6 +105,6 @@ public class XmlAnalyze extends ObjectManage {
 
 		System.out.println(m.get(EasySQL.GENERATOR));
 		System.out.println(m.get(EasySQL.DATABASE));
-		System.out.println(m.get(EasySQL.GENERATOR_SEQUENCE));
+		System.out.println(m.get(EasySQL.GENERATOR_SEQ_VALUE));
 	}
 }

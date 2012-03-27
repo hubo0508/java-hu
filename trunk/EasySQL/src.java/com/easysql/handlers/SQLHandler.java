@@ -11,16 +11,18 @@ public class SQLHandler {
 
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);
-		
+
+		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		// 主鍵生成機制
-		String generatorName = (String) targetMap.get(EntityFilter.GENERATOR);
-		if (StringUtils.isEmpty(generatorName)) {
-			generatorName = (String) Mapping.getInstance().get(
-					EasySQL.GENERATOR_SEQUENCE);
+		String geneValue = (String) targetMap
+				.get(EntityFilter.GENERATOR_SEQ_VALUE);
+		if (StringUtils.isEmpty(geneValue)) {
+			geneValue = (String) Mapping.getInstance().get(
+					EasySQL.GENERATOR_SEQ_VALUE);
 		}
 
 		StringBuffer sb = new StringBuffer();
@@ -30,7 +32,7 @@ public class SQLHandler {
 		sb.append(" (");
 		setInsertKey(fields, sb);
 		sb.append(") VALUES (");
-		setInsertValue(database, generatorName, fields, sb);
+		setInsertValue(database, geneValue, fields, sb);
 		sb.append(")");
 
 		return sb.toString();
@@ -47,14 +49,14 @@ public class SQLHandler {
 		}
 	}
 
-	private static void setInsertValue(String database, String generatorName,
+	private static void setInsertValue(String database, String geneValue,
 			String[] fields, StringBuffer sb) {
 
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
-			if (i == 1 && getGenerationOfPrimaryKey()) {
+			if (i == 1 && getGenerationOfPrimaryKey(database)) {
 				if ("oracle".equals(database)) {
-					sb.append(generatorName);
+					sb.append(geneValue);
 					sb.append(".NEXTVAL");
 				}
 			} else {
@@ -66,10 +68,9 @@ public class SQLHandler {
 		}
 	}
 
-	private static boolean getGenerationOfPrimaryKey() {
+	private static boolean getGenerationOfPrimaryKey(String databasename) {
 
 		Mapping mapping = Mapping.getInstance();
-		String databasename = (String) mapping.get(EasySQL.DATABASE);
 		String generator = (String) mapping.get(EasySQL.GENERATOR);
 
 		if ("oracle".equals(databasename)) {

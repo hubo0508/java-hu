@@ -8,7 +8,7 @@ public class EntityFilter extends HashMap<String, Object> {
 	
 	public static final String REPLACE = "replace-mapHandler";
 	
-	public static final String GENERATOR = "generator-mapHandler";
+	public static final String GENERATOR_SEQ_VALUE = "generator-mapHandler";
 
 	public Object notTask(String key) {
 		return this.put(key, false);
