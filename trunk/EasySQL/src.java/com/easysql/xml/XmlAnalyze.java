@@ -20,6 +20,9 @@ import com.easysql.core.Mapping;
 public class XmlAnalyze extends ObjectManage {
 
 	public void init() {
+
+		log.info("To initialize EasySQL configuration.");
+
 		Document doc = createDocument();
 
 		putSinge(doc.selectNodes(EasySQL.GENERATOR), EasySQL.GENERATOR, "class");
@@ -35,6 +38,7 @@ public class XmlAnalyze extends ObjectManage {
 	}
 
 	private void initEntitys(Document doc) {
+
 		List<Element> list = doc.selectNodes(EasySQL.ENTITY);
 		for (Element e : list) {
 			String className = e.attributeValue("class");
@@ -43,6 +47,8 @@ public class XmlAnalyze extends ObjectManage {
 				Object instance = clazz.newInstance();
 
 				Mapping.getInstance().put(className, instance);
+
+				log.info("Initialized entities:" + className);
 
 				initFilterConditions(clazz, instance);
 			} catch (Exception e1) {
@@ -57,7 +63,8 @@ public class XmlAnalyze extends ObjectManage {
 			InvocationTargetException {
 
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
-		MapHandler ifmap = (MapHandler) getOldMethod.invoke(instance, new Object[] {});
+		MapHandler ifmap = (MapHandler) getOldMethod.invoke(instance,
+				new Object[] {});
 		if (ifmap.isEmpty()) {
 			ifmap = new MapHandler();
 		}
