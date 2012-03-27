@@ -2,8 +2,8 @@ package examples.domain;
 
 import java.util.Date;
 
-import com.easysql.MapHandler;
 import com.easysql.core.Entity;
+import com.easysql.handlers.EntityFilter;
 
 /**
  * @Description: 设备信息
@@ -26,20 +26,20 @@ public class Device extends Entity {
 	private String activeStr;// 设备状态(未存储数据库)
 
 	@Override
-	public MapHandler notTake() {
+	public EntityFilter notTake() {
 
-		MapHandler ifmap = new MapHandler();
+		EntityFilter ifmap = new EntityFilter();
 
 		// 不作表字段
 		ifmap.notTask("serialVersionUID");
 		ifmap.notTask("activeStr");
 
 		// 当前字段与数据库字段不一样，需替换
-		ifmap.put(MapHandler.REPLACE,
+		ifmap.put(EntityFilter.REPLACE,
 				new String[] { "factoryCode:factoryCodeReplace" });
 
 		// 對每張表單獨設值虛列
-		ifmap.put(MapHandler.GENERATOR, "deviceSeq");
+		ifmap.put(EntityFilter.GENERATOR, "deviceSeq");
 
 		return ifmap;
 	}

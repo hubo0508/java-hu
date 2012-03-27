@@ -3,8 +3,8 @@ package examples.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.easysql.MapHandler;
 import com.easysql.core.Entity;
+import com.easysql.handlers.EntityFilter;
 
 public class User extends Entity {
 
@@ -18,9 +18,9 @@ public class User extends Entity {
 	private List<Account> listAccount = new ArrayList<Account>();
 
 	@Override
-	public MapHandler notTake() {
+	public EntityFilter notTake() {
 
-		MapHandler sqlMap = new MapHandler();
+		EntityFilter sqlMap = new EntityFilter();
 		sqlMap.notTask("serialVersionUID");
 		sqlMap.notTask("testRow");
 

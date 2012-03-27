@@ -3,7 +3,6 @@ package com.easysql.handlers;
 import org.apache.commons.lang.StringUtils;
 
 import com.easysql.EasySQL;
-import com.easysql.MapHandler;
 import com.easysql.core.Mapping;
 
 public class SQLHandler {
@@ -12,12 +11,13 @@ public class SQLHandler {
 
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);
-
-		MapHandler targetMap = (MapHandler) Mapping.getInstance().get(
+		
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
-		String generatorName = (String) targetMap.get(MapHandler.GENERATOR);
+		// 主鍵生成機制
+		String generatorName = (String) targetMap.get(EntityFilter.GENERATOR);
 		if (StringUtils.isEmpty(generatorName)) {
 			generatorName = (String) Mapping.getInstance().get(
 					EasySQL.GENERATOR_SEQUENCE);
