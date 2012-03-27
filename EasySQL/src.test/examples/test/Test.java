@@ -4,7 +4,9 @@ import com.easysql.handlers.EntityHandler;
 import com.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
+import examples.domain.Account;
 import examples.domain.Device;
+import examples.domain.User;
 
 public class Test extends BaseTest {
 
@@ -12,6 +14,14 @@ public class Test extends BaseTest {
 			IllegalAccessException {
 
 		String sql = SQLHandler.getInsertSQL(new EntityHandler(Device.class));
+
+		System.out.println(sql);
+		
+		sql = SQLHandler.getInsertSQL(new EntityHandler(User.class));
+
+		System.out.println(sql);
+		
+		sql = SQLHandler.getInsertSQL(new EntityHandler(Account.class));
 
 		System.out.println(sql);
 

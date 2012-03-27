@@ -39,7 +39,7 @@ public class Device extends Entity {
 				new String[] { "factoryCode:factoryCodeReplace" });
 
 		// 對每張表單獨設值虛列
-		ifmap.put(EntityFilter.GENERATOR, "deviceSeq");
+		ifmap.put(EntityFilter.GENERATOR_SEQ_VALUE, "deviceSeq");
 
 		return ifmap;
 	}
