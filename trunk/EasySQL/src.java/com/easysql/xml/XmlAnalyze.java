@@ -11,10 +11,10 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.easysql.EasySQL;
-import com.easysql.MapHandler;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
+import com.easysql.handlers.EntityFilter;
 
 @SuppressWarnings("unchecked")
 public class XmlAnalyze extends ObjectManage {
@@ -66,10 +66,10 @@ public class XmlAnalyze extends ObjectManage {
 			InvocationTargetException {
 
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
-		MapHandler ifmap = (MapHandler) getOldMethod.invoke(instance,
+		EntityFilter ifmap = (EntityFilter) getOldMethod.invoke(instance,
 				new Object[] {});
 		if (ifmap.isEmpty()) {
-			ifmap = new MapHandler();
+			ifmap = new EntityFilter();
 		}
 
 		Mapping.getInstance().put(EasySQL.key(clazz), ifmap);

@@ -1,7 +1,6 @@
 package com.easysql.handlers;
 
 import com.easysql.EasySQL;
-import com.easysql.MapHandler;
 import com.easysql.core.Mapping;
 
 public class SQLAdaptation {
@@ -10,8 +9,8 @@ public class SQLAdaptation {
 
 		String fieldRule = (String) Mapping.getInstance().get(
 				EasySQL.FIELD_RULE);
-		MapHandler targetMap = (MapHandler) Mapping.getInstance().get(EasySQL.key(clazz));
-		String[] replaceValue = (String[]) targetMap.get(MapHandler.REPLACE);
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(EasySQL.key(clazz));
+		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(fieldRule)) {
 			return elements;

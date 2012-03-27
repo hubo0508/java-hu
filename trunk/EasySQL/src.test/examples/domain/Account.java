@@ -1,15 +1,15 @@
 package examples.domain;
 
-import com.easysql.MapHandler;
 import com.easysql.core.Entity;
+import com.easysql.handlers.EntityFilter;
 
 public class Account extends Entity {
 
 	private static final long serialVersionUID = 7877823162646493241L;
 
 	@Override
-	public MapHandler notTake() {
-		MapHandler sqlMap = new MapHandler();
+	public EntityFilter notTake() {
+		EntityFilter sqlMap = new EntityFilter();
 		sqlMap.notTask("serialVersionUID");
 
 		return sqlMap;

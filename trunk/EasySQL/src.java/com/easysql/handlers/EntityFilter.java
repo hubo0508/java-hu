@@ -1,8 +1,8 @@
-package com.easysql;
+package com.easysql.handlers;
 
 import java.util.HashMap;
 
-public class MapHandler extends HashMap<String, Object> {
+public class EntityFilter extends HashMap<String, Object> {
 
 	private static final long serialVersionUID = 1L;
 	
