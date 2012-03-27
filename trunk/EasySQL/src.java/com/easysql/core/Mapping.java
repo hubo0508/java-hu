@@ -82,12 +82,5 @@ public class Mapping {
 		return map.values();
 	}
 
-	public Object notTask(String key) {
-		return map.put(key, false);
-	}
-
-	public Object task(String key) {
-		return map.put(key, true);
-	}
 
 }

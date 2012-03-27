@@ -1,17 +1,17 @@
 package examples.domain;
 
 import com.easysql.core.Entity;
-import com.easysql.core.Mapping;
+import com.easysql.core.object.IfMap;
 
 public class Account extends Entity {
 
 	private static final long serialVersionUID = 7877823162646493241L;
 
 	@Override
-	public Mapping notTake() {
-		Mapping sqlMap = new Mapping();
+	public IfMap notTake() {
+		IfMap sqlMap = new IfMap();
 		sqlMap.notTask("serialVersionUID");
-		
+
 		return sqlMap;
 	}
 

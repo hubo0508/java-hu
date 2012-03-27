@@ -13,6 +13,7 @@ import org.dom4j.io.SAXReader;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
+import com.easysql.core.object.IfMap;
 
 @SuppressWarnings("unchecked")
 public class XmlAnalyze extends ObjectManage {
@@ -56,10 +57,10 @@ public class XmlAnalyze extends ObjectManage {
 			InvocationTargetException {
 		
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
-		Mapping sqlMap = (Mapping) getOldMethod.invoke(instance, new Object[] {});
+		IfMap ifmap = (IfMap) getOldMethod.invoke(instance, new Object[] {});
 
 		String key = clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
-		Mapping.getInstance().put(key, sqlMap);
+		Mapping.getInstance().put(key, ifmap);
 	}
 
 	@SuppressWarnings("unused")

@@ -3,7 +3,7 @@ package examples.domain;
 import java.util.Date;
 
 import com.easysql.core.Entity;
-import com.easysql.core.Mapping;
+import com.easysql.core.object.IfMap;
 
 /**
  * @Description: 设备信息
@@ -26,13 +26,13 @@ public class Device extends Entity {
 	private String activeStr;// 设备状态(未存储数据库)
 
 	@Override
-	public Mapping notTake() {
+	public IfMap notTake() {
 
-		Mapping sqlmap = new Mapping();
-		sqlmap.notTask("serialVersionUID");
-		sqlmap.notTask("activeStr");
+		IfMap sqlMap = new IfMap();
+		sqlMap.notTask("serialVersionUID");
+		sqlMap.notTask("activeStr");
 
-		return sqlmap;
+		return sqlMap;
 	}
 
 	public Long getId() {
