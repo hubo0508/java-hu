@@ -1,8 +1,8 @@
 package examples.test;
 
-import com.easysql.engine.xml.XmlAnalyze;
 import com.easysql.handlers.EntityEngine;
 import com.easysql.handlers.SQLEngine;
+import com.easysql.xml.XmlAnalyze;
 
 import examples.domain.Device;
 
