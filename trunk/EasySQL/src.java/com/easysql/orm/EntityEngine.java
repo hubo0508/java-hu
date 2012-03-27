@@ -18,10 +18,11 @@ public class EntityEngine extends ObjectManage {
 	}
 
 	public String[] getRowField() {
-		
+
 		boolean flag = isExtendsEntity(getClazz());
-		if(!flag){
-			throw new RuntimeException(getClazz().getCanonicalName()+"未继承基类com.easysql.core.Entity");
+		if (!flag) {
+			throw new RuntimeException(getClazz().getCanonicalName()
+					+ "未继承基类com.easysql.core.Entity");
 		}
 
 		Mapping filterConditions = (Mapping) Mapping.getInstance().get(
@@ -81,7 +82,8 @@ public class EntityEngine extends ObjectManage {
 			throw new RuntimeException("clazz对象为NULL");
 		}
 
-		if (clazz.getSuperclass().toString().equals("com.easysql.core.Entity")) {
+		if (clazz.getSuperclass().getCanonicalName().toString().equals(
+				"com.easysql.core.Entity")) {
 			return true;
 		}
 
