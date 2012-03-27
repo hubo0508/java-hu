@@ -26,6 +26,9 @@ public class XmlAnalyze extends ObjectManage {
 		Document doc = createDocument();
 
 		putSinge(doc.selectNodes(EasySQL.GENERATOR), EasySQL.GENERATOR, "class");
+		putSinge(doc.selectNodes(EasySQL.DATABASE), EasySQL.DATABASE, "class");
+		putSinge(doc.selectNodes(EasySQL.GENERATOR_SEQ), EasySQL.GENERATOR_SEQ,
+				"class");
 
 		initEntitys(doc);
 
@@ -96,7 +99,12 @@ public class XmlAnalyze extends ObjectManage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DocumentException {
-		System.out.println(Mapping.getInstance().get(EasySQL.GENERATOR));
-		System.out.println(Mapping.getInstance().get(EasySQL.ENTITY));
+
+		new XmlAnalyze().init();
+		Mapping m = Mapping.getInstance();
+
+		System.out.println(m.get(EasySQL.GENERATOR));
+		System.out.println(m.get(EasySQL.DATABASE));
+		System.out.println(m.get(EasySQL.GENERATOR_SEQUENCE));
 	}
 }
