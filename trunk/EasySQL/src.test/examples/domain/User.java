@@ -3,7 +3,7 @@ package examples.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.easysql.IfMap;
+import com.easysql.MapHandler;
 import com.easysql.core.Entity;
 
 public class User extends Entity {
@@ -18,9 +18,9 @@ public class User extends Entity {
 	private List<Account> listAccount = new ArrayList<Account>();
 
 	@Override
-	public IfMap notTake() {
+	public MapHandler notTake() {
 
-		IfMap sqlMap = new IfMap();
+		MapHandler sqlMap = new MapHandler();
 		sqlMap.notTask("serialVersionUID");
 		sqlMap.notTask("testRow");
 

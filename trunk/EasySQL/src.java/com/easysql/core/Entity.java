@@ -1,6 +1,6 @@
 package com.easysql.core;
 
-import com.easysql.IfMap;
+import com.easysql.MapHandler;
 
 public abstract class Entity extends ObjectManage implements
 		java.io.Serializable {
@@ -9,5 +9,5 @@ public abstract class Entity extends ObjectManage implements
 
 	private static final long serialVersionUID = 1L;
 
-	public abstract IfMap notTake();
+	public abstract MapHandler notTake();
 }
