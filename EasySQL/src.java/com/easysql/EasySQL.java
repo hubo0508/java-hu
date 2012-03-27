@@ -5,14 +5,18 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
-public class StringUtil {
+import com.easysql.core.Entity;
 
-	public static void main(String[] args) {
-		String text = "Account";
+public class EasySQL {
 
-		System.out.println(StringUtil.convertedIntoSegmentation(text));
+	public final static String FIELD_RULE_HUMP = "hump";
+
+	public final static String FIELD_RULE_SEGMENTATION = "segmentation";
+
+	public static String key(Class<?> clazz) {
+		return clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
 	}
-
+	
 	public static String replaceFiled(String[] replaceValue, String text) {
 
 		String returnvalue = text;
