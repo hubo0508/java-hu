@@ -31,9 +31,11 @@ public class EasySQL {
 
 	/** ************************************************************************************************************************************** */
 
+	// native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence 其中一种作为主键生成方式
+	// 
 	public static final String GENERATOR = "easysql-mapping/generator";
-	
-	public static final String GENERATOR_SEQUENCE = "easysql-mapping/generator/sequence";
+
+	public static final String GENERATOR_SEQUENCE = "easysql-mapping/generator/param";
 
 	public static final String ENTITY = "easysql-mapping/entitys/entity";
 

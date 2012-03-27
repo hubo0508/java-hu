@@ -6,7 +6,7 @@
 
 	<!-- 表主键类型 -->
 	<generator class="native">
-		<sequence class="seq" />
+		<param value="SEQ_USER" />
 	</generator>
 
 	<!-- 列名规则 hump segmentation -->
