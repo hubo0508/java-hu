@@ -1,6 +1,9 @@
 package com.easysql.handlers;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.easysql.EasySQL;
+import com.easysql.MapHandler;
 import com.easysql.core.Mapping;
 
 public class SQLHandler {
@@ -10,6 +13,16 @@ public class SQLHandler {
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);
 
+		MapHandler targetMap = (MapHandler) Mapping.getInstance().get(
+				EasySQL.key(ref.getClazz()));
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+
+		String generatorName = (String) targetMap.get(MapHandler.GENERATOR);
+		if (StringUtils.isEmpty(generatorName)) {
+			generatorName = (String) Mapping.getInstance().get(
+					EasySQL.GENERATOR_SEQUENCE);
+		}
+
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("INSERT INTO ");
@@ -17,7 +30,7 @@ public class SQLHandler {
 		sb.append(" (");
 		setInsertKey(fields, sb);
 		sb.append(") VALUES (");
-		setInsertValue(fields, sb);
+		setInsertValue(database, generatorName, fields, sb);
 		sb.append(")");
 
 		return sb.toString();
@@ -34,11 +47,8 @@ public class SQLHandler {
 		}
 	}
 
-	private static void setInsertValue(String[] fields, StringBuffer sb) {
-
-		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
-		String generatorName = (String) Mapping.getInstance().get(
-				EasySQL.GENERATOR_SEQUENCE);
+	private static void setInsertValue(String database, String generatorName,
+			String[] fields, StringBuffer sb) {
 
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
