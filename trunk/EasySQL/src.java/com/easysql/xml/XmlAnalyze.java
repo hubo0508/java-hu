@@ -1,4 +1,4 @@
-package com.easysql.engine.xml;
+package com.easysql.xml;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
