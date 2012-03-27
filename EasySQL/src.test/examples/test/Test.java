@@ -1,4 +1,4 @@
-package examples.service;
+package examples.test;
 
 import com.easysql.engine.sql.SQLEngine;
 import com.easysql.engine.xml.XmlAnalyze;
