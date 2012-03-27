@@ -15,13 +15,13 @@ import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
 
 @SuppressWarnings("unchecked")
-public class NodeEngine extends ObjectManage {
+public class XmlAnalyze extends ObjectManage {
 
 	public void init() {
 		Document doc = createDocument();
 
-		putSinge(doc.selectNodes(NodeNamespace.GENERATOR),
-				NodeNamespace.GENERATOR, "class");
+		putSinge(doc.selectNodes(XmlNamespace.GENERATOR),
+				XmlNamespace.GENERATOR, "class");
 
 		initEntitys(doc);
 
@@ -29,12 +29,12 @@ public class NodeEngine extends ObjectManage {
 	}
 
 	private void initFieldRule(Document doc) {
-		putSinge(doc.selectNodes(NodeNamespace.GENERATOR),
-				NodeNamespace.FIELD_RULE, "class");
+		putSinge(doc.selectNodes(XmlNamespace.FIELD_RULE),
+				XmlNamespace.FIELD_RULE, "class");
 	}
 
 	private void initEntitys(Document doc) {
-		List<Element> list = doc.selectNodes(NodeNamespace.ENTITY);
+		List<Element> list = doc.selectNodes(XmlNamespace.ENTITY);
 		for (Element e : list) {
 			String className = e.attributeValue("class");
 			try {
@@ -86,7 +86,7 @@ public class NodeEngine extends ObjectManage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DocumentException {
-		System.out.println(Mapping.getInstance().get(NodeNamespace.GENERATOR));
-		System.out.println(Mapping.getInstance().get(NodeNamespace.ENTITY));
+		System.out.println(Mapping.getInstance().get(XmlNamespace.GENERATOR));
+		System.out.println(Mapping.getInstance().get(XmlNamespace.ENTITY));
 	}
 }

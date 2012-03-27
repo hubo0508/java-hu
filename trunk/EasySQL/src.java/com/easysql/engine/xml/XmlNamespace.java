@@ -1,6 +1,6 @@
 package com.easysql.engine.xml;
 
-public class NodeNamespace {
+public class XmlNamespace {
 
 	/**
 	 * 
@@ -17,9 +17,9 @@ public class NodeNamespace {
 	 * 与uuid.hex 类似，只是生成的主键未进行编码（长度16）。在某些 数据库中可能出现问题（如PostgreSQL）。 10) foreign
 	 * 使用外部表的字段作为主键。 一般而言，利用uuid.hex方式生成主键将提供最好的性能和数据库平台适 应性。
 	 */
-	public static final String GENERATOR = "easy-mapping/generator";
+	public static final String GENERATOR = "sql-mapping/generator";
 	
-	public static final String ENTITY = "easy-mapping/entitys/entity";
+	public static final String ENTITY = "sql-mapping/entitys/entity";
 	
-	public static final String FIELD_RULE = "easy-mapping/";
+	public static final String FIELD_RULE = "sql-mapping/field-rule";
 }

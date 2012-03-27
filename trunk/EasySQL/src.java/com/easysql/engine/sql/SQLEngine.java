@@ -3,6 +3,9 @@ package com.easysql.engine.sql;
 public class SQLEngine {
 
 	public static String getInsertSQL(String[] fields) {
+		
+		fields = NameEngine.changeFileds(fields);
+		
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("INSERT INTO ");
