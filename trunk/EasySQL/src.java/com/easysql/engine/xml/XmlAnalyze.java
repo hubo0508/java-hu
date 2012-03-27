@@ -10,6 +10,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.easysql.Const;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
@@ -55,12 +56,14 @@ public class XmlAnalyze extends ObjectManage {
 			throws SecurityException, NoSuchMethodException,
 			IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
-		
+
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
 		IfMap ifmap = (IfMap) getOldMethod.invoke(instance, new Object[] {});
+		if (ifmap.isEmpty()) {
+			ifmap = new IfMap();
+		}
 
-		String key = clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
-		Mapping.getInstance().put(key, ifmap);
+		Mapping.getInstance().put(Const.key(clazz), ifmap);
 	}
 
 	@SuppressWarnings("unused")
