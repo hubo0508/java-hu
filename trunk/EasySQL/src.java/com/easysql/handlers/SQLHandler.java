@@ -1,5 +1,7 @@
 package com.easysql.handlers;
 
+import com.easysql.EasySQL;
+import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
@@ -7,6 +9,8 @@ public class SQLHandler {
 
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);
+
+		String mapping = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		StringBuffer sb = new StringBuffer();
 

@@ -28,7 +28,7 @@ public class XmlAnalyze extends ObjectManage {
 		putSinge(doc.selectNodes(EasySQL.GENERATOR), EasySQL.GENERATOR, "class");
 		putSinge(doc.selectNodes(EasySQL.DATABASE), EasySQL.DATABASE, "class");
 		putSinge(doc.selectNodes(EasySQL.GENERATOR_SEQUENCE),
-				EasySQL.GENERATOR_SEQUENCE, "class");
+				EasySQL.GENERATOR_SEQUENCE, "value");
 
 		initEntitys(doc);
 
