@@ -2,12 +2,16 @@ package examples.domain;
 
 import java.util.Date;
 
+import com.easysql.core.Entity;
+import com.easysql.core.Mapping;
 
 /**
  * @Description: 设备信息
  * @author HUBO
  */
-public class Device {
+public class Device extends Entity {
+
+	private static final long serialVersionUID = 408814904393580895L;
 
 	private Long id;
 	private String factoryCode;// 厂家编号
@@ -19,47 +23,16 @@ public class Device {
 	private Integer active = 1;// 设备状态
 	private Date activeDate;// 激活操作时间
 
-	// private Date lastDate;//最后操作时间
-
 	private String activeStr;// 设备状态(未存储数据库)
 
-	public Device(String factoryCode, String deviceCode) {
-		super();
-		this.factoryCode = factoryCode;
-		this.deviceCode = deviceCode;
-	}
+	@Override
+	public Mapping notTake() {
 
-	public Device() {
-		super();
-	}
+		Mapping sqlmap = new Mapping();
+		sqlmap.notTask("serialVersionUID");
+		sqlmap.notTask("activeStr");
 
-	public Device(Long id, String factoryCode, String deviceCode,
-			String infoTypeId, String content, String storagePerson,
-			Date storageDate, Integer active, Date activeDate, String activeStr) {
-		super();
-		this.id = id;
-		this.factoryCode = factoryCode;
-		this.deviceCode = deviceCode;
-		this.infoTypeId = infoTypeId;
-		this.content = content;
-		this.storagePerson = storagePerson;
-		this.storageDate = storageDate;
-		this.active = active;
-		this.activeDate = activeDate;
-		this.activeStr = activeStr;
-	}
-
-	public Device(String factoryCode, String deviceCode, String infoTypeId,
-			String content, String storagePerson, Date storageDate,
-			Integer active) {
-		super();
-		this.factoryCode = factoryCode;
-		this.deviceCode = deviceCode;
-		this.infoTypeId = infoTypeId;
-		this.content = content;
-		this.storagePerson = storagePerson;
-		this.storageDate = storageDate;
-		this.active = active;
+		return sqlmap;
 	}
 
 	public Long getId() {
