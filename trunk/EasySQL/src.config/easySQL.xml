@@ -5,7 +5,7 @@
 	<database class="oracle" />
 
 	<!-- 表主键类型 native assigned identity sequence-->
-	<generator class="native">
+	<generator class="sequence">
 		<param value="SEQ_USER" />
 	</generator>
 

@@ -41,8 +41,8 @@ public class SQLHandler {
 				EasySQL.GENERATOR_SEQUENCE);
 
 		int len = fields.length;
-		for (int i = 0; i < len; i++) {
-			if (i == 0 && getGenerationOfPrimaryKey()) {
+		for (int i = 1; i < len; i++) {
+			if (i == 1 && getGenerationOfPrimaryKey()) {
 				if ("oracle".equals(database)) {
 					sb.append(generatorName);
 					sb.append(".NEXTVAL");
