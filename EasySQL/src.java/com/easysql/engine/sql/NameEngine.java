@@ -20,7 +20,7 @@ public class NameEngine {
 		}
 
 		if (Const.FIELD_RULE_SEGMENTATION.equals(fieldRule)) {
-			for (int i = 1; i < elements.length; i++) {
+			for (int i = 0; i < elements.length; i++) {
 				elements[i] = StringUtil.convertedIntoSegmentation(elements[i]);
 			}
 			return elements;
