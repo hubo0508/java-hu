@@ -4,7 +4,7 @@ public class SQLEngine {
 
 	public static String getInsertSQL(String[] fields) {
 		
-		fields = NameEngine.changeFileds(fields);
+		fields = SQLAdaptation.changeFileds(fields);
 		
 		StringBuffer sb = new StringBuffer();
 
