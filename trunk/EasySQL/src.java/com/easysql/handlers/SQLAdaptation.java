@@ -1,8 +1,7 @@
 package com.easysql.handlers;
 
-import com.easysql.Const;
+import com.easysql.EasySQL;
 import com.easysql.IfMap;
-import com.easysql.StringUtil;
 import com.easysql.core.Mapping;
 import com.easysql.engine.xml.XmlNamespace;
 
@@ -12,20 +11,20 @@ public class SQLAdaptation {
 
 		String fieldRule = (String) Mapping.getInstance().get(
 				XmlNamespace.FIELD_RULE);
-		IfMap targetMap = (IfMap) Mapping.getInstance().get(Const.key(clazz));
+		IfMap targetMap = (IfMap) Mapping.getInstance().get(EasySQL.key(clazz));
 		String[] replaceValue = (String[]) targetMap.get(IfMap.REPLACE);
 
-		if (Const.FIELD_RULE_HUMP.equals(fieldRule)) {
+		if (EasySQL.FIELD_RULE_HUMP.equals(fieldRule)) {
 			return elements;
 		}
 
 		for (int i = 0; i < elements.length; i++) {
 			String rowFiled = elements[i];
 			if (replaceValue != null) {
-				rowFiled = StringUtil.replaceFiled(replaceValue, rowFiled);
+				rowFiled = EasySQL.replaceFiled(replaceValue, rowFiled);
 			}
-			if (Const.FIELD_RULE_SEGMENTATION.equals(fieldRule)) {
-				rowFiled = StringUtil.convertedIntoSegmentation(rowFiled);
+			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(fieldRule)) {
+				rowFiled = EasySQL.convertedIntoSegmentation(rowFiled);
 			}
 			elements[i] = rowFiled;
 		}

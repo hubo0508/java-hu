@@ -10,7 +10,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.easysql.Const;
+import com.easysql.EasySQL;
 import com.easysql.IfMap;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
@@ -63,7 +63,7 @@ public class XmlAnalyze extends ObjectManage {
 			ifmap = new IfMap();
 		}
 
-		Mapping.getInstance().put(Const.key(clazz), ifmap);
+		Mapping.getInstance().put(EasySQL.key(clazz), ifmap);
 	}
 
 	@SuppressWarnings("unused")
