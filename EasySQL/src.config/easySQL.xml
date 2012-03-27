@@ -5,7 +5,7 @@
 	<database class="mysql" />
 
 	<!-- 表主键类型 native assigned identity sequence-->
-	<generator class="native">
+	<generator class="assigned">
 		<param value="SEQ_USER" />
 	</generator>
 
