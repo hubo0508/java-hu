@@ -2,8 +2,8 @@ package examples.domain;
 
 import java.util.Date;
 
+import com.easysql.IfMap;
 import com.easysql.core.Entity;
-import com.easysql.core.object.IfMap;
 
 /**
  * @Description: 设备信息
@@ -35,7 +35,8 @@ public class Device extends Entity {
 		ifmap.notTask("activeStr");
 
 		// 当前字段与数据库字段不一样，需替换
-		ifmap.put(IfMap.REPLACE, new String[] { "factoryCode:xxx" });
+		ifmap.put(IfMap.REPLACE,
+				new String[] { "factoryCode:factoryCodeReplace" });
 
 		return ifmap;
 	}

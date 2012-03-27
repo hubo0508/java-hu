@@ -1,8 +1,8 @@
 package examples.test;
 
-import com.easysql.engine.sql.SQLEngine;
 import com.easysql.engine.xml.XmlAnalyze;
-import com.easysql.orm.EntityEngine;
+import com.easysql.handlers.EntityEngine;
+import com.easysql.handlers.SQLEngine;
 
 import examples.domain.Device;
 
@@ -12,9 +12,7 @@ public class Test {
 
 		new XmlAnalyze().init();		
 
-		EntityEngine ref = new EntityEngine(Device.class);
-
-		String sql = SQLEngine.getInsertSQL(ref.getRowField());
+		String sql = SQLEngine.getInsertSQL(new EntityEngine(Device.class));
 
 		System.out.println(sql);
 

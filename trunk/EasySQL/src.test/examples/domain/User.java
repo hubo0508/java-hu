@@ -3,8 +3,8 @@ package examples.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.easysql.IfMap;
 import com.easysql.core.Entity;
-import com.easysql.core.object.IfMap;
 
 public class User extends Entity {
 
