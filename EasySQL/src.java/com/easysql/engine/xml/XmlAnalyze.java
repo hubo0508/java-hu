@@ -22,8 +22,7 @@ public class XmlAnalyze extends ObjectManage {
 	public void init() {
 		Document doc = createDocument();
 
-		putSinge(doc.selectNodes(XmlNamespace.GENERATOR),
-				XmlNamespace.GENERATOR, "class");
+		putSinge(doc.selectNodes(EasySQL.GENERATOR), EasySQL.GENERATOR, "class");
 
 		initEntitys(doc);
 
@@ -31,12 +30,12 @@ public class XmlAnalyze extends ObjectManage {
 	}
 
 	private void initFieldRule(Document doc) {
-		putSinge(doc.selectNodes(XmlNamespace.FIELD_RULE),
-				XmlNamespace.FIELD_RULE, "class");
+		putSinge(doc.selectNodes(EasySQL.FIELD_RULE), EasySQL.FIELD_RULE,
+				"class");
 	}
 
 	private void initEntitys(Document doc) {
-		List<Element> list = doc.selectNodes(XmlNamespace.ENTITY);
+		List<Element> list = doc.selectNodes(EasySQL.ENTITY);
 		for (Element e : list) {
 			String className = e.attributeValue("class");
 			try {
@@ -90,7 +89,7 @@ public class XmlAnalyze extends ObjectManage {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws DocumentException {
-		System.out.println(Mapping.getInstance().get(XmlNamespace.GENERATOR));
-		System.out.println(Mapping.getInstance().get(XmlNamespace.ENTITY));
+		System.out.println(Mapping.getInstance().get(EasySQL.GENERATOR));
+		System.out.println(Mapping.getInstance().get(EasySQL.ENTITY));
 	}
 }

@@ -3,14 +3,13 @@ package com.easysql.handlers;
 import com.easysql.EasySQL;
 import com.easysql.IfMap;
 import com.easysql.core.Mapping;
-import com.easysql.engine.xml.XmlNamespace;
 
 public class SQLAdaptation {
 
 	public static String[] changeFileds(Class<?> clazz, String[] elements) {
 
 		String fieldRule = (String) Mapping.getInstance().get(
-				XmlNamespace.FIELD_RULE);
+				EasySQL.FIELD_RULE);
 		IfMap targetMap = (IfMap) Mapping.getInstance().get(EasySQL.key(clazz));
 		String[] replaceValue = (String[]) targetMap.get(IfMap.REPLACE);
 
