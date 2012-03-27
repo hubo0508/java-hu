@@ -1,13 +1,10 @@
 package examples.service;
 
-import com.easysql.core.Mapping;
 import com.easysql.engine.sql.SQLEngine;
 import com.easysql.engine.xml.XmlAnalyze;
-import com.easysql.engine.xml.XmlNamespace;
 import com.easysql.orm.EntityEngine;
 
-import examples.domain.Account;
-import examples.domain.User;
+import examples.domain.Device;
 
 public class Test {
 	public static void main(String[] args) throws InstantiationException,
@@ -15,7 +12,7 @@ public class Test {
 
 		new XmlAnalyze().init();		
 
-		EntityEngine ref = new EntityEngine(Account.class);
+		EntityEngine ref = new EntityEngine(Device.class);
 
 		String sql = SQLEngine.getInsertSQL(ref.getRowField());
 
