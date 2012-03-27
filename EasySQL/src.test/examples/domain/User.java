@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.easysql.core.Entity;
 import com.easysql.core.Mapping;
+import com.easysql.core.object.IfMap;
 
 public class User extends Entity {
 
@@ -18,13 +19,13 @@ public class User extends Entity {
 	private List<Account> listAccount = new ArrayList<Account>();
 
 	@Override
-	public Mapping notTake() {
+	public IfMap notTake() {
 
-		Mapping map = new Mapping();
-		map.notTask("serialVersionUID");
-		map.notTask("testRow");
+		IfMap sqlMap = new IfMap();
+		sqlMap.notTask("serialVersionUID");
+		sqlMap.notTask("testRow");
 
-		return map;
+		return sqlMap;
 	}
 
 	public List<Account> getListAccount() {

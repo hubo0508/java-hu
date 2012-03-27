@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import com.easysql.core.Entity;
 import com.easysql.core.ObjectManage;
 import com.easysql.core.Mapping;
+import com.easysql.core.object.IfMap;
 
 public class EntityEngine extends ObjectManage {
 
@@ -19,13 +20,14 @@ public class EntityEngine extends ObjectManage {
 
 	public String[] getRowField() {
 
-		boolean flag = isExtendsEntity(getClazz());
-		if (!flag) {
+		// 判断实例类是否继承com.easysql.core.Entity
+		if (!isExtendsEntity(getClazz())) {
 			throw new RuntimeException(getClazz().getCanonicalName()
 					+ "未继承基类com.easysql.core.Entity");
 		}
 
-		Mapping filterConditions = (Mapping) Mapping.getInstance().get(
+		// 取得过滤条件
+		IfMap ifmap = (IfMap) Mapping.getInstance().get(
 				super.getCanonicalName() + "." + Entity.NOT_TAKE);
 
 		Field[] fields = getClazz().getDeclaredFields();
@@ -42,10 +44,10 @@ public class EntityEngine extends ObjectManage {
 				continue;
 			}
 			String value = null;
-			if (filterConditions == null) {
+			if (ifmap == null) {
 				value = field.getName();
 			} else {
-				Object obj = filterConditions.get(field.getName());
+				Object obj = ifmap.get(field.getName());
 				if (obj == null || (Boolean) obj) {
 					value = field.getName();
 				}
