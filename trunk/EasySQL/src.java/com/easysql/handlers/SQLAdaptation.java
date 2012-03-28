@@ -5,7 +5,7 @@ import com.easysql.core.Mapping;
 
 public class SQLAdaptation {
 
-	public static String[] changeFileds(Class<?> clazz, String[] elements) {
+	public static String[] convertedFileds(Class<?> clazz, String[] elements) {
 
 		String fieldRule = (String) Mapping.getInstance().get(
 				EasySQL.FIELD_RULE);
