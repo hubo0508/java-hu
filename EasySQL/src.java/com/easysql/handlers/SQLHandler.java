@@ -7,6 +7,30 @@ import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
+	// DELETE FROM 表名称 WHERE 列名称 = 值
+	public static String deleteSQL(EntityHandler ref) {
+
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(ref.getClazz()));
+		String idkey = (String) targetMap.get(EntityFilter.ID);
+
+		String tablename = SQLAdaptation.convertedSingleField(ref.getClazz(),
+				ref.getClazz().getSimpleName());
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("DELETE FROM ");
+		sb.append(tablename);
+		sb.append(" WHERE ");
+		sb.append(idkey);
+		sb.append("=?");
+
+		return sb.toString();
+	}
+
+	public static String deleteSQL(EntityHandler ref, String where) {
+		return null;
+	}
+
 	public static String updateSQL(EntityHandler ref, String where,
 			String[] filed) {
 
