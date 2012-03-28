@@ -7,7 +7,7 @@ import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
-	public static String getUpdateSQL(EntityHandler ref, String where,
+	public static String updateSQL(EntityHandler ref, String where,
 			String[] filed) {
 
 		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), filed);
@@ -30,7 +30,7 @@ public class SQLHandler {
 	}
 
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-	public static String getUpdateSQL(EntityHandler ref, String where) {
+	public static String updateSQL(EntityHandler ref, String where) {
 
 		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
 				.getRowField());
@@ -69,7 +69,7 @@ public class SQLHandler {
 		}
 	}
 
-	public static String getInsertSQL(EntityHandler ref) {
+	public static String insertSQL(EntityHandler ref) {
 
 		String[] fields = ref.getRowField();
 		fields = SQLAdaptation.convertedFileds(ref.getClazz(), fields);

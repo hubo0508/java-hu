@@ -6,7 +6,6 @@ import com.easysql.handlers.SQLHandler;
 import examples.BaseTest;
 import examples.domain.Account;
 import examples.domain.Device;
-import examples.domain.User;
 
 public class Test extends BaseTest {
 
@@ -23,21 +22,21 @@ public class Test extends BaseTest {
 	}
 
 	public void updateSQL() {
-		String sql = SQLHandler.getUpdateSQL(new EntityHandler(Device.class),
+		String sql = SQLHandler.updateSQL(new EntityHandler(Device.class),
 				"id=?");
 
 		System.out.println(sql);
 
 		String[] ifmap = new String[] { "accountName", "accountPass" };
 
-		sql = SQLHandler.getUpdateSQL(new EntityHandler(Account.class), "id=?",
+		sql = SQLHandler.updateSQL(new EntityHandler(Account.class), "id=?",
 				ifmap);
 
 		System.out.println(sql);
 	}
 
 	public void insertSQL() {
-		String sql = SQLHandler.getInsertSQL(new EntityHandler(Device.class));
+		String sql = SQLHandler.insertSQL(new EntityHandler(Device.class));
 
 		System.out.println(sql);
 
