@@ -15,7 +15,10 @@ public class Test extends BaseTest {
 			IllegalAccessException {
 
 		Test test = new Test();
+		System.out.println("***************updateSQL***************");
 		test.updateSQL();
+		System.out.println("***************insertSQL***************");
+		test.insertSQL();
 
 	}
 

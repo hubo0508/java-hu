@@ -14,33 +14,35 @@ public class SQLHandler {
 				.getRowField());
 
 		// 取得當前實體鍋爐條件
-		// EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-		// EasySQL.key(ref.getClazz()));
-		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(ref.getClazz()));
+		String idkey = (String) targetMap.get(EntityFilter.ID);
 
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("UPDATE ");
 		sb.append(fields[0]);
 		sb.append(" SET ");
-		setUpdateKey(database, fields, sb);
+		setUpdateKey(idkey, fields, sb);
 		sb.append("WHERE ");
 		sb.append(where);
 
 		return sb.toString();
 	}
 
-	private static void setUpdateKey(String database, String[] fields,
+	private static void setUpdateKey(String idkey, String[] fields,
 			StringBuffer sb) {
 
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
 			String field = fields[i];
-			sb.append(field);
-			if (i < len - 1) {
-				sb.append("=?, ");
-			} else {
-				sb.append("=? ");
+			if (!idkey.equals(field)) {
+				sb.append(field);
+				if (i < len - 1) {
+					sb.append("=?, ");
+				} else {
+					sb.append("=? ");
+				}
 			}
 		}
 	}

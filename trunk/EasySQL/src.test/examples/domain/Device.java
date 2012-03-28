@@ -31,7 +31,6 @@ public class Device extends Entity {
 		EntityFilter ifmap = new EntityFilter();
 
 		// 不作表字段
-		ifmap.notTask("serialVersionUID");
 		ifmap.notTask("activeStr");
 		ifmap.notTask("infoTypeId");
 		ifmap.notTask("active");
