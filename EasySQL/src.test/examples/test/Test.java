@@ -28,26 +28,16 @@ public class Test extends BaseTest {
 
 		System.out.println(sql);
 
-		sql = SQLHandler.getUpdateSQL(new EntityHandler(User.class), "id=?");
+		String[] ifmap = new String[] { "accountName", "accountPass" };
+
+		sql = SQLHandler.getUpdateSQL(new EntityHandler(Account.class), "id=?",
+				ifmap);
 
 		System.out.println(sql);
-
-		sql = SQLHandler.getUpdateSQL(new EntityHandler(Account.class), "id=?");
-
-		System.out.println(sql);
-
 	}
 
 	public void insertSQL() {
 		String sql = SQLHandler.getInsertSQL(new EntityHandler(Device.class));
-
-		System.out.println(sql);
-
-		sql = SQLHandler.getInsertSQL(new EntityHandler(User.class));
-
-		System.out.println(sql);
-
-		sql = SQLHandler.getInsertSQL(new EntityHandler(Account.class));
 
 		System.out.println(sql);
 
