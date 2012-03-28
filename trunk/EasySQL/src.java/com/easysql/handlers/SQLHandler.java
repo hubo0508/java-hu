@@ -34,23 +34,6 @@ public class SQLHandler {
 		return generateUpdateSQL(fields, idkey, where).toString();
 	}
 
-	private static void setUpdateKey(String idkey, String[] fields,
-			StringBuffer sb) {
-
-		int len = fields.length;
-		for (int i = 0; i < len; i++) {
-			String field = fields[i];
-			if (!idkey.equals(field)) {
-				sb.append(field);
-				if (i < len - 1) {
-					sb.append("=?, ");
-				} else {
-					sb.append("=? ");
-				}
-			}
-		}
-	}
-
 	public static String insertSQL(EntityHandler ref) {
 
 		String[] fields = ref.getRowField();
@@ -80,6 +63,23 @@ public class SQLHandler {
 		sb.append(")");
 
 		return sb.toString();
+	}
+
+	private static void setUpdateKey(String idkey, String[] fields,
+			StringBuffer sb) {
+
+		int len = fields.length;
+		for (int i = 0; i < len; i++) {
+			String field = fields[i];
+			if (!idkey.equals(field)) {
+				sb.append(field);
+				if (i < len - 1) {
+					sb.append("=?, ");
+				} else {
+					sb.append("=? ");
+				}
+			}
+		}
 	}
 
 	private static void setInsertKey(String database, String[] fields,
