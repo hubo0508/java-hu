@@ -7,6 +7,28 @@ import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
+	public static String getUpdateSQL(EntityHandler ref, String where,
+			String[] filed) {
+
+		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), filed);
+
+		// 取得當前實體鍋爐條件
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(ref.getClazz()));
+		String idkey = (String) targetMap.get(EntityFilter.ID);
+
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("UPDATE ");
+		sb.append(fields[0]);
+		sb.append(" SET ");
+		setUpdateKey(idkey, fields, sb);
+		sb.append("WHERE ");
+		sb.append(where);
+
+		return sb.toString();
+	}
+
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 	public static String getUpdateSQL(EntityHandler ref, String where) {
 
@@ -34,7 +56,7 @@ public class SQLHandler {
 			StringBuffer sb) {
 
 		int len = fields.length;
-		for (int i = 1; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			String field = fields[i];
 			if (!idkey.equals(field)) {
 				sb.append(field);
