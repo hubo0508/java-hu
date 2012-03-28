@@ -33,6 +33,9 @@ public class Device extends Entity {
 		// 不作表字段
 		ifmap.notTask("serialVersionUID");
 		ifmap.notTask("activeStr");
+		ifmap.notTask("infoTypeId");
+		ifmap.notTask("active");
+		ifmap.notTask("deviceCode");
 
 		// 当前字段与数据库字段不一样，需替换
 		ifmap.put(EntityFilter.REPLACE,

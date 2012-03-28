@@ -7,10 +7,48 @@ import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
+	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+	public static String getUpdateSQL(EntityHandler ref, String where) {
+
+		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
+				.getRowField());
+
+		// 取得當前實體鍋爐條件
+		// EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+		// EasySQL.key(ref.getClazz()));
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("UPDATE ");
+		sb.append(fields[0]);
+		sb.append(" SET ");
+		setUpdateKey(database, fields, sb);
+		sb.append("WHERE ");
+		sb.append(where);
+
+		return sb.toString();
+	}
+
+	private static void setUpdateKey(String database, String[] fields,
+			StringBuffer sb) {
+
+		int len = fields.length;
+		for (int i = 1; i < len; i++) {
+			String field = fields[i];
+			sb.append(field);
+			if (i < len - 1) {
+				sb.append("=?, ");
+			} else {
+				sb.append("=? ");
+			}
+		}
+	}
+
 	public static String getInsertSQL(EntityHandler ref) {
 
 		String[] fields = ref.getRowField();
-		fields = SQLAdaptation.changeFileds(ref.getClazz(), fields);
+		fields = SQLAdaptation.convertedFileds(ref.getClazz(), fields);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(

@@ -10,12 +10,28 @@ import examples.domain.User;
 
 public class Test extends BaseTest {
 
-	//UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 	public static void main(String[] args) throws InstantiationException,
 			IllegalAccessException {
 
 		Test test = new Test();
-		test.insertSQL();
+		test.updateSQL();
+
+	}
+
+	public void updateSQL() {
+		String sql = SQLHandler.getUpdateSQL(new EntityHandler(Device.class),
+				"id=?");
+
+		System.out.println(sql);
+
+		sql = SQLHandler.getUpdateSQL(new EntityHandler(User.class), "id=?");
+
+		System.out.println(sql);
+
+		sql = SQLHandler.getUpdateSQL(new EntityHandler(Account.class), "id=?");
+
+		System.out.println(sql);
 
 	}
 
