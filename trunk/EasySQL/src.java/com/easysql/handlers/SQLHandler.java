@@ -17,16 +17,7 @@ public class SQLHandler {
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("UPDATE ");
-		sb.append(fields[0]);
-		sb.append(" SET ");
-		setUpdateKey(idkey, fields, sb);
-		sb.append("WHERE ");
-		sb.append(where);
-
-		return sb.toString();
+		return generateUpdateSQL(fields, idkey, where).toString();
 	}
 
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
@@ -40,16 +31,7 @@ public class SQLHandler {
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("UPDATE ");
-		sb.append(fields[0]);
-		sb.append(" SET ");
-		setUpdateKey(idkey, fields, sb);
-		sb.append("WHERE ");
-		sb.append(where);
-
-		return sb.toString();
+		return generateUpdateSQL(fields, idkey, where).toString();
 	}
 
 	private static void setUpdateKey(String idkey, String[] fields,
@@ -164,5 +146,21 @@ public class SQLHandler {
 		}
 
 		return false;
+	}
+
+	/** ******************************************************************************************** */
+
+	private static StringBuffer generateUpdateSQL(String[] fields,
+			String idkey, String where) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("UPDATE ");
+		sb.append(fields[0]);
+		sb.append(" SET ");
+		setUpdateKey(idkey, fields, sb);
+		sb.append("WHERE ");
+		sb.append(where);
+
+		return sb;
 	}
 }
