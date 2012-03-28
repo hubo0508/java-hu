@@ -10,6 +10,7 @@ import examples.domain.User;
 
 public class Test extends BaseTest {
 
+	//UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 	public static void main(String[] args) throws InstantiationException,
 			IllegalAccessException {
 
