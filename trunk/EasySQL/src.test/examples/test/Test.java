@@ -14,16 +14,19 @@ public class Test extends BaseTest {
 			IllegalAccessException {
 
 		Test test = new Test();
-		System.out.println("***************updateSQL***************");
-		test.updateSQL();
-		System.out.println("***************insertSQL***************");
-		test.insertSQL();
+//		System.out.println("***************updateSQL***************");
+//		test.updateSQL();
+//		System.out.println("***************insertSQL***************");
+//		test.insertSQL();
 		System.out.println("***************deleteSQL***************");
 		test.deleteSQL();
 	}
 
 	public void deleteSQL() {
 		String sql = SQLHandler.deleteSQL(new EntityHandler(Device.class));
+		System.out.println(sql);
+		
+		sql = SQLHandler.deleteSQL(new EntityHandler(Device.class),"id=1");
 		System.out.println(sql);
 	}
 
