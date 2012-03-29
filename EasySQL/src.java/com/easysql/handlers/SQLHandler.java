@@ -28,7 +28,17 @@ public class SQLHandler {
 	}
 
 	public static String deleteSQL(EntityHandler ref, String where) {
-		return null;
+
+		String tablename = SQLAdaptation.convertedSingleField(ref.getClazz(),
+				ref.getClazz().getSimpleName());
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("DELETE FROM ");
+		sb.append(tablename);
+		sb.append(" WHERE ");
+		sb.append(where);
+
+		return sb.toString();
 	}
 
 	public static String updateSQL(EntityHandler ref, String[] filed) {
