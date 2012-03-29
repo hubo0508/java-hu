@@ -16,6 +16,7 @@ public class UserServiceTest extends BaseTest {
 	}
 	
 	public void save(){
+		
 		User u = new User();
 		u.setUsername("hubo-test");
 		u.setPassword("hubo-password");
