@@ -1,4 +1,4 @@
-package examples.domain;
+package examples.dhome.domain;
 
 import java.util.Date;
 
