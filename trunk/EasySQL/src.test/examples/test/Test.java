@@ -4,8 +4,8 @@ import com.easysql.handlers.EntityHandler;
 import com.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
-import examples.domain.Account;
-import examples.domain.Device;
+import examples.dhome.domain.Device;
+import examples.dhome.domain.User;
 
 public class Test extends BaseTest {
 
@@ -49,7 +49,7 @@ public class Test extends BaseTest {
 
 		String[] ifmap = new String[] { "accountName", "accountPass" };
 
-		sql = SQLHandler.updateSQL(new EntityHandler(Account.class), ifmap);
+		sql = SQLHandler.updateSQL(new EntityHandler(User.class), ifmap);
 
 		System.out.println(sql);
 	}

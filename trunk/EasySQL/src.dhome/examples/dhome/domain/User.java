@@ -1,4 +1,4 @@
-package examples.domain;
+package examples.dhome.domain;
 
 import com.easysql.core.Entity;
 import com.easysql.handlers.EntityFilter;
