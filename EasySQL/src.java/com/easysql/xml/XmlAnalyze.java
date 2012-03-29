@@ -68,7 +68,7 @@ public class XmlAnalyze extends ObjectManage {
 		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
 		EntityFilter ifmap = (EntityFilter) getOldMethod.invoke(instance,
 				new Object[] {});
-		if (ifmap.isEmpty()) {
+		if (ifmap == null) {
 			ifmap = new EntityFilter();
 		}
 

@@ -27,35 +27,35 @@ public class Test extends BaseTest {
 		
 		String sql = "select * from Device";
 		
-		sql = SQLHandler.selectSQL(new EntityHandler(Device.class),sql);
+		sql = SQLHandler.getSelectSQL(new EntityHandler(Device.class),sql);
 
 		System.out.println(sql);
 	}
 
 	public void deleteSQL() {
-		String sql = SQLHandler.deleteSQL(new EntityHandler(Device.class));
+		String sql = SQLHandler.getDeleteSQL(new EntityHandler(Device.class));
 		System.out.println(sql);
 
-		sql = SQLHandler.deleteSQL(new EntityHandler(Device.class),
+		sql = SQLHandler.getDeleteSQL(new EntityHandler(Device.class),
 				"factoryCode=? AND deviceCode=?");
 		System.out.println(sql);
 	}
 
 	public void updateSQL() {
-		String sql = SQLHandler.updateSQL(new EntityHandler(Device.class),
+		String sql = SQLHandler.getUpdateSQL(new EntityHandler(Device.class),
 				"id=?");
 
 		System.out.println(sql);
 
 		String[] ifmap = new String[] { "accountName", "accountPass" };
 
-		sql = SQLHandler.updateSQL(new EntityHandler(User.class), ifmap);
+		sql = SQLHandler.getUpdateSQL(new EntityHandler(User.class), ifmap);
 
 		System.out.println(sql);
 	}
 
 	public void insertSQL() {
-		String sql = SQLHandler.insertSQL(new EntityHandler(Device.class));
+		String sql = SQLHandler.getInsertSQL(new EntityHandler(Device.class));
 
 		System.out.println(sql);
 

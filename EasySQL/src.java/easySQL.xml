@@ -14,9 +14,7 @@
 
 	<!-- 实体类 -->
 	<entitys>
-		<entity class="examples.domain.User" />
-		<entity class="examples.domain.Account" />
-		<entity class="examples.domain.Device" />
+		<entity class="examples.dhome.domain.User" />
 	</entitys>
 
 </easysql-mapping>
