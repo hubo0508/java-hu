@@ -36,7 +36,7 @@ public class SQLHandler {
 		sb.append("DELETE FROM ");
 		sb.append(tablename);
 		sb.append(" WHERE ");
-		sb.append(where);
+		sb.append(SQLAdaptation.convertedWhere(ref, where));
 
 		return sb.toString();
 	}
@@ -90,7 +90,8 @@ public class SQLHandler {
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		return generateUpdateSQL(fields, idkey, where).toString();
+		return generateUpdateSQL(fields, idkey,
+				SQLAdaptation.convertedWhere(ref, where)).toString();
 	}
 
 	public static String insertSQL(EntityHandler ref) {
