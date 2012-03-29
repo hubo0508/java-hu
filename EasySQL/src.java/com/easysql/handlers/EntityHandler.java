@@ -12,9 +12,10 @@ public class EntityHandler extends ObjectManage {
 		super();
 	}
 
+	@SuppressWarnings("unchecked")
 	public EntityHandler(Class<?> clazz) {
 		super.setCanonicalName(clazz.getCanonicalName());
-		super.setClazz(clazz);
+		super.setClazz((Class<Entity>) clazz);
 	}
 
 	public String[] getFields() {
