@@ -26,52 +26,52 @@ public class DBPool {
 	protected static Object initLock = new Object();
 
 	/**
-	 * l�ӽӿ�
+	 * 连接接口
 	 */
 	private Connection con = null;
 
 	/**
-	 * ʹ�õ�l����
+	 * 使用的连接数
 	 */
 	private int inUsed = 0;
 
 	/**
-	 * �������l��
+	 * 容器，空闲连接
 	 */
 	private ArrayList<Connection> freeConnections = new ArrayList<Connection>();
 
 	/**
-	 * ���l��
+	 * 最大连接
 	 */
 	private int maxConn;
 
 	/**
-	 * l�ӳ�����
+	 * 连接池名字
 	 */
 	private String poolName;
 
 	/**
-	 * ����
+	 * 密码
 	 */
 	private String password;
 
 	/**
-	 * ��ݿ�l�ӵ�ַ
+	 * 数据库连接地址
 	 */
 	private String url;
 
 	/**
-	 * ��
+	 * 驱动
 	 */
 	private String driver;
 
 	/**
-	 * �û���
+	 * 用户名
 	 */
 	private String user;
 
 	/**
-	 * ��ʱ
+	 * 定时
 	 */
 	public Timer timer;
 
@@ -89,7 +89,7 @@ public class DBPool {
 	}
 
 	/**
-	 * ���꣬�ͷ�l��
+	 * 用完，释放连接
 	 */
 	public synchronized void freeConnection(Connection con) {
 
@@ -97,11 +97,11 @@ public class DBPool {
 
 			if (!con.isClosed() && maxConn >= inUsed
 					&& maxConn >= freeConnections.size()) {
-				freeConnections.add(con);// ��ӵ�����l�ӵ�ĩβ
+				freeConnections.add(con);// 添加到空闲连接的末尾
 				inUsed = inUsed-- <= 0 ? 0 : inUsed--;
-				writeLog("�ͷ�");
+				writeLog("释放");
 			} else {
-				log.debug("�ر�l��" + poolName);
+				log.debug("关闭连接"+poolName);
 				inUsed = inUsed-- <= 0 ? 0 : inUsed--;
 				con.close();
 			}
@@ -110,10 +110,10 @@ public class DBPool {
 			log.error(e.getMessage(), e);
 		}
 	}
-
+	
 	/**
 	 * 
-	 * ��l�ӳ���õ�l��
+	 * 从连接池里得到连接
 	 * 
 	 * @return
 	 */
@@ -125,7 +125,7 @@ public class DBPool {
 		if (this.freeConnections.size() > 0 && inUsed <= maxConn) {
 
 			con = (Connection) this.freeConnections.get(0);
-			this.freeConnections.remove(0);// ���l�ӷ����ȥ�ˣ��ʹӿ���l����ɾ��
+			this.freeConnections.remove(0);// 如果连接分配出去了，就从空闲连接里删除
 
 			if (con == null && count < freeConnections.size()) {
 				con = getConnection();
@@ -138,14 +138,14 @@ public class DBPool {
 
 		if (con != null) {
 			this.inUsed++;
-			writeLog("�õ�");
+			writeLog("得到");
 		}
 
 		return con;
 	}
 
 	/**
-	 * �ͷ�ȫ��l��
+	 * 释放全部连接
 	 */
 	public synchronized void release() {
 
@@ -155,14 +155,14 @@ public class DBPool {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				log.error("�ͷ�ȫ��l���쳣 : " + e.getMessage(), e);
+				log.error("释放全部连接异常 : " + e.getMessage(), e);
 			}
 		}
 		this.freeConnections.clear();
 	}
 
 	/**
-	 * ������l��
+	 * 创建新连接
 	 * 
 	 * @return
 	 */
@@ -184,8 +184,8 @@ public class DBPool {
 	}
 
 	private void writeLog(String message) {
-		log.debug(message + poolName + "l�ӣ�����" + freeConnections.size()
-				+ "��l�ӿ��У���" + inUsed + "��l������ʹ��");
+		log.debug(message + poolName + "连接，现有" + freeConnections.size()
+				+ "个连接空闲，有" + inUsed + "个连接正在使用");
 	}
 
 	public String getDriver() {
