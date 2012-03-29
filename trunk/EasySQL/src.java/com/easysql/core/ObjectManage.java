@@ -12,7 +12,7 @@ public class ObjectManage {
 
 	private String canonicalName;
 
-	private Class<?> clazz;
+	private Class<Entity> clazz;
 	
 	protected static Map<String, Boolean> collection = new HashMap<String, Boolean>();
 
@@ -40,11 +40,11 @@ public class ObjectManage {
 		this.canonicalName = canonicalName;
 	}
 
-	public Class<?> getClazz() {
+	public Class<Entity> getClazz() {
 		return clazz;
 	}
 
-	public void setClazz(Class<?> clazz) {
+	public void setClazz(Class<Entity> clazz) {
 		this.clazz = clazz;
 	}
 

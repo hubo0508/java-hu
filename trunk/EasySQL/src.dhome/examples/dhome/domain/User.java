@@ -5,15 +5,19 @@ import com.easysql.handlers.EntityFilter;
 
 @SuppressWarnings("serial")
 public class User extends Entity {
-	
-	private Integer ID;
+
+	private Integer id;
 	private String username;
 	private String password;
 	private String cname;
 
 	@Override
 	public EntityFilter notTake() {
-		return null;
+
+		EntityFilter ef = new EntityFilter();
+		ef.notTask("cname");
+
+		return ef;
 	}
 
 	public String getUsername() {
@@ -40,12 +44,12 @@ public class User extends Entity {
 		this.cname = cname;
 	}
 
-	public Integer getID() {
-		return ID;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setID(Integer id) {
-		ID = id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public User() {

@@ -1,11 +1,63 @@
 package com.easysql.handlers;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.easysql.EasySQL;
+import com.easysql.core.Entity;
 import com.easysql.core.Mapping;
 
 public class SQLHandler {
+
+	public static Object[] entityConvertedObjectArray(EntityHandler eHandler,
+			Entity entity) {
+
+		String[] fields = eHandler.getFields();
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+
+		int count = 0;
+		int len = fields.length;
+		Object[] params = new Object[len - 1];
+		for (int i = 1; i < len; i++) {
+			if (i == 1 && getGenerationOfPrimaryKey(database)) {
+				if ("mysql".equals(database)) {
+					params = new Object[params.length - 1];
+					continue;
+				} else if ("sqlserver".equals(database)) {
+					params = new Object[params.length - 1];
+					continue;
+				}
+			}
+			String methodname = getMethodName("get", fields[i]);
+			Object value = getValue(eHandler.getClazz(), methodname, entity);
+			params[count] = value;
+			count++;
+		}
+
+		return params;
+	}
+
+	private static Object getValue(Class<Entity> clazz, String methodname,
+			Entity entity) {
+		try {
+			Method method = clazz.getMethod(methodname, new Class[] {});
+			Object value = method.invoke(entity, new Object[] {});
+			return value;
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static String getSelectSQL(EntityHandler ref, String sql) {
 
@@ -301,5 +353,10 @@ public class SQLHandler {
 		}
 
 		return ele;
+	}
+
+	private static String getMethodName(String methodPrefix, String fieldName) {
+		String firstLetter = fieldName.substring(0, 1).toUpperCase();
+		return methodPrefix + firstLetter + fieldName.substring(1);
 	}
 }
