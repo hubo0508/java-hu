@@ -84,7 +84,7 @@ public class XmlAnalyze extends ObjectManage {
 
 	private Document createDocument() {
 
-		String file = "D:\\work\\myeclipse6.6\\easySQL\\src.config\\easySQL.xml";
+		String file = "D:\\work\\myeclipse6.6\\EasySQL\\src.java\\easySQL.xml";
 		try {
 			SAXReader reader = new SAXReader();
 
