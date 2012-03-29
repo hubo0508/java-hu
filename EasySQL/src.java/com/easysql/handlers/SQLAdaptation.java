@@ -1,9 +1,17 @@
 package com.easysql.handlers;
 
+import java.util.StringTokenizer;
+
 import com.easysql.EasySQL;
 import com.easysql.core.Mapping;
 
+import examples.domain.Device;
+
 public class SQLAdaptation {
+
+	public static void main(String[] args) {
+
+	}
 
 	public static String convertedSingleField(Class<?> clazz, String elements) {
 
@@ -14,6 +22,22 @@ public class SQLAdaptation {
 		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
 
 		return convertedAfterElement(elements, replaceValue, nameRule);
+	}
+
+	public static String convertedWhere(EntityHandler ref, String where) {
+		String[] fields = ref.getRowField();
+		for (String s : fields) {
+			int convertedBeforeIndex = where.indexOf(s);
+			if (convertedBeforeIndex >= 0) {
+				String converedAfterStr = SQLAdaptation.convertedSingleField(
+						ref.getClazz(), s);
+				where = where.substring(0, convertedBeforeIndex)
+						+ converedAfterStr
+						+ where.substring(convertedBeforeIndex + s.length());
+			}
+		}
+
+		return where;
 	}
 
 	public static String[] convertedFileds(Class<?> clazz, String[] elements) {

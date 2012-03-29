@@ -1,6 +1,7 @@
 package examples.test;
 
 import com.easysql.handlers.EntityHandler;
+import com.easysql.handlers.SQLAdaptation;
 import com.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
@@ -9,15 +10,14 @@ import examples.domain.Device;
 
 public class Test extends BaseTest {
 
-	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 	public static void main(String[] args) throws InstantiationException,
 			IllegalAccessException {
 
 		Test test = new Test();
-//		System.out.println("***************updateSQL***************");
-//		test.updateSQL();
-//		System.out.println("***************insertSQL***************");
-//		test.insertSQL();
+		// System.out.println("***************updateSQL***************");
+		// test.updateSQL();
+		// System.out.println("***************insertSQL***************");
+		// test.insertSQL();
 		System.out.println("***************deleteSQL***************");
 		test.deleteSQL();
 	}
@@ -25,8 +25,9 @@ public class Test extends BaseTest {
 	public void deleteSQL() {
 		String sql = SQLHandler.deleteSQL(new EntityHandler(Device.class));
 		System.out.println(sql);
-		
-		sql = SQLHandler.deleteSQL(new EntityHandler(Device.class),"id=1");
+
+		sql = SQLHandler.deleteSQL(new EntityHandler(Device.class),
+				"factoryCode=? AND deviceCode=?");
 		System.out.println(sql);
 	}
 
