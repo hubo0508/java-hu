@@ -31,8 +31,20 @@ public class SQLHandler {
 		return null;
 	}
 
-	public static String updateSQL(EntityHandler ref, String where,
-			String[] filed) {
+	public static String updateSQL(EntityHandler ref, String[] filed) {
+
+		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), filed);
+
+		// 取得當前實體鍋爐條件
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(ref.getClazz()));
+		String idkey = (String) targetMap.get(EntityFilter.ID);
+
+		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
+	}
+
+	public static String updateSQL(EntityHandler ref, String[] filed,
+			String where) {
 
 		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), filed);
 
@@ -42,6 +54,19 @@ public class SQLHandler {
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, where).toString();
+	}
+
+	public static String updateSQL(EntityHandler ref) {
+
+		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
+				.getRowField());
+
+		// 取得當前實體鍋爐條件
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(ref.getClazz()));
+		String idkey = (String) targetMap.get(EntityFilter.ID);
+
+		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
 
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
@@ -60,8 +85,8 @@ public class SQLHandler {
 
 	public static String insertSQL(EntityHandler ref) {
 
-		String[] fields = ref.getRowField();
-		fields = SQLAdaptation.convertedFileds(ref.getClazz(), fields);
+		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
+				.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(

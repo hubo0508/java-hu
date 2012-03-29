@@ -14,15 +14,15 @@ public class Test extends BaseTest {
 			IllegalAccessException {
 
 		Test test = new Test();
-//		System.out.println("***************updateSQL***************");
-//		test.updateSQL();
-//		System.out.println("***************insertSQL***************");
-//		test.insertSQL();
-//		System.out.println("***************deleteSQL***************");
+		System.out.println("***************updateSQL***************");
+		test.updateSQL();
+		System.out.println("***************insertSQL***************");
+		test.insertSQL();
+		System.out.println("***************deleteSQL***************");
 		test.deleteSQL();
 	}
-	
-	public void deleteSQL(){
+
+	public void deleteSQL() {
 		String sql = SQLHandler.deleteSQL(new EntityHandler(Device.class));
 		System.out.println(sql);
 	}
@@ -35,8 +35,7 @@ public class Test extends BaseTest {
 
 		String[] ifmap = new String[] { "accountName", "accountPass" };
 
-		sql = SQLHandler.updateSQL(new EntityHandler(Account.class), "id=?",
-				ifmap);
+		sql = SQLHandler.updateSQL(new EntityHandler(Account.class), ifmap);
 
 		System.out.println(sql);
 	}
