@@ -1,7 +1,6 @@
 package examples.test;
 
 import com.easysql.handlers.EntityHandler;
-import com.easysql.handlers.SQLAdaptation;
 import com.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
