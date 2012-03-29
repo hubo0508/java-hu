@@ -17,8 +17,19 @@ public class Test extends BaseTest {
 		// test.updateSQL();
 		// System.out.println("***************insertSQL***************");
 		// test.insertSQL();
-		System.out.println("***************deleteSQL***************");
-		test.deleteSQL();
+		// System.out.println("***************deleteSQL***************");
+		// test.deleteSQL();
+		
+		test.selectSQL();
+	}
+	
+	public void selectSQL() {
+		
+		String sql = "select * from Device";
+		
+		sql = SQLHandler.selectSQL(new EntityHandler(Device.class),sql);
+
+		System.out.println(sql);
 	}
 
 	public void deleteSQL() {

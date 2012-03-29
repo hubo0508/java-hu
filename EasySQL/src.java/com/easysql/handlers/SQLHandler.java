@@ -7,14 +7,34 @@ import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
-	// DELETE FROM 表名称 WHERE 列名称 = 值
+	public static String selectSQL(EntityHandler ref, String sql) {
+
+		StringBuffer sb = new StringBuffer();
+		int index = sql.indexOf("*");
+		if (sql.indexOf("*") >= 0) {
+			String[] fields = formatFields(ref.getClazz(), ref.getRowField());
+			int len = fields.length;
+			for (int i = 1; i < fields.length; i++) {
+				sb.append(fields[i]);
+				if (i < len - 1) {
+					sb.append(",");
+				}
+			}
+		}
+
+		sql = sql.substring(0, index) + sb.toString()
+				+ sql.substring(index + 1);
+
+		return formatFields(ref, sql);
+	}
+
 	public static String deleteSQL(EntityHandler ref) {
 
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		String tablename = convertedSingleField(ref.getClazz(), ref.getClazz()
+		String tablename = formatSingeField(ref.getClazz(), ref.getClazz()
 				.getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
@@ -29,21 +49,21 @@ public class SQLHandler {
 
 	public static String deleteSQL(EntityHandler ref, String where) {
 
-		String tablename = convertedSingleField(ref.getClazz(), ref.getClazz()
+		String tablename = formatSingeField(ref.getClazz(), ref.getClazz()
 				.getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
 		sb.append(tablename);
 		sb.append(" WHERE ");
-		sb.append(convertedWhere(ref, where));
+		sb.append(formatFields(ref, where));
 
 		return sb.toString();
 	}
 
 	public static String updateSQL(EntityHandler ref, String[] filed) {
 
-		String[] fields = convertedFileds(ref.getClazz(), filed);
+		String[] fields = formatFields(ref.getClazz(), filed);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -56,7 +76,7 @@ public class SQLHandler {
 	public static String updateSQL(EntityHandler ref, String[] filed,
 			String where) {
 
-		String[] fields = convertedFileds(ref.getClazz(), filed);
+		String[] fields = formatFields(ref.getClazz(), filed);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -68,7 +88,7 @@ public class SQLHandler {
 
 	public static String updateSQL(EntityHandler ref) {
 
-		String[] fields = convertedFileds(ref.getClazz(), ref.getRowField());
+		String[] fields = formatFields(ref.getClazz(), ref.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -79,22 +99,21 @@ public class SQLHandler {
 	}
 
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-	public static String updateSQL(EntityHandler ref, String where) {
+	public static String updateSQL(EntityHandler ref, String sql) {
 
-		String[] fields = convertedFileds(ref.getClazz(), ref.getRowField());
+		String[] fields = formatFields(ref.getClazz(), ref.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		return generateUpdateSQL(fields, idkey, convertedWhere(ref, where))
-				.toString();
+		return generateUpdateSQL(fields, idkey, formatFields(ref, sql)).toString();
 	}
 
 	public static String insertSQL(EntityHandler ref) {
 
-		String[] fields = convertedFileds(ref.getClazz(), ref.getRowField());
+		String[] fields = formatFields(ref.getClazz(), ref.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -221,7 +240,7 @@ public class SQLHandler {
 		return sb;
 	}
 
-	public static String convertedSingleField(Class<?> clazz, String elements) {
+	public static String formatSingeField(Class<?> clazz, String elements) {
 
 		String nameRule = (String) Mapping.getInstance()
 				.get(EasySQL.FIELD_RULE);
@@ -232,23 +251,21 @@ public class SQLHandler {
 		return convertedAfterElement(elements, replaceValue, nameRule);
 	}
 
-	public static String convertedWhere(EntityHandler ref, String where) {
+	public static String formatFields(EntityHandler ref, String sql) {
 		String[] fields = ref.getRowField();
 		for (String s : fields) {
-			int convertedBeforeIndex = where.indexOf(s);
-			if (convertedBeforeIndex >= 0) {
-				String converedAfterStr = convertedSingleField(ref.getClazz(),
-						s);
-				where = where.substring(0, convertedBeforeIndex)
-						+ converedAfterStr
-						+ where.substring(convertedBeforeIndex + s.length());
+			int matchIndex = sql.indexOf(s);
+			if (matchIndex >= 0) {
+				String formatAfter = formatSingeField(ref.getClazz(), s);
+				sql = sql.substring(0, matchIndex) + formatAfter
+						+ sql.substring(matchIndex + s.length());
 			}
 		}
 
-		return where;
+		return sql;
 	}
 
-	public static String[] convertedFileds(Class<?> clazz, String[] elements) {
+	public static String[] formatFields(Class<?> clazz, String[] fields) {
 
 		String nameRule = (String) Mapping.getInstance()
 				.get(EasySQL.FIELD_RULE);
@@ -257,15 +274,14 @@ public class SQLHandler {
 		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
-			return elements;
+			return fields;
 		}
 
-		for (int i = 0; i < elements.length; i++) {
-			elements[i] = convertedAfterElement(elements[i], replaceValue,
-					nameRule);
+		for (int i = 0; i < fields.length; i++) {
+			fields[i] = convertedAfterElement(fields[i], replaceValue, nameRule);
 		}
 
-		return elements;
+		return fields;
 	}
 
 	public static String convertedAfterElement(String ele,
