@@ -17,7 +17,7 @@ public class EntityHandler extends ObjectManage {
 		super.setClazz(clazz);
 	}
 
-	public String[] getRowField() {
+	public String[] getFields() {
 
 		// 判断实例类是否继承com.easysql.core.Entity
 		if (!isExtendsEntity(getClazz())) {

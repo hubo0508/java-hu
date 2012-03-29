@@ -12,7 +12,7 @@ public class SQLHandler {
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
-			String[] fields = formatFields(ref.getClazz(), ref.getRowField());
+			String[] fields = formatFields(ref.getClazz(), ref.getFields());
 			int len = fields.length;
 			for (int i = 1; i < fields.length; i++) {
 				sb.append(fields[i]);
@@ -88,7 +88,7 @@ public class SQLHandler {
 
 	public static String updateSQL(EntityHandler ref) {
 
-		String[] fields = formatFields(ref.getClazz(), ref.getRowField());
+		String[] fields = formatFields(ref.getClazz(), ref.getFields());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -101,19 +101,20 @@ public class SQLHandler {
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 	public static String updateSQL(EntityHandler ref, String sql) {
 
-		String[] fields = formatFields(ref.getClazz(), ref.getRowField());
+		String[] fields = formatFields(ref.getClazz(), ref.getFields());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		return generateUpdateSQL(fields, idkey, formatFields(ref, sql)).toString();
+		return generateUpdateSQL(fields, idkey, formatFields(ref, sql))
+				.toString();
 	}
 
 	public static String insertSQL(EntityHandler ref) {
 
-		String[] fields = formatFields(ref.getClazz(), ref.getRowField());
+		String[] fields = formatFields(ref.getClazz(), ref.getFields());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -252,7 +253,7 @@ public class SQLHandler {
 	}
 
 	public static String formatFields(EntityHandler ref, String sql) {
-		String[] fields = ref.getRowField();
+		String[] fields = ref.getFields();
 		for (String s : fields) {
 			int matchIndex = sql.indexOf(s);
 			if (matchIndex >= 0) {
