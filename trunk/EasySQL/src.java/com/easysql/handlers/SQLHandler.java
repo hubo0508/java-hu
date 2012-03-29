@@ -7,7 +7,7 @@ import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
-	public static String selectSQL(EntityHandler ref, String sql) {
+	public static String getSelectSQL(EntityHandler ref, String sql) {
 
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
@@ -28,7 +28,7 @@ public class SQLHandler {
 		return formatFields(ref, sql);
 	}
 
-	public static String deleteSQL(EntityHandler ref) {
+	public static String getDeleteSQL(EntityHandler ref) {
 
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
@@ -47,7 +47,7 @@ public class SQLHandler {
 		return sb.toString();
 	}
 
-	public static String deleteSQL(EntityHandler ref, String where) {
+	public static String getDeleteSQL(EntityHandler ref, String where) {
 
 		String tablename = formatSingeField(ref.getClazz(), ref.getClazz()
 				.getSimpleName());
@@ -61,7 +61,7 @@ public class SQLHandler {
 		return sb.toString();
 	}
 
-	public static String updateSQL(EntityHandler ref, String[] filed) {
+	public static String getUpdateSQL(EntityHandler ref, String[] filed) {
 
 		String[] fields = formatFields(ref.getClazz(), filed);
 
@@ -73,7 +73,7 @@ public class SQLHandler {
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
 
-	public static String updateSQL(EntityHandler ref, String[] filed,
+	public static String getUpdateSQL(EntityHandler ref, String[] filed,
 			String where) {
 
 		String[] fields = formatFields(ref.getClazz(), filed);
@@ -86,7 +86,7 @@ public class SQLHandler {
 		return generateUpdateSQL(fields, idkey, where).toString();
 	}
 
-	public static String updateSQL(EntityHandler ref) {
+	public static String getUpdateSQL(EntityHandler ref) {
 
 		String[] fields = formatFields(ref.getClazz(), ref.getFields());
 
@@ -99,7 +99,7 @@ public class SQLHandler {
 	}
 
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-	public static String updateSQL(EntityHandler ref, String sql) {
+	public static String getUpdateSQL(EntityHandler ref, String sql) {
 
 		String[] fields = formatFields(ref.getClazz(), ref.getFields());
 
@@ -112,7 +112,7 @@ public class SQLHandler {
 				.toString();
 	}
 
-	public static String insertSQL(EntityHandler ref) {
+	public static String getInsertSQL(EntityHandler ref) {
 
 		String[] fields = formatFields(ref.getClazz(), ref.getFields());
 
