@@ -8,6 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import com.easysql.core.Entity;
 
 public class EasySQL {
+	
+	public final static int SUCCESSFUL = 1;
+	
+	public final static int FAILED = 0;
+
+	/** ************************************************************************************************************************************** */
 
 	public final static String FIELD_RULE_HUMP = "hump";
 
