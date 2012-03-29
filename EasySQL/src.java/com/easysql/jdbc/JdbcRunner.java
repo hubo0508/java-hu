@@ -18,10 +18,10 @@ public class JdbcRunner<T, F extends java.io.Serializable> extends
 		this.conn = conn;
 	}
 
-	public int update(Connection connm, String sql, Object[] params)
+	public int update(Connection con, String sql, Object[] params)
 			throws SQLException {
 
-		if (conn == null) {
+		if (con == null) {
 			throw new SQLException("Null connection");
 		}
 
@@ -33,7 +33,7 @@ public class JdbcRunner<T, F extends java.io.Serializable> extends
 		int rows = 0;
 
 		try {
-			stmt = this.prepareStatement(conn, sql);
+			stmt = this.prepareStatement(con, sql);
 			this.fillStatement(stmt, params);
 			rows = stmt.executeUpdate();
 
