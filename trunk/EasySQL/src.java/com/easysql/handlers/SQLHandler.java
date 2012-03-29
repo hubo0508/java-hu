@@ -14,8 +14,8 @@ public class SQLHandler {
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		String tablename = SQLAdaptation.convertedSingleField(ref.getClazz(),
-				ref.getClazz().getSimpleName());
+		String tablename = convertedSingleField(ref.getClazz(), ref.getClazz()
+				.getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
@@ -29,21 +29,21 @@ public class SQLHandler {
 
 	public static String deleteSQL(EntityHandler ref, String where) {
 
-		String tablename = SQLAdaptation.convertedSingleField(ref.getClazz(),
-				ref.getClazz().getSimpleName());
+		String tablename = convertedSingleField(ref.getClazz(), ref.getClazz()
+				.getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
 		sb.append(tablename);
 		sb.append(" WHERE ");
-		sb.append(SQLAdaptation.convertedWhere(ref, where));
+		sb.append(convertedWhere(ref, where));
 
 		return sb.toString();
 	}
 
 	public static String updateSQL(EntityHandler ref, String[] filed) {
 
-		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), filed);
+		String[] fields = convertedFileds(ref.getClazz(), filed);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -56,7 +56,7 @@ public class SQLHandler {
 	public static String updateSQL(EntityHandler ref, String[] filed,
 			String where) {
 
-		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), filed);
+		String[] fields = convertedFileds(ref.getClazz(), filed);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -68,8 +68,7 @@ public class SQLHandler {
 
 	public static String updateSQL(EntityHandler ref) {
 
-		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
-				.getRowField());
+		String[] fields = convertedFileds(ref.getClazz(), ref.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -82,22 +81,20 @@ public class SQLHandler {
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 	public static String updateSQL(EntityHandler ref, String where) {
 
-		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
-				.getRowField());
+		String[] fields = convertedFileds(ref.getClazz(), ref.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(ref.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		return generateUpdateSQL(fields, idkey,
-				SQLAdaptation.convertedWhere(ref, where)).toString();
+		return generateUpdateSQL(fields, idkey, convertedWhere(ref, where))
+				.toString();
 	}
 
 	public static String insertSQL(EntityHandler ref) {
 
-		String[] fields = SQLAdaptation.convertedFileds(ref.getClazz(), ref
-				.getRowField());
+		String[] fields = convertedFileds(ref.getClazz(), ref.getRowField());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
@@ -222,5 +219,70 @@ public class SQLHandler {
 		sb.append(where);
 
 		return sb;
+	}
+
+	public static String convertedSingleField(Class<?> clazz, String elements) {
+
+		String nameRule = (String) Mapping.getInstance()
+				.get(EasySQL.FIELD_RULE);
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(clazz));
+		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
+
+		return convertedAfterElement(elements, replaceValue, nameRule);
+	}
+
+	public static String convertedWhere(EntityHandler ref, String where) {
+		String[] fields = ref.getRowField();
+		for (String s : fields) {
+			int convertedBeforeIndex = where.indexOf(s);
+			if (convertedBeforeIndex >= 0) {
+				String converedAfterStr = convertedSingleField(ref.getClazz(),
+						s);
+				where = where.substring(0, convertedBeforeIndex)
+						+ converedAfterStr
+						+ where.substring(convertedBeforeIndex + s.length());
+			}
+		}
+
+		return where;
+	}
+
+	public static String[] convertedFileds(Class<?> clazz, String[] elements) {
+
+		String nameRule = (String) Mapping.getInstance()
+				.get(EasySQL.FIELD_RULE);
+		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(clazz));
+		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
+
+		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
+			return elements;
+		}
+
+		for (int i = 0; i < elements.length; i++) {
+			elements[i] = convertedAfterElement(elements[i], replaceValue,
+					nameRule);
+		}
+
+		return elements;
+	}
+
+	public static String convertedAfterElement(String ele,
+			String[] replaceValue, String nameRule) {
+
+		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
+			return ele;
+		}
+
+		if (replaceValue != null) {
+			ele = EasySQL.replaceFiled(replaceValue, ele);
+		}
+
+		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
+			ele = EasySQL.convertedIntoSegmentation(ele);
+		}
+
+		return ele;
 	}
 }
