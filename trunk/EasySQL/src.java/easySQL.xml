@@ -2,7 +2,7 @@
 <easysql-mapping>
 
 	<!-- 数据库类型 mysql sqlserver oracle -->
-	<database class="oracle" />
+	<database class="mysql" />
 
 	<!-- 表主键类型 native assigned identity sequence-->
 	<generator class="native">
