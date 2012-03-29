@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src.java"/>
 	<classpathentry kind="src" path="src.test"/>
-	<classpathentry kind="src" path="src.config"/>
 	<classpathentry kind="src" path="src.dhome"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
