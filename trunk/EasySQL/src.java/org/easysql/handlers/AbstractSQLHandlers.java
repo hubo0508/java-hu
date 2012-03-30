@@ -1,15 +1,18 @@
 package org.easysql.handlers;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.easysql.core.Entity;
 
 /**
  * SQL处理抽像类
  */
 public class AbstractSQLHandlers {
+
+	protected Log log = LogFactory.getLog(AbstractSQLHandlers.class);
 
 	/**
 	 * POJO过滤条件
@@ -35,7 +38,10 @@ public class AbstractSQLHandlers {
 
 	}
 
-	public String[] splitSQL(String sql) {
+	/**
+	 * 拆分SQL
+	 */
+	private String[] splitSQL(String sql) {
 		StringTokenizer stk = new StringTokenizer(sql, " ");
 		int len = stk.countTokens();
 		String[] sqlArray = new String[len];
@@ -44,7 +50,7 @@ public class AbstractSQLHandlers {
 		}
 		return sqlArray;
 	}
-	
+
 	/**
 	 * 对SQL进行标准格式化。</br></br>
 	 */
@@ -82,23 +88,24 @@ public class AbstractSQLHandlers {
 		return sb.toString();
 	}
 
+	/**
+	 * 根据方法名取得值
+	 * 
+	 * @param methodname
+	 *            方法名
+	 * @param entity
+	 *            POJO对象
+	 */
 	@SuppressWarnings("unchecked")
-	public Object getEntityValue(String methodname, Entity entity) {
+	public Object getFieldValues(String methodname, Entity entity) {
 		try {
 			Class clazz = entity.getClass();
 			Method method = clazz.getMethod(methodname, new Class[] {});
 			Object value = method.invoke(entity, new Object[] {});
+
 			return value;
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+		} catch (Throwable e) {
+			log.info(e.getMessage(), e);
 		}
 		return null;
 	}
