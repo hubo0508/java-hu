@@ -30,7 +30,7 @@ public class UserServiceTest extends BaseTest {
 
 	public void update(User u) {
 		SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
-		String sql = sqlHandler.getUpdateSQL();
+		String sql = sqlHandler.getUpdateSQL("  username=   ?, password=         ?");
 		Object[] params = sqlHandler.objectArray(u, sql);
 
 		System.out.println(sql);
