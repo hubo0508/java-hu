@@ -9,10 +9,18 @@ import org.easysql.EasySQL;
 import org.easysql.core.Entity;
 import org.easysql.core.Mapping;
 
+/**
+ * SQL处理</br></br>
+ * 
+ * 在实例化该对象时，必须传入org.easysql.handlers.EntityHandler实例化对象
+ */
 public class SQLHandler extends AbstractSQLHandlers {
 
 	private EntityHandler eHandler;
 
+	/**
+	 * 在实例化该对象时，必须传入org.easysql.handlers.EntityHandler实例化对象
+	 */
 	public SQLHandler(EntityHandler eHandler) {
 		this.eHandler = eHandler;
 		super.setFilter((EntityFilter) Mapping.getInstance().get(
@@ -26,15 +34,15 @@ public class SQLHandler extends AbstractSQLHandlers {
 	 */
 	public Object[] objectArray(Entity entity, String sql) {
 
-		String[] fields = getOrderlyTableField(sql);
+		String[] fields = getOrderlyDatabaseColumn(sql);
 		int len = fields.length;
 		Object[] params = new Object[len];
 		for (int i = 0; i < len; i++) {
-			String object = (String) fields[i];
+			String column = (String) fields[i];
 			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getFieldFule())) {
-				object = convertedIntoHump(object);
+				column = convertedIntoHump(column);
 			}
-			String methodname = getMethodName("get", object);
+			String methodname = getMethodName("get", column);
 			params[i] = getFieldValues(methodname, entity);
 		}
 		return params;
@@ -322,7 +330,8 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 
 		for (int i = 0; i < fields.length; i++) {
-			fields[i] = convertedElement(fields[i], replaceValue, getFieldFule());
+			fields[i] = convertedElement(fields[i], replaceValue,
+					getFieldFule());
 		}
 
 		return fields;
@@ -385,9 +394,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 	}
 
 	/**
-	 * user_name => userName
+	 * 将文本转换成驼峰命名规则。</br></br>
+	 * 
+	 * 如：user_name => userName
 	 */
-	private String convertedIntoHump(String text) {
+	public String convertedIntoHump(String text) {
 
 		StringBuffer humpname = new StringBuffer();
 		String[] textArray = text.split("_");
@@ -399,9 +410,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 				if (i == 0) {
 					humpname.append(textArray[i]);
 				} else {
-					String v = textArray[i];
-					String firstLetter = v.substring(0, 1).toUpperCase();
-					humpname.append(firstLetter + v.substring(1));
+					String oldvalue = textArray[i];
+					String firstLetter = oldvalue.substring(0, 1).toUpperCase();
+					humpname.append(firstLetter + oldvalue.substring(1));
 				}
 			}
 		}
@@ -410,7 +421,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 	}
 
 	/**
-	 * userName => user_name
+	 * 
+	 */
+	/**
+	 * 将文本转换成分段命名规则。</br></br>
+	 * 
+	 * 如：userName => user_name
 	 */
 	private String convertedIntoSegmentation(String text) {
 
@@ -434,11 +450,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 	}
 
 	/**
-	 * 根据SQL中参数位置，取得相应的字段
+	 * 根据SQL中参数(key=?)位置，取得相应的列字段（有顺序的列字段）
 	 */
-	public String[] getOrderlyTableField(String sql) {
+	public String[] getOrderlyDatabaseColumn(String sql) {
 
-		String[] tableFieldArray = new String[countParameter(sql)];
+		String[] databaseColumnArray = new String[countParameter(sql)];
 		int count = 0;
 		while (true) {
 			int index = sql.indexOf("?");
@@ -450,7 +466,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 					tableField = tableField.substring(tableField
 							.lastIndexOf(" ") + 1);
 				}
-				tableFieldArray[count] = tableField;
+				databaseColumnArray[count] = tableField;
 				count++;
 
 				sql = sql.substring(index + 1);
@@ -459,13 +475,15 @@ public class SQLHandler extends AbstractSQLHandlers {
 			}
 		}
 
-		return tableFieldArray;
+		return databaseColumnArray;
 	}
 
 	/**
-	 * 刪除SQL中的關鍵字
+	 * 刪除SQL中的關鍵字</br></br>
+	 * 
+	 * 该方法未完善，待以后完善
 	 */
-	public String deleteKeywordsOfSQL(String sql) {
+	private String deleteKeywordsOfSQL(String sql) {
 
 		String temp = sql;
 
@@ -475,12 +493,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 			if (index >= 0) {
 				sql = sql.substring(0, index - 1);
 			}
-			String tableField = sql.substring(sql.lastIndexOf(" ") + 1);
-			if (!isKeywordsOfSQL(tableField)) {
-				int tableFieldIndex = temp.toUpperCase()
-						.lastIndexOf(tableField);
-				return temp.substring(tableFieldIndex, tableFieldIndex
-						+ tableField.length());
+			String columnField = sql.substring(sql.lastIndexOf(" ") + 1);
+			if (!isKeywordsOfSQL(columnField)) {
+				int columnFieldIndex = temp.toUpperCase().lastIndexOf(
+						columnField);
+				return temp.substring(columnFieldIndex, columnFieldIndex
+						+ columnField.length());
 			}
 		}
 	}
@@ -512,7 +530,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 	}
 
 	/**
-	 * 取得SQL中问号个数
+	 * 取得SQL中参数个数
 	 */
 	private int countParameter(String sql) {
 		StringTokenizer stk = new StringTokenizer(sql, "?");
