@@ -22,7 +22,7 @@ public class AbstractSQLHandlers {
 	/**
 	 * POJO与数据库字段名字规则(hump segmentation)
 	 */
-	private String fieldFule;
+	private String nameRule;
 
 	/**
 	 * SQL关键字
@@ -109,8 +109,6 @@ public class AbstractSQLHandlers {
 		}
 		return null;
 	}
-	
-	
 
 	/**
 	 * POJO过滤条件
@@ -126,12 +124,12 @@ public class AbstractSQLHandlers {
 	/**
 	 * POJO与数据库字段名字规则(hump segmentation)
 	 */
-	public String getFieldFule() {
-		return fieldFule;
+	public String getNameRule() {
+		return nameRule;
 	}
 
-	public void setFieldFule(String fieldFule) {
-		this.fieldFule = fieldFule;
+	public void setNameRule(String nameRule) {
+		this.nameRule = nameRule;
 	}
 
 }
