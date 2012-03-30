@@ -1,4 +1,4 @@
-package com.easysql.core;
+package org.easysql.core;
 
 import java.util.Collection;
 import java.util.HashMap;

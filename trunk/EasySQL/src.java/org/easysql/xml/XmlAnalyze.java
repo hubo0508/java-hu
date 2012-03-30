@@ -1,4 +1,4 @@
-package com.easysql.xml;
+package org.easysql.xml;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -9,12 +9,12 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.easysql.EasySQL;
+import org.easysql.core.Entity;
+import org.easysql.core.Mapping;
+import org.easysql.core.ObjectManage;
+import org.easysql.handlers.EntityFilter;
 
-import com.easysql.EasySQL;
-import com.easysql.core.Entity;
-import com.easysql.core.ObjectManage;
-import com.easysql.core.Mapping;
-import com.easysql.handlers.EntityFilter;
 
 @SuppressWarnings("unchecked")
 public class XmlAnalyze extends ObjectManage {

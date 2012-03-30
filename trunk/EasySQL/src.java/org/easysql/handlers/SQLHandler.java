@@ -1,17 +1,17 @@
-package com.easysql.handlers;
+package org.easysql.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.StringUtils;
+import org.easysql.EasySQL;
+import org.easysql.core.Entity;
+import org.easysql.core.Mapping;
 
-import com.easysql.EasySQL;
-import com.easysql.core.Entity;
-import com.easysql.core.Mapping;
 
 public class SQLHandler {
 
-	public static Object[] entityConvertedObjectArray(EntityHandler eHandler,
+	public static Object[] objectArray(EntityHandler eHandler,
 			Entity entity) {
 
 		String[] fields = eHandler.getFields();

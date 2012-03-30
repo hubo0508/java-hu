@@ -1,4 +1,4 @@
-package com.easysql;
+package org.easysql;
 
 import java.io.PrintWriter;
 import java.sql.Connection;

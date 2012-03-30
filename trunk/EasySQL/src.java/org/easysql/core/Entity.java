@@ -1,6 +1,6 @@
-package com.easysql.core;
+package org.easysql.core;
 
-import com.easysql.handlers.EntityFilter;
+import org.easysql.handlers.EntityFilter;
 
 public abstract class Entity extends ObjectManage implements
 		java.io.Serializable {

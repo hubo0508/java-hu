@@ -1,10 +1,11 @@
-package com.easysql.handlers;
+package org.easysql.handlers;
 
 import java.lang.reflect.Field;
 
-import com.easysql.core.Entity;
-import com.easysql.core.ObjectManage;
-import com.easysql.core.Mapping;
+import org.easysql.core.Entity;
+import org.easysql.core.Mapping;
+import org.easysql.core.ObjectManage;
+
 
 public class EntityHandler extends ObjectManage {
 
