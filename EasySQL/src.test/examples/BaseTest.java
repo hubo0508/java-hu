@@ -1,5 +1,7 @@
 package examples;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,13 +12,14 @@ public class BaseTest {
 	protected static Log log = LogFactory.getLog(BaseTest.class);
 
 	static {
-		 new XmlAnalyze().init();
+		new XmlAnalyze().init();
 		// MySqlPool.getInstance();
 	}
 
 	public static void main(String[] args) {
+
 		
 	}
 
-	
+
 }
