@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
 @SuppressWarnings("unchecked")
 public class Mapping {
 
@@ -21,6 +20,9 @@ public class Mapping {
 
 	}
 
+	/**
+	 * 取得全局配置文件对象
+	 */
 	public static Mapping getInstance() {
 		if (sqlMap == null) {
 			synchronized (initLock) {
@@ -29,8 +31,8 @@ public class Mapping {
 		}
 		return sqlMap;
 	}
-	
-	public Map getSqlMap(){
+
+	public Map getSqlMap() {
 		return map;
 	}
 
@@ -81,6 +83,5 @@ public class Mapping {
 	public Collection values() {
 		return map.values();
 	}
-
 
 }
