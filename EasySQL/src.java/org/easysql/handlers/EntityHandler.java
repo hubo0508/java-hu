@@ -45,6 +45,7 @@ public class EntityHandler extends ObjectManage {
 		EntityFilter filter = (EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(getClazz()));
 
+		// 取得POJO中定义的字段
 		Field[] fields = getClazz().getDeclaredFields();
 		String[] elements = new String[fields.length];
 		int count = 0;
@@ -52,7 +53,7 @@ public class EntityHandler extends ObjectManage {
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
 
-			//判断类型是否为List、Set、Map
+			// 判断类型是否为List、Set、Map
 			Object isFalg = collection.get(field.getType().toString());
 			if (isFalg != null && (Boolean) isFalg) {
 				count++;
@@ -62,7 +63,7 @@ public class EntityHandler extends ObjectManage {
 			if (filter == null) {
 				value = field.getName();
 			} else {
-				//对字段进行过滤
+				// 对字段进行过滤
 				Object obj = filter.get(field.getName());
 				if (obj == null || (Boolean) obj) {
 					value = field.getName();
