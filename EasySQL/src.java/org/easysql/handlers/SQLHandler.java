@@ -10,10 +10,15 @@ import org.easysql.EasySQL;
 import org.easysql.core.Entity;
 import org.easysql.core.Mapping;
 
-public class SQLHandler extends AbstractSQLHandlers{
+public class SQLHandler extends AbstractSQLHandlers {
 
-	public static Object[] objectArray(EntityHandler eHandler, Entity entity,
-			String sql) {
+	private EntityHandler eHandler;
+
+	public SQLHandler(EntityHandler eHandler) {
+		this.eHandler = eHandler;
+	}
+
+	public Object[] objectArray(Entity entity, String sql) {
 
 		String[] fields = eHandler.getFields();
 		for (String s : fields) {
@@ -25,7 +30,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return null;
 	}
 
-	public static Object[] objectArray(EntityHandler eHandler, Entity entity) {
+	public Object[] objectArray(Entity entity) {
 
 		String[] fields = eHandler.getFields();
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
@@ -52,7 +57,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return params;
 	}
 
-	private static Object getValue(Class<Entity> clazz, String methodname,
+	private Object getValue(Class<Entity> clazz, String methodname,
 			Entity entity) {
 		try {
 			Method method = clazz.getMethod(methodname, new Class[] {});
@@ -72,12 +77,13 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return null;
 	}
 
-	public static String getSelectSQL(EntityHandler ref, String sql) {
+	public String getSelectSQL(String sql) {
 
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
-			String[] fields = formatFields(ref.getClazz(), ref.getFields());
+			String[] fields = formatFields(eHandler.getClazz(), eHandler
+					.getFields());
 			int len = fields.length;
 			for (int i = 1; i < fields.length; i++) {
 				sb.append(fields[i]);
@@ -90,17 +96,17 @@ public class SQLHandler extends AbstractSQLHandlers{
 		sql = sql.substring(0, index) + sb.toString()
 				+ sql.substring(index + 1);
 
-		return formatFields(ref, sql);
+		return formatFields(sql);
 	}
 
-	public static String getDeleteSQL(EntityHandler ref) {
+	public String getDeleteSQL() {
 
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(ref.getClazz()));
+				EasySQL.key(eHandler.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		String tablename = formatSingeField(ref.getClazz(), ref.getClazz()
-				.getSimpleName());
+		String tablename = formatSingeField(eHandler.getClazz(), eHandler
+				.getClazz().getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
@@ -112,78 +118,79 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return sb.toString();
 	}
 
-	public static String getDeleteSQL(EntityHandler ref, String where) {
+	public String getDeleteSQL(String where) {
 
-		String tablename = formatSingeField(ref.getClazz(), ref.getClazz()
-				.getSimpleName());
+		String tablename = formatSingeField(eHandler.getClazz(), eHandler
+				.getClazz().getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
 		sb.append(tablename);
 		sb.append(" WHERE ");
-		sb.append(formatFields(ref, where));
+		sb.append(formatFields(where));
 
 		return sb.toString();
 	}
 
-	public static String getUpdateSQL(EntityHandler ref, String[] filed) {
+	public String getUpdateSQL(String[] filed) {
 
-		String[] fields = formatFields(ref.getClazz(), filed);
+		String[] fields = formatFields(eHandler.getClazz(), filed);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(ref.getClazz()));
+				EasySQL.key(eHandler.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
 
-	public static String getUpdateSQL(EntityHandler ref, String[] filed,
-			String where) {
+	public String getUpdateSQL(String[] filed, String where) {
 
-		String[] fields = formatFields(ref.getClazz(), filed);
+		String[] fields = formatFields(eHandler.getClazz(), filed);
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(ref.getClazz()));
+				EasySQL.key(eHandler.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, where).toString();
 	}
 
-	public static String getUpdateSQL(EntityHandler ref) {
+	public String getUpdateSQL() {
 
-		String[] fields = formatFields(ref.getClazz(), ref.getFields());
+		String[] fields = formatFields(eHandler.getClazz(), eHandler
+				.getFields());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(ref.getClazz()));
+				EasySQL.key(eHandler.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
 
 	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-	public static String getUpdateSQL(EntityHandler ref, String sql) {
+	public String getUpdateSQL(String sql) {
 
-		String[] fields = formatFields(ref.getClazz(), ref.getFields());
+		String[] fields = formatFields(eHandler.getClazz(), eHandler
+				.getFields());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(ref.getClazz()));
+				EasySQL.key(eHandler.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		return generateUpdateSQL(fields, idkey, formatFields(ref, sql))
-				.toString();
+		return generateUpdateSQL(fields, idkey, formatFields(sql)).toString();
 	}
 
-	public static String getInsertSQL(EntityHandler ref) {
+	public String getInsertSQL() {
 
-		String[] fields = formatFields(ref.getClazz(), ref.getFields());
+		String[] fields = formatFields(eHandler.getClazz(), eHandler
+				.getFields());
 
 		// 取得當前實體鍋爐條件
 		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(ref.getClazz()));
+				EasySQL.key(eHandler.getClazz()));
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		// 主鍵生成機制
@@ -207,8 +214,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return sb.toString();
 	}
 
-	private static void setUpdateKey(String idkey, String[] fields,
-			StringBuffer sb) {
+	private void setUpdateKey(String idkey, String[] fields, StringBuffer sb) {
 
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
@@ -224,8 +230,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		}
 	}
 
-	private static void setInsertKey(String database, String[] fields,
-			StringBuffer sb) {
+	private void setInsertKey(String database, String[] fields, StringBuffer sb) {
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
 			if (i == 1 && getGenerationOfPrimaryKey(database)) {
@@ -243,7 +248,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		}
 	}
 
-	private static void setInsertValue(String database, String geneValue,
+	private void setInsertValue(String database, String geneValue,
 			String[] fields, StringBuffer sb) {
 
 		int len = fields.length;
@@ -266,7 +271,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		}
 	}
 
-	private static boolean getGenerationOfPrimaryKey(String databasename) {
+	private boolean getGenerationOfPrimaryKey(String databasename) {
 
 		Mapping mapping = Mapping.getInstance();
 		String generator = (String) mapping.get(EasySQL.GENERATOR);
@@ -292,8 +297,8 @@ public class SQLHandler extends AbstractSQLHandlers{
 
 	/** ******************************************************************************************** */
 
-	private static StringBuffer generateUpdateSQL(String[] fields,
-			String idkey, String where) {
+	private StringBuffer generateUpdateSQL(String[] fields, String idkey,
+			String where) {
 		StringBuffer sb = new StringBuffer();
 
 		sb.append("UPDATE ");
@@ -306,7 +311,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return sb;
 	}
 
-	public static String formatSingeField(Class<?> clazz, String elements) {
+	public String formatSingeField(Class<?> clazz, String elements) {
 
 		String nameRule = (String) Mapping.getInstance()
 				.get(EasySQL.FIELD_RULE);
@@ -317,12 +322,12 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return convertedAfterElement(elements, replaceValue, nameRule);
 	}
 
-	public static String formatFields(EntityHandler ref, String sql) {
-		String[] fields = ref.getFields();
+	public String formatFields(String sql) {
+		String[] fields = eHandler.getFields();
 		for (String s : fields) {
 			int matchIndex = sql.indexOf(s);
 			if (matchIndex >= 0) {
-				String formatAfter = formatSingeField(ref.getClazz(), s);
+				String formatAfter = formatSingeField(eHandler.getClazz(), s);
 				sql = sql.substring(0, matchIndex) + formatAfter
 						+ sql.substring(matchIndex + s.length());
 			}
@@ -331,7 +336,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return sql;
 	}
 
-	public static String[] formatFields(Class<?> clazz, String[] fields) {
+	public String[] formatFields(Class<?> clazz, String[] fields) {
 
 		String nameRule = (String) Mapping.getInstance()
 				.get(EasySQL.FIELD_RULE);
@@ -350,8 +355,8 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return fields;
 	}
 
-	public static String convertedAfterElement(String ele,
-			String[] replaceValue, String nameRule) {
+	public String convertedAfterElement(String ele, String[] replaceValue,
+			String nameRule) {
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
 			return ele;
@@ -368,12 +373,12 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return ele;
 	}
 
-	private static String getMethodName(String methodPrefix, String fieldName) {
+	private String getMethodName(String methodPrefix, String fieldName) {
 		String firstLetter = fieldName.substring(0, 1).toUpperCase();
 		return methodPrefix + firstLetter + fieldName.substring(1);
 	}
 
-	private static String replaceFiled(String[] replaceValue, String text) {
+	private String replaceFiled(String[] replaceValue, String text) {
 
 		String returnvalue = text;
 		for (String string : replaceValue) {
@@ -388,7 +393,7 @@ public class SQLHandler extends AbstractSQLHandlers{
 		return returnvalue;
 	}
 
-	private static String convertedIntoSegmentation(String text) {
+	private String convertedIntoSegmentation(String text) {
 
 		StringBuffer sb = new StringBuffer();
 		int cacheIndex = 0;
@@ -408,5 +413,5 @@ public class SQLHandler extends AbstractSQLHandlers{
 
 		return sb.toString().toLowerCase();
 	}
-	
+
 }
