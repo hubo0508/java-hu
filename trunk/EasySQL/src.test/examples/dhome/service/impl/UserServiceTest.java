@@ -3,9 +3,13 @@ package examples.dhome.service.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.ArrayListHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.easysql.core.Entity;
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
@@ -39,15 +43,9 @@ public class UserServiceTest extends BaseTest {
 					new EntityHandler(User.class));
 			String sql = sqlHandler.getSelectSQL("select * from User");
 
-			new QueryRunner().query(pool.getConnection(), sql,
-					new ResultSetHandler<User>() {
-						@Override
-						public User handle(ResultSet rs) throws SQLException {
-							System.out.println(rs.getString("username"));
-							return null;
-						}
-					});
+			List<User> list = new QueryRunner().query(pool.getConnection(), sql, new BeanListHandler<User>(User.class));
 
+			System.out.println(list.size());
 			// System.out.println(sql);
 
 			// int i = new QueryRunner().update(pool.getConnection(), sql,
