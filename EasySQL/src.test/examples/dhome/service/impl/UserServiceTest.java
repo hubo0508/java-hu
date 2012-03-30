@@ -1,9 +1,11 @@
 package examples.dhome.service.impl;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.easysql.core.Entity;
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
@@ -25,7 +27,38 @@ public class UserServiceTest extends BaseTest {
 
 		UserServiceTest test = new UserServiceTest();
 		// test.save(u);
-		test.update(u);
+		// test.update(u);
+		test.selectUser();
+	}
+
+	public void selectUser() {
+		DBPool pool = MySqlPool.getInstance();
+		try {
+
+			SQLHandler sqlHandler = new SQLHandler(
+					new EntityHandler(User.class));
+			String sql = sqlHandler.getSelectSQL("select * from User");
+
+			new QueryRunner().query(pool.getConnection(), sql,
+					new ResultSetHandler<User>() {
+						@Override
+						public User handle(ResultSet rs) throws SQLException {
+							System.out.println(rs.getString("username"));
+							return null;
+						}
+					});
+
+			// System.out.println(sql);
+
+			// int i = new QueryRunner().update(pool.getConnection(), sql,
+			// params);
+
+			// System.out.println(i);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.release();
+		}
 	}
 
 	public void update(User u) {
