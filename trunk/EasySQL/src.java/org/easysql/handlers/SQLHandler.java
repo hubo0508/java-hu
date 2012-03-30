@@ -27,12 +27,18 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String nameRule = (String) Mapping.getInstance()
 				.get(EasySQL.FIELD_RULE);
 
-		String[] fields = eHandler.getFields();
-		for (String s : fields) {
-			// int index = sql
+		String[] fields = getOrderlyTableField(sql);
+		int len = fields.length;
+		Object[] params = new Object[len];
+		for (int i = 0; i < len; i++) {
+			String object = (String) fields[i];
+			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
+				object = convertedIntoHump(object);
+			}
+			String methodname = getMethodName("get", object);
+			params[i] = getValue(methodname, entity);
 		}
-
-		return null;
+		return params;
 	}
 
 	public Object[] objectArray(Entity entity) {
@@ -54,7 +60,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 				}
 			}
 			String methodname = getMethodName("get", fields[i]);
-			Object value = getValue(eHandler.getClazz(), methodname, entity);
+			Object value = getValue(methodname, entity);
 			params[count] = value;
 			count++;
 		}
@@ -62,9 +68,10 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return params;
 	}
 
-	private Object getValue(Class<Entity> clazz, String methodname,
-			Entity entity) {
+	@SuppressWarnings("unchecked")
+	public Object getValue(String methodname, Entity entity) {
 		try {
+			Class clazz = entity.getClass();
 			Method method = clazz.getMethod(methodname, new Class[] {});
 			Object value = method.invoke(entity, new Object[] {});
 			return value;
@@ -421,14 +428,16 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return returnvalue;
 	}
 
-	// user_name => userName
+	/**
+	 * user_name => userName
+	 */
 	private String convertedIntoHump(String text) {
 
 		StringBuffer humpname = new StringBuffer();
 		String[] textArray = text.split("_");
 		int len = textArray.length;
 		if (len == 1) {
-
+			return text;
 		} else {
 			for (int i = 0; i < len; i++) {
 				if (i == 0) {
@@ -444,7 +453,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return humpname.toString();
 	}
 
-	// userName => user_name
+	/**
+	 * userName => user_name
+	 */
 	private String convertedIntoSegmentation(String text) {
 
 		StringBuffer sb = new StringBuffer();
@@ -466,7 +477,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sb.toString().toLowerCase();
 	}
 
-	// 根据SQL中参数位置，取得相应的字段
+	/**
+	 * 根据SQL中参数位置，取得相应的字段
+	 */
 	public String[] getOrderlyTableField(String sql) {
 
 		String[] tableFieldArray = new String[countParameter(sql)];
@@ -481,7 +494,6 @@ public class SQLHandler extends AbstractSQLHandlers {
 					tableField = tableField.substring(tableField
 							.lastIndexOf(" ") + 1);
 				}
-
 				tableFieldArray[count] = tableField;
 				count++;
 
@@ -494,7 +506,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return tableFieldArray;
 	}
 
-	// 刪除SQL中的關鍵字
+	/**
+	 * 刪除SQL中的關鍵字
+	 */
 	public String deleteKeywordsOfSQL(String sql) {
 
 		String temp = sql;
@@ -515,7 +529,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 	}
 
-	// 是否为SQL关键字
+	/**
+	 * 是否为SQL关键字
+	 */
 	private boolean isKeywordsOfSQL(String text) {
 		for (String key : keywords) {
 			if (text.equals(key)) {
@@ -525,7 +541,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return false;
 	}
 
-	// SQL中是否包含有关键字
+	/**
+	 * SQL中是否包含有关键字
+	 */
 	private boolean isContainsTheKeyword(String text) {
 		text = text.toUpperCase();
 		for (String key : keywords) {
@@ -537,9 +555,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return false;
 	}
 
-	// 取得SQL中问号个数
+	/**
+	 * 取得SQL中问号个数
+	 */
 	private int countParameter(String sql) {
 		StringTokenizer stk = new StringTokenizer(sql, "?");
-		return stk.countTokens() - 1;
+		return stk.countTokens();
 	}
 }
