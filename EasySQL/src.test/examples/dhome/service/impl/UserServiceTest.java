@@ -46,12 +46,6 @@ public class UserServiceTest extends BaseTest {
 			List<User> list = new QueryRunner().query(pool.getConnection(), sql, new BeanListHandler<User>(User.class));
 
 			System.out.println(list.size());
-			// System.out.println(sql);
-
-			// int i = new QueryRunner().update(pool.getConnection(), sql,
-			// params);
-
-			// System.out.println(i);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
