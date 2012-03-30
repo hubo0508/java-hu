@@ -45,7 +45,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 	 */
 	public Object[] objectArray(Entity entity) {
 
-		String[] fields = eHandler.getFields();
+		String[] fields = eHandler.getEntityFields();
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		int count = 0;
@@ -75,7 +75,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
 			String[] fields = formatFields(eHandler.getClazz(), eHandler
-					.getFields());
+					.getEntityFields());
 			int len = fields.length;
 			for (int i = 1; i < fields.length; i++) {
 				sb.append(fields[i]);
@@ -143,7 +143,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 	public String getUpdateSQL() {
 
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
-				.getFields());
+				.getEntityFields());
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -158,7 +158,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
-				.getFields());
+				.getEntityFields());
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return standardFormattingSQL(generateUpdateSQL(fields, idkey,
@@ -168,7 +168,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 	public String getInsertSQL() {
 
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
-				.getFields());
+				.getEntityFields());
 
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
@@ -299,7 +299,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 	}
 
 	public String formatFields(String sql) {
-		String[] fields = eHandler.getFields();
+		String[] fields = eHandler.getEntityFields();
 		for (String s : fields) {
 			int matchIndex = sql.indexOf(s);
 			if (matchIndex >= 0) {

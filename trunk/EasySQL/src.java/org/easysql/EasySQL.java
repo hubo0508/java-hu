@@ -29,7 +29,7 @@ public class EasySQL {
 	/** ************************************************************************************************************************************** */
 
 	public static String key(Class<?> clazz) {
-		return clazz.getCanonicalName() + "." + Entity.NOT_TAKE;
+		return clazz.getCanonicalName() + "." + Entity.FILTER;
 	}
 
 }
