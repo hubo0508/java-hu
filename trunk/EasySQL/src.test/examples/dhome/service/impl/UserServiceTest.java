@@ -30,11 +30,24 @@ public class UserServiceTest extends BaseTest {
 
 	public void update(User u) {
 
-		SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
-		String sql = sqlHandler.getUpdateSQL();
-		Object[] params = sqlHandler.objectArray(u, sql);
+		DBPool pool = MySqlPool.getInstance();
+		try {
 
-		System.out.println(sql);
+			SQLHandler sqlHandler = new SQLHandler(
+					new EntityHandler(User.class));
+			String sql = sqlHandler.getUpdateSQL();
+			Object[] params = sqlHandler.objectArray(u, sql);
+
+			System.out.println(sql);
+
+			int i = new QueryRunner().update(pool.getConnection(), sql, params);
+
+			System.out.println(i);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.release();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -43,7 +56,8 @@ public class UserServiceTest extends BaseTest {
 		DBPool pool = MySqlPool.getInstance();
 
 		try {
-			SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
+			SQLHandler sqlHandler = new SQLHandler(
+					new EntityHandler(User.class));
 			String sql = sqlHandler.getInsertSQL();
 			Object[] params = sqlHandler.objectArray(u);
 
