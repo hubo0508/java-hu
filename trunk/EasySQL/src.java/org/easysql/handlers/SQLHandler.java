@@ -2,6 +2,8 @@ package org.easysql.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.easysql.EasySQL;
@@ -345,11 +347,11 @@ public class SQLHandler {
 		}
 
 		if (replaceValue != null) {
-			ele = EasySQL.replaceFiled(replaceValue, ele);
+			ele = replaceFiled(replaceValue, ele);
 		}
 
 		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
-			ele = EasySQL.convertedIntoSegmentation(ele);
+			ele = convertedIntoSegmentation(ele);
 		}
 
 		return ele;
@@ -358,5 +360,41 @@ public class SQLHandler {
 	private static String getMethodName(String methodPrefix, String fieldName) {
 		String firstLetter = fieldName.substring(0, 1).toUpperCase();
 		return methodPrefix + firstLetter + fieldName.substring(1);
+	}
+	
+	private static String replaceFiled(String[] replaceValue, String text) {
+
+		String returnvalue = text;
+		for (String string : replaceValue) {
+			if (StringUtils.isNotEmpty(string)) {
+				String[] value = string.split(":");
+				if (value[0].equals(text)) {
+					returnvalue = value[1];
+				}
+			}
+		}
+
+		return returnvalue;
+	}
+
+	private static String convertedIntoSegmentation(String text) {
+
+		StringBuffer sb = new StringBuffer();
+		int cacheIndex = 0;
+
+		Pattern p = Pattern.compile("[A-Z]");
+		Matcher m = p.matcher(text);
+		while (m.find()) {
+			String value = text.substring(cacheIndex, m.start());
+			if (StringUtils.isEmpty(value)) {
+				break;
+			}
+			sb.append(value);
+			sb.append("_");
+			cacheIndex = m.start();
+		}
+		sb.append(text.substring(cacheIndex));
+
+		return sb.toString().toLowerCase();
 	}
 }
