@@ -2,7 +2,8 @@ package examples.dhome.pool;
 
 import java.io.IOException;
 
-import com.easysql.ReadProperties;
+import org.easysql.ReadProperties;
+
 
 /**
  * 

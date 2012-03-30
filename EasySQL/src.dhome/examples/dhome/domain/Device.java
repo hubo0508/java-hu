@@ -2,8 +2,9 @@ package examples.dhome.domain;
 
 import java.util.Date;
 
-import com.easysql.core.Entity;
-import com.easysql.handlers.EntityFilter;
+import org.easysql.core.Entity;
+import org.easysql.handlers.EntityFilter;
+
 
 
 @SuppressWarnings("serial")

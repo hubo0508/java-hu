@@ -1,7 +1,8 @@
 package examples.dhome.domain;
 
-import com.easysql.core.Entity;
-import com.easysql.handlers.EntityFilter;
+import org.easysql.core.Entity;
+import org.easysql.handlers.EntityFilter;
+
 
 @SuppressWarnings("serial")
 public class User extends Entity {
