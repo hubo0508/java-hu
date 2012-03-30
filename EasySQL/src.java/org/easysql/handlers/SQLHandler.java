@@ -35,7 +35,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 				object = convertedIntoHump(object);
 			}
 			String methodname = getMethodName("get", object);
-			params[i] = getEntityValue(methodname, entity);
+			params[i] = getFieldValues(methodname, entity);
 		}
 		return params;
 	}
@@ -62,7 +62,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 				}
 			}
 			String methodname = getMethodName("get", fields[i]);
-			params[count] = getEntityValue(methodname, entity);
+			params[count] = getFieldValues(methodname, entity);
 			count++;
 		}
 
