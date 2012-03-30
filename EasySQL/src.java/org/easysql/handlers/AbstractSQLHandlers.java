@@ -4,6 +4,14 @@ import java.util.StringTokenizer;
 
 public class AbstractSQLHandlers {
 
+	public static void main(String[] args) {
+		String sql = "UPDATE user SET id=?, username=?, password=? WHERE   username=   ?, password=         ?";
+
+		AbstractSQLHandlers sqlHandlers = new AbstractSQLHandlers();
+		System.out.println(sqlHandlers.standardFormattingSQL(sql));
+
+	}
+
 	public String[] splitSQL(String sql) {
 		StringTokenizer stk = new StringTokenizer(sql, " ");
 		int len = stk.countTokens();
@@ -23,6 +31,9 @@ public class AbstractSQLHandlers {
 		for (int i = 0; i < len; i++) {
 			String element = splitSql[i];
 			sb.append(element);
+			if (i == len - 1) {
+				break;
+			}
 			String nextElement = splitSql[i + 1];
 			if ("=".equals(nextElement)) {
 				sb.append(nextElement);
@@ -31,8 +42,15 @@ public class AbstractSQLHandlers {
 			}
 			if ("=?".equals(nextElement)) {
 				sb.append(nextElement);
+				i = i + 1;
 			}
-			sb.append(" ");
+			if ((element.length() - 1) == element.indexOf("=")) {
+				sb.append(nextElement);
+				i = i + 1;
+			}
+			if (i < len-1) {
+				sb.append(" ");
+			}
 		}
 
 		return sb.toString();

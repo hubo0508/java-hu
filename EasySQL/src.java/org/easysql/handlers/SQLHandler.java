@@ -180,7 +180,8 @@ public class SQLHandler extends AbstractSQLHandlers {
 				EasySQL.key(eHandler.getClazz()));
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
-		return generateUpdateSQL(fields, idkey, formatFields(sql)).toString();
+		return standardFormattingSQL(generateUpdateSQL(fields, idkey,
+				formatFields(sql)).toString());
 	}
 
 	public String getInsertSQL() {
@@ -219,14 +220,14 @@ public class SQLHandler extends AbstractSQLHandlers {
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
 			String field = fields[i];
-			if (!idkey.equals(field)) {
-				sb.append(field);
-				if (i < len - 1) {
-					sb.append("=?, ");
-				} else {
-					sb.append("=? ");
-				}
+			// if (!idkey.equals(field)) {
+			sb.append(field);
+			if (i < len - 1) {
+				sb.append("=?, ");
+			} else {
+				sb.append("=? ");
 			}
+			// }
 		}
 	}
 
