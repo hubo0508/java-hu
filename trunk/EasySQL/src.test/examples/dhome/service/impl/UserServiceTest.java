@@ -29,9 +29,9 @@ public class UserServiceTest extends BaseTest {
 	}
 
 	public void update(User u) {
-		EntityHandler eHandler = new EntityHandler(User.class);
-		String sql = SQLHandler.getUpdateSQL(eHandler);
-		Object[] params = SQLHandler.objectArray(eHandler, u, sql);
+		SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
+		String sql = sqlHandler.getUpdateSQL();
+		Object[] params = sqlHandler.objectArray(u, sql);
 
 		System.out.println(sql);
 	}
@@ -42,9 +42,9 @@ public class UserServiceTest extends BaseTest {
 		DBPool pool = MySqlPool.getInstance();
 
 		try {
-			EntityHandler eHandler = new EntityHandler(User.class);
-			String sql = SQLHandler.getInsertSQL(eHandler);
-			Object[] params = SQLHandler.objectArray(eHandler, u);
+			SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
+			String sql = sqlHandler.getInsertSQL();
+			Object[] params = sqlHandler.objectArray(u);
 
 			System.out.println(sql);
 
