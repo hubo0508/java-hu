@@ -1,7 +1,5 @@
 package org.easysql.handlers;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,34 +11,38 @@ import org.easysql.core.Mapping;
 
 public class SQLHandler extends AbstractSQLHandlers {
 
-	private final static String[] keywords = new String[] { "IN", "WHERE",
-			"SELECT", "FROM", "UPDATE", "SET" };
-
 	private EntityHandler eHandler;
 
 	public SQLHandler(EntityHandler eHandler) {
 		this.eHandler = eHandler;
+		super.setFilter((EntityFilter) Mapping.getInstance().get(
+				EasySQL.key(eHandler.getClazz())));
+		super.setFieldFule((String) Mapping.getInstance().get(
+				EasySQL.FIELD_RULE));
 	}
 
+	/**
+	 * 根据SQL中参数位置，按顺序取得Object[]值
+	 */
 	public Object[] objectArray(Entity entity, String sql) {
-
-		String nameRule = (String) Mapping.getInstance()
-				.get(EasySQL.FIELD_RULE);
 
 		String[] fields = getOrderlyTableField(sql);
 		int len = fields.length;
 		Object[] params = new Object[len];
 		for (int i = 0; i < len; i++) {
 			String object = (String) fields[i];
-			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
+			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getFieldFule())) {
 				object = convertedIntoHump(object);
 			}
 			String methodname = getMethodName("get", object);
-			params[i] = getValue(methodname, entity);
+			params[i] = getEntityValue(methodname, entity);
 		}
 		return params;
 	}
 
+	/**
+	 * 根据Entity取得取得Object[]值
+	 */
 	public Object[] objectArray(Entity entity) {
 
 		String[] fields = eHandler.getFields();
@@ -60,33 +62,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 				}
 			}
 			String methodname = getMethodName("get", fields[i]);
-			Object value = getValue(methodname, entity);
-			params[count] = value;
+			params[count] = getEntityValue(methodname, entity);
 			count++;
 		}
 
 		return params;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Object getValue(String methodname, Entity entity) {
-		try {
-			Class clazz = entity.getClass();
-			Method method = clazz.getMethod(methodname, new Class[] {});
-			Object value = method.invoke(entity, new Object[] {});
-			return value;
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public String getSelectSQL(String sql) {
@@ -113,9 +93,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getDeleteSQL() {
 
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(eHandler.getClazz()));
-		String idkey = (String) targetMap.get(EntityFilter.ID);
+		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		String tablename = formatSingeField(eHandler.getClazz(), eHandler
 				.getClazz().getSimpleName());
@@ -148,10 +126,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String[] fields = formatFields(eHandler.getClazz(), filed);
 
-		// 取得當前實體鍋爐條件
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(eHandler.getClazz()));
-		String idkey = (String) targetMap.get(EntityFilter.ID);
+		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
@@ -160,10 +135,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String[] fields = formatFields(eHandler.getClazz(), filed);
 
-		// 取得當前實體鍋爐條件
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(eHandler.getClazz()));
-		String idkey = (String) targetMap.get(EntityFilter.ID);
+		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, where).toString();
 	}
@@ -173,10 +145,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
 				.getFields());
 
-		// 取得當前實體鍋爐條件
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(eHandler.getClazz()));
-		String idkey = (String) targetMap.get(EntityFilter.ID);
+		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
@@ -190,11 +159,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
 				.getFields());
-
-		// 取得當前實體鍋爐條件
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(eHandler.getClazz()));
-		String idkey = (String) targetMap.get(EntityFilter.ID);
+		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return standardFormattingSQL(generateUpdateSQL(fields, idkey,
 				formatFields(where)).toString());
@@ -205,14 +170,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
 				.getFields());
 
-		// 取得當前實體鍋爐條件
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(eHandler.getClazz()));
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		// 主鍵生成機制
-		String geneValue = (String) targetMap
-				.get(EntityFilter.GENERATOR_SEQ_VALUE);
+		String geneValue = (String) getFilter().get(
+				EntityFilter.GENERATOR_SEQ_VALUE);
 		if (StringUtils.isEmpty(geneValue)) {
 			geneValue = (String) Mapping.getInstance().get(
 					EasySQL.GENERATOR_SEQ_VALUE);
@@ -330,13 +292,10 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String formatSingeField(Class<?> clazz, String elements) {
 
-		String nameRule = (String) Mapping.getInstance()
-				.get(EasySQL.FIELD_RULE);
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(clazz));
-		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
+		String[] replaceValue = (String[]) getFilter()
+				.get(EntityFilter.REPLACE);
 
-		return convertedElement(elements, replaceValue, nameRule);
+		return convertedElement(elements, replaceValue, getFieldFule());
 	}
 
 	public String formatFields(String sql) {
@@ -355,18 +314,15 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String[] formatFields(Class<?> clazz, String[] fields) {
 
-		String nameRule = (String) Mapping.getInstance()
-				.get(EasySQL.FIELD_RULE);
-		EntityFilter targetMap = (EntityFilter) Mapping.getInstance().get(
-				EasySQL.key(clazz));
-		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
+		String[] replaceValue = (String[]) getFilter()
+				.get(EntityFilter.REPLACE);
 
-		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
+		if (EasySQL.FIELD_RULE_HUMP.equals(getFieldFule())) {
 			return fields;
 		}
 
 		for (int i = 0; i < fields.length; i++) {
-			fields[i] = convertedElement(fields[i], replaceValue, nameRule);
+			fields[i] = convertedElement(fields[i], replaceValue, getFieldFule());
 		}
 
 		return fields;
