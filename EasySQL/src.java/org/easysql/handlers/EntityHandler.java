@@ -6,7 +6,6 @@ import org.easysql.core.Entity;
 import org.easysql.core.Mapping;
 import org.easysql.core.ObjectManage;
 
-
 public class EntityHandler extends ObjectManage {
 
 	public EntityHandler() {
@@ -22,7 +21,7 @@ public class EntityHandler extends ObjectManage {
 	public String[] getFields() {
 
 		// 判断实例类是否继承com.easysql.core.Entity
-		if (!isExtendsEntity(getClazz())) {
+		if (!isExtendsEntity()) {
 			throw new RuntimeException(getClazz().getCanonicalName()
 					+ "未继承基类com.easysql.core.Entity");
 		}
@@ -79,17 +78,4 @@ public class EntityHandler extends ObjectManage {
 		return newElements;
 	}
 
-	public boolean isExtendsEntity(Class<?> clazz) {
-
-		if (clazz == null) {
-			throw new RuntimeException("clazz对象为NULL");
-		}
-
-		if (clazz.getSuperclass().getCanonicalName().toString().equals(
-				"com.easysql.core.Entity")) {
-			return true;
-		}
-
-		return false;
-	}
 }

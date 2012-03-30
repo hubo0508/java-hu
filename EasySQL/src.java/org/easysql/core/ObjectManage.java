@@ -25,6 +25,20 @@ public class ObjectManage {
 	public ObjectManage() {
 		super();
 	}
+	
+	protected boolean isExtendsEntity() {
+
+		if (clazz == null) {
+			throw new RuntimeException("NULL class");
+		}
+
+		if (clazz.getSuperclass().getCanonicalName().toString().equals(
+				"org.easysql.core.Entity")) {
+			return true;
+		}
+
+		return false;
+	}
 
 	@SuppressWarnings("unchecked")
 	public ObjectManage(String canonicalName) {

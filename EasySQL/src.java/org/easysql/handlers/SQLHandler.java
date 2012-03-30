@@ -10,11 +10,22 @@ import org.easysql.EasySQL;
 import org.easysql.core.Entity;
 import org.easysql.core.Mapping;
 
-
 public class SQLHandler {
 
-	public static Object[] objectArray(EntityHandler eHandler,
-			Entity entity) {
+	public static Object[] objectArray(EntityHandler eHandler, Entity entity,
+			String sql) {
+
+		String[] fields = eHandler.getFields();
+		for (String s : fields) {
+			if (sql.indexOf(s) >= 0) {
+				System.out.println(s);
+			}
+		}
+
+		return null;
+	}
+
+	public static Object[] objectArray(EntityHandler eHandler, Entity entity) {
 
 		String[] fields = eHandler.getFields();
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
@@ -200,7 +211,7 @@ public class SQLHandler {
 			StringBuffer sb) {
 
 		int len = fields.length;
-		for (int i = 0; i < len; i++) {
+		for (int i = 1; i < len; i++) {
 			String field = fields[i];
 			if (!idkey.equals(field)) {
 				sb.append(field);
@@ -361,7 +372,7 @@ public class SQLHandler {
 		String firstLetter = fieldName.substring(0, 1).toUpperCase();
 		return methodPrefix + firstLetter + fieldName.substring(1);
 	}
-	
+
 	private static String replaceFiled(String[] replaceValue, String text) {
 
 		String returnvalue = text;
