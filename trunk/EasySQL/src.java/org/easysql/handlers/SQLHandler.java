@@ -25,8 +25,8 @@ public class SQLHandler extends AbstractSQLHandlers {
 		this.eHandler = eHandler;
 		super.setFilter((EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(eHandler.getClazz())));
-		super.setNameRule((String) Mapping.getInstance().get(
-				EasySQL.FIELD_RULE));
+		super.setNameRule((String) Mapping.getInstance()
+				.get(EasySQL.FIELD_RULE));
 	}
 
 	/**
@@ -102,8 +102,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
-		String tablename = formatSingeField(eHandler.getClazz(), eHandler
-				.getClazz().getSimpleName());
+		String tablename = formatSingeField(eHandler.getClazz().getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
@@ -117,8 +116,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getDeleteSQL(String where) {
 
-		String tablename = formatSingeField(eHandler.getClazz(), eHandler
-				.getClazz().getSimpleName());
+		String tablename = formatSingeField(eHandler.getClazz().getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
@@ -294,7 +292,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sb;
 	}
 
-	public String formatSingeField(Class<?> clazz, String elements) {
+	public String formatSingeField(String elements) {
 
 		String[] replaceValue = (String[]) getFilter()
 				.get(EntityFilter.REPLACE);
@@ -307,7 +305,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		for (String s : fields) {
 			int matchIndex = sql.indexOf(s);
 			if (matchIndex >= 0) {
-				String formatAfter = formatSingeField(eHandler.getClazz(), s);
+				String formatAfter = formatSingeField(s);
 				sql = sql.substring(0, matchIndex) + formatAfter
 						+ sql.substring(matchIndex + s.length());
 			}
@@ -315,7 +313,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		return sql;
 	}
-	
+
 	/**
 	 * 设置过滤条件
 	 */
@@ -328,9 +326,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 			return fields;
 		}
 
-		for (int i = 0; i < fields.length; i++) {
-			fields[i] = convertedElement(fields[i], replaceValue,
-					getNameRule());
+		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
+			for (int i = 0; i < fields.length; i++) {
+				fields[i] = convertedElement(fields[i], replaceValue,
+						getNameRule());
+			}
 		}
 
 		return fields;
@@ -354,7 +354,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return ele;
 	}
 
-	public String convertedElement(String ele, String[] replaceValue,
+	private String convertedElement(String ele, String[] replaceValue,
 			String nameRule) {
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
