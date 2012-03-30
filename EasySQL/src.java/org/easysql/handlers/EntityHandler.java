@@ -3,9 +3,9 @@ package org.easysql.handlers;
 import java.lang.reflect.Field;
 
 import org.easysql.EasySQL;
-import org.easysql.core.Entity;
 import org.easysql.core.Mapping;
 import org.easysql.core.ObjectManage;
+
 
 /**
  * 实体简化操作类
@@ -21,7 +21,7 @@ public class EntityHandler extends ObjectManage {
 
 	public EntityHandler(Class<?> clazz) {
 		super.setCanonicalName(clazz.getCanonicalName());
-		super.setClazz((Class<Entity>) clazz);
+		super.setClazz(clazz);
 	}
 
 	/**

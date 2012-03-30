@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ObjectManage {
+public class ObjectManage<T extends java.io.Serializable> {
 
 	protected Log log = LogFactory.getLog(ObjectManage.class);
 
