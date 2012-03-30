@@ -11,12 +11,21 @@ public class User extends Entity {
 	private String username;
 	private String password;
 	private String cname;
+	private String userName;
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	@Override
 	public EntityFilter notTake() {
 
 		EntityFilter ef = new EntityFilter();
-		ef.notTask("cname");
+		ef.notTask("userName");
 
 		return ef;
 	}
