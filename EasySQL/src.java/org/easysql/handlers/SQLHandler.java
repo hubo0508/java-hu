@@ -372,7 +372,10 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		return ele;
 	}
-
+	
+	/**
+	 * 取得方法名，如：getUserName
+	 */
 	private String getMethodName(String methodPrefix, String fieldName) {
 		String firstLetter = fieldName.substring(0, 1).toUpperCase();
 		return methodPrefix + firstLetter + fieldName.substring(1);
@@ -420,9 +423,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return humpname.toString();
 	}
 
-	/**
-	 * 
-	 */
+
 	/**
 	 * 将文本转换成分段命名规则。</br></br>
 	 * 

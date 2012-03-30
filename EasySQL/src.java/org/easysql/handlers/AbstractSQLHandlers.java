@@ -109,6 +109,8 @@ public class AbstractSQLHandlers {
 		}
 		return null;
 	}
+	
+	
 
 	/**
 	 * POJO过滤条件
