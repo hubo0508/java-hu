@@ -10,7 +10,7 @@ import org.easysql.EasySQL;
 import org.easysql.core.Entity;
 import org.easysql.core.Mapping;
 
-public class SQLHandler {
+public class SQLHandler extends AbstractSQLHandlers{
 
 	public static Object[] objectArray(EntityHandler eHandler, Entity entity,
 			String sql) {
@@ -408,4 +408,5 @@ public class SQLHandler {
 
 		return sb.toString().toLowerCase();
 	}
+	
 }
