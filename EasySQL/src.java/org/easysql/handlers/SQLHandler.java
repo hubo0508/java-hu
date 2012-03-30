@@ -2,6 +2,7 @@ package org.easysql.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,9 @@ import org.easysql.core.Mapping;
 
 public class SQLHandler extends AbstractSQLHandlers {
 
+	private final static String[] keywords = new String[] { "IN", "WHERE",
+			"SELECT", "FROM", "UPDATE", "SET" };
+
 	private EntityHandler eHandler;
 
 	public SQLHandler(EntityHandler eHandler) {
@@ -20,11 +24,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public Object[] objectArray(Entity entity, String sql) {
 
+		String nameRule = (String) Mapping.getInstance()
+				.get(EasySQL.FIELD_RULE);
+
 		String[] fields = eHandler.getFields();
 		for (String s : fields) {
-			if (sql.indexOf(s) >= 0) {
-				System.out.println(s);
-			}
+			// int index = sql
 		}
 
 		return null;
@@ -169,8 +174,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
 	}
 
-	// UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-	public String getUpdateSQL(String sql) {
+	public String getUpdateSQL(String where) {
+
+		String newWhere = where.toUpperCase();
+		if (newWhere.indexOf("UPDATE") >= 0) {
+			return standardFormattingSQL(formatFields(where));
+		}
 
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
 				.getFields());
@@ -181,7 +190,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String idkey = (String) targetMap.get(EntityFilter.ID);
 
 		return standardFormattingSQL(generateUpdateSQL(fields, idkey,
-				formatFields(sql)).toString());
+				formatFields(where)).toString());
 	}
 
 	public String getInsertSQL() {
@@ -320,7 +329,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 				EasySQL.key(clazz));
 		String[] replaceValue = (String[]) targetMap.get(EntityFilter.REPLACE);
 
-		return convertedAfterElement(elements, replaceValue, nameRule);
+		return convertedElement(elements, replaceValue, nameRule);
 	}
 
 	public String formatFields(String sql) {
@@ -350,13 +359,31 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 
 		for (int i = 0; i < fields.length; i++) {
-			fields[i] = convertedAfterElement(fields[i], replaceValue, nameRule);
+			fields[i] = convertedElement(fields[i], replaceValue, nameRule);
 		}
 
 		return fields;
 	}
 
-	public String convertedAfterElement(String ele, String[] replaceValue,
+	public String reverseElement(String ele, String[] replaceValue,
+			String nameRule) {
+
+		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
+			return ele;
+		}
+
+		if (replaceValue != null) {
+			ele = replaceFiled(replaceValue, ele);
+		}
+
+		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
+			ele = convertedIntoSegmentation(ele);
+		}
+
+		return ele;
+	}
+
+	public String convertedElement(String ele, String[] replaceValue,
 			String nameRule) {
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
@@ -394,6 +421,30 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return returnvalue;
 	}
 
+	// user_name => userName
+	private String convertedIntoHump(String text) {
+
+		StringBuffer humpname = new StringBuffer();
+		String[] textArray = text.split("_");
+		int len = textArray.length;
+		if (len == 1) {
+
+		} else {
+			for (int i = 0; i < len; i++) {
+				if (i == 0) {
+					humpname.append(textArray[i]);
+				} else {
+					String v = textArray[i];
+					String firstLetter = v.substring(0, 1).toUpperCase();
+					humpname.append(firstLetter + v.substring(1));
+				}
+			}
+		}
+
+		return humpname.toString();
+	}
+
+	// userName => user_name
 	private String convertedIntoSegmentation(String text) {
 
 		StringBuffer sb = new StringBuffer();
@@ -415,4 +466,80 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sb.toString().toLowerCase();
 	}
 
+	// 根据SQL中参数位置，取得相应的字段
+	public String[] getOrderlyTableField(String sql) {
+
+		String[] tableFieldArray = new String[countParameter(sql)];
+		int count = 0;
+		while (true) {
+			int index = sql.indexOf("?");
+			if (index >= 0) {
+				String tableField = sql.substring(0, index - 1);
+				if (isContainsTheKeyword(tableField)) {
+					tableField = deleteKeywordsOfSQL(tableField);
+				} else {
+					tableField = tableField.substring(tableField
+							.lastIndexOf(" ") + 1);
+				}
+
+				tableFieldArray[count] = tableField;
+				count++;
+
+				sql = sql.substring(index + 1);
+			} else {
+				break;
+			}
+		}
+
+		return tableFieldArray;
+	}
+
+	// 刪除SQL中的關鍵字
+	public String deleteKeywordsOfSQL(String sql) {
+
+		String temp = sql;
+
+		while (true) {
+			sql = sql.toUpperCase();
+			int index = sql.lastIndexOf("IN");
+			if (index >= 0) {
+				sql = sql.substring(0, index - 1);
+			}
+			String tableField = sql.substring(sql.lastIndexOf(" ") + 1);
+			if (!isKeywordsOfSQL(tableField)) {
+				int tableFieldIndex = temp.toUpperCase()
+						.lastIndexOf(tableField);
+				return temp.substring(tableFieldIndex, tableFieldIndex
+						+ tableField.length());
+			}
+		}
+	}
+
+	// 是否为SQL关键字
+	private boolean isKeywordsOfSQL(String text) {
+		for (String key : keywords) {
+			if (text.equals(key)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// SQL中是否包含有关键字
+	private boolean isContainsTheKeyword(String text) {
+		text = text.toUpperCase();
+		for (String key : keywords) {
+			int index = text.lastIndexOf(key);
+			if (index >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 取得SQL中问号个数
+	private int countParameter(String sql) {
+		StringTokenizer stk = new StringTokenizer(sql, "?");
+		return stk.countTokens() - 1;
+	}
 }
