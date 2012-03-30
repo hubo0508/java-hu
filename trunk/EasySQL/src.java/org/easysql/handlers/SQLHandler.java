@@ -154,14 +154,14 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String newWhere = where.toUpperCase();
 		if (newWhere.indexOf("UPDATE") >= 0) {
-			return standardFormattingSQL(formatFields(where));
+			return standardFormattingOfSQL(formatFields(where));
 		}
 
 		String[] fields = formatFields(eHandler.getClazz(), eHandler
 				.getEntityFields());
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
-		return standardFormattingSQL(generateUpdateSQL(fields, idkey,
+		return standardFormattingOfSQL(generateUpdateSQL(fields, idkey,
 				formatFields(where)).toString());
 	}
 
