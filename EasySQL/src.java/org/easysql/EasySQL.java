@@ -2,6 +2,9 @@ package org.easysql;
 
 import org.easysql.core.Entity;
 
+/**
+ * 常量库
+ */
 public class EasySQL {
 
 	public final static int SUCCESSFUL = 1;
@@ -9,13 +12,19 @@ public class EasySQL {
 	public final static int FAILED = 0;
 
 	/** ************************************************************************************************************************************** */
-
+	
+	/**
+	 * POJO字段命名与数据命名的方式为：驼峰命名法。如：userName;
+	 */
 	public final static String FIELD_RULE_HUMP = "hump";
 
+	/**
+	 * POJO字段命名与数据命名的方式为：分段名法。如：user_name;
+	 */
 	public final static String FIELD_RULE_SEGMENTATION = "segmentation";
 
 	/** ************************************************************************************************************************************** */
-
+	
 	public static final String GENERATOR = "easysql-mapping/generator";
 
 	public static final String GENERATOR_SEQ_VALUE = "easysql-mapping/generator/param";
@@ -28,6 +37,9 @@ public class EasySQL {
 
 	/** ************************************************************************************************************************************** */
 
+	/**
+	 * 取得过滤条件全路径
+	 */
 	public static String key(Class<?> clazz) {
 		return clazz.getCanonicalName() + "." + Entity.FILTER;
 	}
