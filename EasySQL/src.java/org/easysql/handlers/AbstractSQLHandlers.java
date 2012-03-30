@@ -6,12 +6,21 @@ import java.util.StringTokenizer;
 
 import org.easysql.core.Entity;
 
+/**
+ * SQL处理抽像类
+ */
 public class AbstractSQLHandlers {
-	
+
+	/**
+	 * POJO过滤条件
+	 */
 	private EntityFilter filter;
-	
+
+	/**
+	 * POJO与数据库字段名字规则(hump segmentation)
+	 */
 	private String fieldFule;
-	
+
 	/**
 	 * SQL关键字
 	 */
@@ -22,7 +31,7 @@ public class AbstractSQLHandlers {
 		String sql = "UPDATE user SET id=?, username=?, password=? WHERE   username=   ?, password=         ?";
 
 		AbstractSQLHandlers sqlHandlers = new AbstractSQLHandlers();
-		System.out.println(sqlHandlers.standardFormattingSQL(sql));
+		System.out.println(sqlHandlers.standardFormattingOfSQL(sql));
 
 	}
 
@@ -35,8 +44,11 @@ public class AbstractSQLHandlers {
 		}
 		return sqlArray;
 	}
-
-	public String standardFormattingSQL(String sql) {
+	
+	/**
+	 * 对SQL进行标准格式化。</br></br>
+	 */
+	public String standardFormattingOfSQL(String sql) {
 
 		StringBuffer sb = new StringBuffer();
 		String[] splitSql = splitSQL(sql);
@@ -62,14 +74,14 @@ public class AbstractSQLHandlers {
 				sb.append(nextElement);
 				i = i + 1;
 			}
-			if (i < len-1) {
+			if (i < len - 1) {
 				sb.append(" ");
 			}
 		}
 
 		return sb.toString();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Object getEntityValue(String methodname, Entity entity) {
 		try {
@@ -91,6 +103,9 @@ public class AbstractSQLHandlers {
 		return null;
 	}
 
+	/**
+	 * POJO过滤条件
+	 */
 	public EntityFilter getFilter() {
 		return filter;
 	}
@@ -99,6 +114,9 @@ public class AbstractSQLHandlers {
 		this.filter = filter;
 	}
 
+	/**
+	 * POJO与数据库字段名字规则(hump segmentation)
+	 */
 	public String getFieldFule() {
 		return fieldFule;
 	}
@@ -106,4 +124,5 @@ public class AbstractSQLHandlers {
 	public void setFieldFule(String fieldFule) {
 		this.fieldFule = fieldFule;
 	}
+
 }
