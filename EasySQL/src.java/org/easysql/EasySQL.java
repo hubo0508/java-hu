@@ -1,11 +1,11 @@
-package com.easysql;
+package org.easysql;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.easysql.core.Entity;
 
-import com.easysql.core.Entity;
 
 public class EasySQL {
 	

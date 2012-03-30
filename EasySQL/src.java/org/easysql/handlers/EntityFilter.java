@@ -1,4 +1,4 @@
-package com.easysql.handlers;
+package org.easysql.handlers;
 
 import java.util.HashMap;
 
