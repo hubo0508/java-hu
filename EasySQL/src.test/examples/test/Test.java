@@ -8,8 +8,7 @@ import examples.dhome.domain.Device;
 
 public class Test extends BaseTest {
 
-	public static void main(String[] args) throws InstantiationException,
-			IllegalAccessException {
+	public static void main(String[] args) {
 
 		Test test = new Test();
 		// System.out.println("***************updateSQL***************");
