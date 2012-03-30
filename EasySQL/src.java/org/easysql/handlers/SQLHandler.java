@@ -82,7 +82,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
-			String[] fields = formatFields(eHandler.getEntityFields());
+			String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
 			int len = fields.length;
 			for (int i = 1; i < fields.length; i++) {
 				sb.append(fields[i]);
@@ -95,7 +95,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		sql = sql.substring(0, index) + sb.toString()
 				+ sql.substring(index + 1);
 
-		return formatFields(sql);
+		return setConditionsOfFilter(sql);
 	}
 
 	public String getDeleteSQL() {
@@ -124,14 +124,14 @@ public class SQLHandler extends AbstractSQLHandlers {
 		sb.append("DELETE FROM ");
 		sb.append(tablename);
 		sb.append(" WHERE ");
-		sb.append(formatFields(where));
+		sb.append(setConditionsOfFilter(where));
 
 		return sb.toString();
 	}
 
 	public String getUpdateSQL(String[] filed) {
 
-		String[] fields = formatFields(filed);
+		String[] fields = setConditionsOfFilter(filed);
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -140,7 +140,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL(String[] filed, String where) {
 
-		String[] fields = formatFields(filed);
+		String[] fields = setConditionsOfFilter(filed);
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -149,7 +149,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL() {
 
-		String[] fields = formatFields(eHandler.getEntityFields());
+		String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -160,21 +160,19 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String newWhere = where.toUpperCase();
 		if (newWhere.indexOf("UPDATE") >= 0) {
-			return standardFormattingOfSQL(formatFields(where));
+			return standardFormattingOfSQL(setConditionsOfFilter(where));
 		}
 
-		String[] fields = formatFields(eHandler.getClazz(), eHandler
-				.getEntityFields());
+		String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return standardFormattingOfSQL(generateUpdateSQL(fields, idkey,
-				formatFields(where)).toString());
+				setConditionsOfFilter(where)).toString());
 	}
 
 	public String getInsertSQL() {
 
-		String[] fields = formatFields(eHandler.getClazz(), eHandler
-				.getEntityFields());
+		String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
 
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
@@ -304,7 +302,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return convertedElement(elements, replaceValue, getFieldFule());
 	}
 
-	public String formatFields(String sql) {
+	public String setConditionsOfFilter(String sql) {
 		String[] fields = eHandler.getEntityFields();
 		for (String s : fields) {
 			int matchIndex = sql.indexOf(s);
@@ -317,8 +315,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		return sql;
 	}
-
-	public String[] formatFields(String[] fields) {
+	
+	/**
+	 * 设置过滤条件
+	 */
+	public String[] setConditionsOfFilter(String[] fields) {
 
 		String[] replaceValue = (String[]) getFilter()
 				.get(EntityFilter.REPLACE);
