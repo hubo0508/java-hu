@@ -22,7 +22,7 @@ public class User extends Entity {
 	}
 
 	@Override
-	public EntityFilter notTake() {
+	public EntityFilter filter() {
 
 		EntityFilter ef = new EntityFilter();
 		ef.notTask("userName");

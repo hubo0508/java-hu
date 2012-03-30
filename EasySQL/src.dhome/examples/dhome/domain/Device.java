@@ -25,7 +25,7 @@ public class Device  extends Entity {
 	private String activeStr;// 设备状态(未存储数据库)
 
 	@Override
-	public EntityFilter notTake() {
+	public EntityFilter filter() {
 		return null;
 	}
 	

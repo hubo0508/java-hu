@@ -24,7 +24,7 @@ public class RequestCommand extends Entity {
 	private Date createTime;
 	
 	@Override
-	public EntityFilter notTake() {
+	public EntityFilter filter() {
 		return null;
 	}
 	

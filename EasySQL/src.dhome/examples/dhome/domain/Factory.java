@@ -18,7 +18,7 @@ public class Factory  extends Entity {
 	private Date createTime;// 创建时间
 	
 	@Override
-	public EntityFilter notTake() {
+	public EntityFilter filter() {
 		return null;
 	}
 	
