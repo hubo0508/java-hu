@@ -1,8 +1,22 @@
 package org.easysql.handlers;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.StringTokenizer;
 
+import org.easysql.core.Entity;
+
 public class AbstractSQLHandlers {
+	
+	private EntityFilter filter;
+	
+	private String fieldFule;
+	
+	/**
+	 * SQL关键字
+	 */
+	protected final static String[] keywords = new String[] { "IN", "WHERE",
+			"SELECT", "FROM", "UPDATE", "SET" };
 
 	public static void main(String[] args) {
 		String sql = "UPDATE user SET id=?, username=?, password=? WHERE   username=   ?, password=         ?";
@@ -54,5 +68,42 @@ public class AbstractSQLHandlers {
 		}
 
 		return sb.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Object getEntityValue(String methodname, Entity entity) {
+		try {
+			Class clazz = entity.getClass();
+			Method method = clazz.getMethod(methodname, new Class[] {});
+			Object value = method.invoke(entity, new Object[] {});
+			return value;
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public EntityFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(EntityFilter filter) {
+		this.filter = filter;
+	}
+
+	public String getFieldFule() {
+		return fieldFule;
+	}
+
+	public void setFieldFule(String fieldFule) {
+		this.fieldFule = fieldFule;
 	}
 }
