@@ -16,7 +16,7 @@ public class Interface extends Entity {
 	private Date setTime;// 配置时间
 
 	@Override
-	public EntityFilter notTake() {
+	public EntityFilter filter() {
 		return null;
 	}
 
