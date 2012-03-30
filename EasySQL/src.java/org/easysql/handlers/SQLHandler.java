@@ -25,7 +25,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		this.eHandler = eHandler;
 		super.setFilter((EntityFilter) Mapping.getInstance().get(
 				EasySQL.key(eHandler.getClazz())));
-		super.setFieldFule((String) Mapping.getInstance().get(
+		super.setNameRule((String) Mapping.getInstance().get(
 				EasySQL.FIELD_RULE));
 	}
 
@@ -39,7 +39,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		Object[] params = new Object[len];
 		for (int i = 0; i < len; i++) {
 			String column = (String) fields[i];
-			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getFieldFule())) {
+			if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
 				column = convertedIntoHump(column);
 			}
 			String methodname = getMethodName("get", column);
@@ -299,7 +299,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String[] replaceValue = (String[]) getFilter()
 				.get(EntityFilter.REPLACE);
 
-		return convertedElement(elements, replaceValue, getFieldFule());
+		return convertedElement(elements, replaceValue, getNameRule());
 	}
 
 	public String setConditionsOfFilter(String sql) {
@@ -324,13 +324,13 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String[] replaceValue = (String[]) getFilter()
 				.get(EntityFilter.REPLACE);
 
-		if (EasySQL.FIELD_RULE_HUMP.equals(getFieldFule())) {
+		if (EasySQL.FIELD_RULE_HUMP.equals(getNameRule())) {
 			return fields;
 		}
 
 		for (int i = 0; i < fields.length; i++) {
 			fields[i] = convertedElement(fields[i], replaceValue,
-					getFieldFule());
+					getNameRule());
 		}
 
 		return fields;
