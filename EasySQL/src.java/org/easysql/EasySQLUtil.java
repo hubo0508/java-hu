@@ -9,6 +9,8 @@ import java.sql.Statement;
 
 public class EasySQLUtil {
 	
+	
+	
 	 /**
      * Default constructor.
      *
@@ -20,6 +22,8 @@ public class EasySQLUtil {
     public EasySQLUtil() {
         // do nothing
     }
+    
+
 
     /**
      * Close a <code>Connection</code>, avoid closing if null.

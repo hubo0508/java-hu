@@ -65,7 +65,7 @@ public class XmlAnalyze extends ObjectManage {
 			IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 
-		Method getOldMethod = clazz.getMethod(Entity.NOT_TAKE, new Class[] {});
+		Method getOldMethod = clazz.getMethod(Entity.FILTER, new Class[] {});
 		EntityFilter ifmap = (EntityFilter) getOldMethod.invoke(instance,
 				new Object[] {});
 		if (ifmap == null) {
