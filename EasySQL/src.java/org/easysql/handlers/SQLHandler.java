@@ -82,8 +82,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
-			String[] fields = formatFields(eHandler.getClazz(), eHandler
-					.getEntityFields());
+			String[] fields = formatFields(eHandler.getEntityFields());
 			int len = fields.length;
 			for (int i = 1; i < fields.length; i++) {
 				sb.append(fields[i]);
@@ -132,7 +131,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL(String[] filed) {
 
-		String[] fields = formatFields(eHandler.getClazz(), filed);
+		String[] fields = formatFields(filed);
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -141,7 +140,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL(String[] filed, String where) {
 
-		String[] fields = formatFields(eHandler.getClazz(), filed);
+		String[] fields = formatFields(filed);
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -150,8 +149,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL() {
 
-		String[] fields = formatFields(eHandler.getClazz(), eHandler
-				.getEntityFields());
+		String[] fields = formatFields(eHandler.getEntityFields());
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -320,7 +318,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sql;
 	}
 
-	public String[] formatFields(Class<?> clazz, String[] fields) {
+	public String[] formatFields(String[] fields) {
 
 		String[] replaceValue = (String[]) getFilter()
 				.get(EntityFilter.REPLACE);
@@ -372,7 +370,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		return ele;
 	}
-	
+
 	/**
 	 * 取得方法名，如：getUserName
 	 */
@@ -422,7 +420,6 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		return humpname.toString();
 	}
-
 
 	/**
 	 * 将文本转换成分段命名规则。</br></br>
