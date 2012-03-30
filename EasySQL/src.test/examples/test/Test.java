@@ -1,7 +1,7 @@
 package examples.test;
 
-import com.easysql.handlers.EntityHandler;
-import com.easysql.handlers.SQLHandler;
+import org.easysql.handlers.EntityHandler;
+import org.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
 import examples.dhome.domain.Device;

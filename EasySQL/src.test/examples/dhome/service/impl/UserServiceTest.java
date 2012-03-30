@@ -3,10 +3,11 @@ package examples.dhome.service.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.easysql.core.Entity;
-import com.easysql.handlers.EntityHandler;
-import com.easysql.handlers.SQLHandler;
-import com.easysql.jdbc.JdbcRunner;
+import org.apache.commons.dbutils.QueryRunner;
+import org.easysql.core.Entity;
+import org.easysql.handlers.EntityHandler;
+import org.easysql.handlers.SQLHandler;
+
 
 import examples.BaseTest;
 import examples.dhome.domain.User;
@@ -17,29 +18,28 @@ import examples.dhome.pool.MySqlPool;
 public class UserServiceTest extends BaseTest {
 
 	public static void main(String[] args) {
+
+		User u = new User();
+		u.setUsername("hubo-test-3");
+		u.setPassword("hubo-password");
+
 		UserServiceTest test = new UserServiceTest();
-		test.save();
+		test.save(u);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void save() {
+	public void save(User u) {
 
 		DBPool pool = MySqlPool.getInstance();
-		Connection con = pool.getConnection();
 
 		try {
-			User u = new User();
-			u.setUsername("hubo-test-3");
-			u.setPassword("hubo-password");
-
 			EntityHandler eHandler = new EntityHandler(User.class);
 			String sql = SQLHandler.getInsertSQL(eHandler);
-			Object[] params = SQLHandler
-					.entityConvertedObjectArray(eHandler, u);
+			Object[] params = SQLHandler.objectArray(eHandler, u);
 
 			System.out.println(sql);
 
-			int i = new JdbcRunner().update(con, sql, params);
+			int i = new QueryRunner().update(pool.getConnection(), sql, params);
 
 			System.out.println(i);
 		} catch (Exception e) {
