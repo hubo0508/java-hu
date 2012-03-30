@@ -8,7 +8,6 @@ import org.easysql.core.Entity;
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
 
-
 import examples.BaseTest;
 import examples.dhome.domain.User;
 import examples.dhome.pool.DBPool;
@@ -20,11 +19,21 @@ public class UserServiceTest extends BaseTest {
 	public static void main(String[] args) {
 
 		User u = new User();
-		u.setUsername("hubo-test-3");
+		u.setId(7);
+		u.setUsername("hubo-te-----");
 		u.setPassword("hubo-password");
 
 		UserServiceTest test = new UserServiceTest();
-		test.save(u);
+		// test.save(u);
+		test.update(u);
+	}
+
+	public void update(User u) {
+		EntityHandler eHandler = new EntityHandler(User.class);
+		String sql = SQLHandler.getUpdateSQL(eHandler);
+		Object[] params = SQLHandler.objectArray(eHandler, u, sql);
+
+		System.out.println(sql);
 	}
 
 	@SuppressWarnings("unchecked")
