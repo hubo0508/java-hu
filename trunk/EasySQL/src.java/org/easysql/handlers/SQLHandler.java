@@ -15,13 +15,10 @@ import org.easysql.core.Mapping;
 public class SQLHandler extends AbstractSQLHandlers {
 
 	private EntityHandler eHandler;
-	
 
 	private long startPage;
-	
-	
+
 	private long maxResult;
-	
 
 	/**
 	 * 在实例化该对象时，必须传入org.easysql.handlers.EntityHandler实例化对象
@@ -115,10 +112,19 @@ public class SQLHandler extends AbstractSQLHandlers {
 		if (sql.indexOf("*") >= 0) {
 			String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
 			sb.append(fieldsIntoString(fields));
+			sql = sql.substring(0, index) + sb.toString()
+					+ sql.substring(index + 1);
+		} else {
+			index = sql.toUpperCase().indexOf("FROM");
+			if (index >= 0) {
+				String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
+				sb.append("SELECT ");
+				sb.append(fieldsIntoString(fields));
+				sb.append(" ");
+				sb.append(sql);
+				sql = sb.toString();
+			}
 		}
-
-		sql = sql.substring(0, index) + sb.toString()
-				+ sql.substring(index + 1);
 
 		return sqlTextFilter(sql);
 	}
