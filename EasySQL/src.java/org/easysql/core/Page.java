@@ -1,29 +1,38 @@
 package org.easysql.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Page<T extends java.io.Serializable> {
 
+	public Page() {
+
+	}
+
+	/**
+	 * @param pageSize
+	 *            每页显示行数
+	 * @param startPage 起启页
+	 */
+	public Page(int pageSize, int startPage) {
+		super();
+		this.pageSize = pageSize;
+		this.startPage = startPage;
+	}
+
 	/**
 	 * 每页显示行数
 	 */
-	private int limit;
+	private int pageSize = 20;
 
 	/**
-	 * 每页起始行
+	 * 起启页
 	 */
-	private int start;
-
-	/**
-	 * 每页显示行数
-	 */
-	public static final int pageSize = 10;
+	private int startPage;
 
 	/**
 	 * 当前页
 	 */
-	private int currentPage = 0;
+	private int thisPage = 0;
 
 	/**
 	 * 总页数
@@ -60,15 +69,9 @@ public class Page<T extends java.io.Serializable> {
 	/** ************************************************************************ */
 
 	// 返回结果 //
-	private List<T> result = new ArrayList<T>();
-
-	public Page() {
-
-	}
+	private Object result = new Object();
 
 	/**
-	 * @User: HUBO
-	 * 
 	 * @param pageSize
 	 *            每显显示记录数
 	 * @param totalCount
@@ -76,16 +79,15 @@ public class Page<T extends java.io.Serializable> {
 	 * @param result
 	 *            查询结果
 	 */
-	public Page(long totalCount, int currentPage, List<T> result) {
+	public Page(long totalCount, int thisPage, List<T> result) {
 		this.totalCount = totalCount;
 		this.result = result;
-		this.currentPage = currentPage;
+		this.thisPage = thisPage;
 
 		this.totalPage = this.getTotalPages();// 共多少页
 
-		this.setPagePrev(currentPage > 1 ? currentPage - 1 : currentPage);
-		this.setPageNext(currentPage < totalPage ? currentPage + 1
-				: currentPage);
+		this.setPagePrev(thisPage > 1 ? thisPage - 1 : thisPage);
+		this.setPageNext(thisPage < totalPage ? thisPage + 1 : thisPage);
 		this.setPageLast(Integer.parseInt((totalPage + "")));
 	}
 
@@ -104,30 +106,6 @@ public class Page<T extends java.io.Serializable> {
 		return count;
 	}
 
-	public int getLimit() {
-		return limit;
-	}
-
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
-
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-	public int getCurrentPage() {
-		return currentPage;
-	}
-
-	public void setCurrentPage(int currentPage) {
-		this.currentPage = currentPage;
-	}
-
 	public long getTotalPage() {
 		return totalPage;
 	}
@@ -144,6 +122,9 @@ public class Page<T extends java.io.Serializable> {
 		this.totalCount = totalCount;
 	}
 
+	/**
+	 * 首頁
+	 */
 	public int getPageFirst() {
 		return pageFirst;
 	}
@@ -152,6 +133,9 @@ public class Page<T extends java.io.Serializable> {
 		this.pageFirst = pageFirst;
 	}
 
+	/**
+	 * 上一頁
+	 */
 	public int getPagePrev() {
 		return pagePrev;
 	}
@@ -160,6 +144,9 @@ public class Page<T extends java.io.Serializable> {
 		this.pagePrev = pagePrev;
 	}
 
+	/**
+	 * 下一頁
+	 */
 	public int getPageNext() {
 		return pageNext;
 	}
@@ -168,6 +155,9 @@ public class Page<T extends java.io.Serializable> {
 		this.pageNext = pageNext;
 	}
 
+	/**
+	 * 尾頁
+	 */
 	public int getPageLast() {
 		return pageLast;
 	}
@@ -176,11 +166,48 @@ public class Page<T extends java.io.Serializable> {
 		this.pageLast = pageLast;
 	}
 
-	public List<T> getResult() {
+	/**
+	 * 结果集
+	 */
+	public Object getResult() {
 		return result;
 	}
 
-	public void setResult(List<T> result) {
+	public void setResult(Object result) {
 		this.result = result;
 	}
+
+	/**
+	 * 当前页
+	 */
+	public int getThisPage() {
+		return thisPage;
+	}
+
+	public void setThisPage(int thisPage) {
+		this.thisPage = thisPage;
+	}
+
+	/**
+	 * 每页显示行数
+	 */
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	/**
+	 * 开始页
+	 */
+	public int getStartPage() {
+		return startPage;
+	}
+
+	public void setStartPage(int startPage) {
+		this.startPage = startPage;
+	}
+
 }

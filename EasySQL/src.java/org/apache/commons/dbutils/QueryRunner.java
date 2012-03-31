@@ -23,6 +23,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.easysql.core.Page;
+
 /**
  * Executes SQL queries with pluggable strategies for handling
  * <code>ResultSet</code>s.  This class is thread safe.
@@ -36,6 +38,14 @@ public class QueryRunner extends AbstractQueryRunner {
      */
     public QueryRunner() {
         super();
+    }
+    
+    /**
+     * 分页构造
+     */
+    @SuppressWarnings("unchecked")
+	public QueryRunner(Page page) {
+        super.setPage(page);
     }
 
     /**

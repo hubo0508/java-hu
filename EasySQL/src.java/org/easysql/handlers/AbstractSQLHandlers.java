@@ -187,17 +187,6 @@ public class AbstractSQLHandlers {
 
 		return sb.toString();
 	}
-	
-	/**
-	 * Oracle分页
-	 */
-	protected String getLimitString(String sql) {
-		StringBuffer sb = new StringBuffer(100);
-		sb.append("select * from ( select row_.*, rownum rownum_ from ( ");
-		sb.append(sql);
-		sb.append(" ); row_ where rownum<=?); where rownum_>?");
-		return sb.toString();
-	}
 
 	/**
 	 * POJO过滤条件
