@@ -15,6 +15,13 @@ import org.easysql.core.Mapping;
 public class SQLHandler extends AbstractSQLHandlers {
 
 	private EntityHandler eHandler;
+	
+
+	private long startPage;
+	
+	
+	private long maxResult;
+	
 
 	/**
 	 * 在实例化该对象时，必须传入org.easysql.handlers.EntityHandler实例化对象
@@ -78,19 +85,28 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return params;
 	}
 
+	public String getSelectSQLById() {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append(getSelectSQL());
+		sb.append(" WHERE ");
+		sb.append(getFilter().get(EntityFilter.ID));
+		sb.append("=?");
+
+		return sb.toString();
+	}
+
 	public String getSelectSQL() {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT ");
 		String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
-		sb.append(queryFieldsToString(fields));
-		sb.append(" FORM ");
+		sb.append(fieldsIntoString(fields));
+		sb.append(" FROM ");
 		sb.append(getTableName());
 
 		return super.standardFormattingOfSQL(sqlTextFilter(sb.toString()));
 	}
-	
-	
 
 	public String getSelectSQL(String sql) {
 
@@ -98,7 +114,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
 			String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
-			sb.append(queryFieldsToString(fields));
+			sb.append(fieldsIntoString(fields));
 		}
 
 		sql = sql.substring(0, index) + sb.toString()

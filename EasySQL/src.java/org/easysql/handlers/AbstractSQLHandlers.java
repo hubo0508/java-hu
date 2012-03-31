@@ -26,7 +26,7 @@ public class AbstractSQLHandlers {
 	 * POJO与数据库字段名字规则(hump segmentation)
 	 */
 	private String nameRule;
-	
+
 	/**
 	 * POJO所对应的表名
 	 */
@@ -117,7 +117,7 @@ public class AbstractSQLHandlers {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 将文本转换成驼峰命名规则。</br></br>
 	 * 
@@ -170,9 +170,12 @@ public class AbstractSQLHandlers {
 
 		return sb.toString().toLowerCase();
 	}
-	
-	protected String queryFieldsToString(String[] fields){
-		
+
+	/**
+	 * String Array转换成SQL字符串
+	 */
+	protected String fieldsIntoString(String[] fields) {
+
 		StringBuffer sb = new StringBuffer();
 		int len = fields.length;
 		for (int i = 1; i < fields.length; i++) {
@@ -181,9 +184,20 @@ public class AbstractSQLHandlers {
 				sb.append(",");
 			}
 		}
-		
+
 		return sb.toString();
-	} 
+	}
+	
+	/**
+	 * Oracle分页
+	 */
+	protected String getLimitString(String sql) {
+		StringBuffer sb = new StringBuffer(100);
+		sb.append("select * from ( select row_.*, rownum rownum_ from ( ");
+		sb.append(sql);
+		sb.append(" ); row_ where rownum<=?); where rownum_>?");
+		return sb.toString();
+	}
 
 	/**
 	 * POJO过滤条件
