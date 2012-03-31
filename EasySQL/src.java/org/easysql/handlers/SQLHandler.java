@@ -1,8 +1,6 @@
 package org.easysql.handlers;
 
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.easysql.EasySQL;
@@ -339,23 +337,6 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return fields;
 	}
 
-	public String reverseElement(String ele, String[] replaceValue) {
-
-		if (EasySQL.FIELD_RULE_HUMP.equals(getNameRule())) {
-			return ele;
-		}
-
-		if (replaceValue != null) {
-			ele = replaceFiled(replaceValue, ele);
-		}
-
-		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
-			ele = convertedIntoSegmentation(ele);
-		}
-
-		return ele;
-	}
-
 	/**
 	 * 对单个字段设置过虑条件</br></br>
 	 * 
@@ -372,11 +353,11 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 
 		if (replaceValue != null) {
-			text = replaceFiled(replaceValue, text);
+			text = replaceTextValues(replaceValue, text);
 		}
 
 		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
-			text = convertedIntoSegmentation(text);
+			return convertedIntoSegmentation(text);
 		}
 
 		return text;
@@ -390,7 +371,10 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return methodPrefix + firstLetter + fieldName.substring(1);
 	}
 
-	private String replaceFiled(String[] replaceValue, String text) {
+	/**
+	 * 替换文本值
+	 */
+	private String replaceTextValues(String[] replaceValue, String text) {
 
 		String returnvalue = text;
 		for (String string : replaceValue) {
@@ -406,60 +390,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 	}
 
 	/**
-	 * 将文本转换成驼峰命名规则。</br></br>
+	 * 根据SQL中参数(key=?)位置，取得相应的列字段（有顺序的列字段）</br></br>
 	 * 
-	 * 如：user_name => userName
-	 */
-	public String convertedIntoHump(String text) {
-
-		StringBuffer humpname = new StringBuffer();
-		String[] textArray = text.split("_");
-		int len = textArray.length;
-		if (len == 1) {
-			return text;
-		} else {
-			for (int i = 0; i < len; i++) {
-				if (i == 0) {
-					humpname.append(textArray[i]);
-				} else {
-					String oldvalue = textArray[i];
-					String firstLetter = oldvalue.substring(0, 1).toUpperCase();
-					humpname.append(firstLetter + oldvalue.substring(1));
-				}
-			}
-		}
-
-		return humpname.toString();
-	}
-
-	/**
-	 * 将文本转换成分段命名规则。</br></br>
+	 * 该方法完整性有待后期深入。</br>
 	 * 
-	 * 如：userName => user_name
-	 */
-	private String convertedIntoSegmentation(String text) {
-
-		StringBuffer sb = new StringBuffer();
-		int cacheIndex = 0;
-
-		Pattern p = Pattern.compile("[A-Z]");
-		Matcher m = p.matcher(text);
-		while (m.find()) {
-			String value = text.substring(cacheIndex, m.start());
-			if (StringUtils.isEmpty(value)) {
-				break;
-			}
-			sb.append(value);
-			sb.append("_");
-			cacheIndex = m.start();
-		}
-		sb.append(text.substring(cacheIndex));
-
-		return sb.toString().toLowerCase();
-	}
-
-	/**
-	 * 根据SQL中参数(key=?)位置，取得相应的列字段（有顺序的列字段）
+	 * 如：UPDATE user SET user_name=?,
+	 * userAddress=?;对于该SQL取得Column为：["user_name","userAddress"]
 	 */
 	public String[] getOrderlyDatabaseColumn(String sql) {
 
