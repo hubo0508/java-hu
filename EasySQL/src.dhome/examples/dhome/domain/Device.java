@@ -26,7 +26,21 @@ public class Device  extends Entity {
 
 	@Override
 	public EntityFilter filter() {
-		return null;
+		
+		EntityFilter ef = new EntityFilter();
+
+		// 不作表字段
+		ef.notTask("activeStr");
+		ef.notTask("active");
+
+		// 当前字段与数据库字段不一样，需替换
+		ef.put(EntityFilter.REPLACE,
+				new String[] { "factoryCode:factoryCodeReplace" });
+
+		// 對每張表單獨設值虛列
+		ef.put(EntityFilter.GENERATOR_SEQ_VALUE, "deviceSeq");
+
+		return ef;
 	}
 	
 	
