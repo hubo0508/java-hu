@@ -34,11 +34,43 @@ public class UserServiceTest extends BaseTest {
 		UserServiceTest test = new UserServiceTest();
 		// test.save(u);
 		// test.update(u);
-		test.selectUser();
+		//test.selectUserA();
+		test.selectUserB();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void selectUserB() {
+		DBPool pool = MySqlPool.getInstance();
+		Connection con = pool.getConnection();
+		try {
+
+			SQLHandler sqlHandler = new SQLHandler(
+					new EntityHandler(User.class));
+			String sql = sqlHandler.getSelectSQL("id>?");
+			
+			Object[] params = new Object[]{0};
+
+			Page page = (Page) new QueryRunner(new Page(2, 2)).query(con, sql,
+					new BeanListHandler(User.class),params);
+
+			List<User> listuser = (List<User>) page.getResult();
+
+			for (User user : listuser) {
+				System.out.println(user.getId());
+			}
+			System.out.println("当前页：" + page.getThisPage());
+			System.out.println("下一页：" + page.getPageNext());
+			System.out.println("上一页：" + page.getPagePrev());
+			System.out.println("共页：" + page.getTotalPage());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.release();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public void selectUser() {
+	public void selectUserA() {
 		DBPool pool = MySqlPool.getInstance();
 		Connection con = pool.getConnection();
 		try {
@@ -48,19 +80,21 @@ public class UserServiceTest extends BaseTest {
 			String sql = sqlHandler.getSelectSQL();
 			// sql = sqlHandler.getPagingSQL(sql);
 
-			Object list = new QueryRunner(new Page(3, 2)).query(con, sql,
+			Page page = (Page) new QueryRunner(new Page(1, 2)).query(con, sql,
 					new BeanListHandler(User.class));
 
-			Page page = (Page) list;
 			List<User> listuser = (List<User>) page.getResult();
 
 			for (User user : listuser) {
 				System.out.println(user.getId());
 			}
+			System.out.println("当前页：" + page.getThisPage());
+			System.out.println("下一页：" + page.getPageNext());
+			System.out.println("上一页：" + page.getPagePrev());
+			System.out.println("共页：" + page.getTotalPage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			System.out.println(con == null);
 			pool.release();
 		}
 	}
