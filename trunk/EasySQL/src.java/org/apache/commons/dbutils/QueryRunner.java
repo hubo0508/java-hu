@@ -270,9 +270,37 @@ public class QueryRunner extends AbstractQueryRunner {
 	 * @throws SQLException
 	 *             if a database access error occurs
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T query(Connection conn, String sql, ResultSetHandler<T> rsh,
 			Object... params) throws SQLException {
+
+		if (getPage() != null) {
+			String countSql = new SQLResult(sql).count();
+			long totalCount = this.queryCount(conn, countSql, params);
+
+			if (params != null && params.length > 0) {
+				params = mergerObject(params, getObjectParams());
+			}
+			return (T) new Page(totalCount, getPage().getThisPage() + 1,
+					getPage().getPageSize(), this.query(conn, false, SQLHandler
+							.getPagingSQL(sql), rsh, params));
+		}
+
 		return this.query(conn, false, sql, rsh, params);
+	}
+
+	private Object[] mergerObject(Object[] params1, Object[] params2) {
+		Object[] params = new Object[params1.length + params2.length];
+
+		for (int i = 0; i < params1.length; i++) {
+			params[i] = params1[i];
+		}
+
+		for (int i = 0; i < params2.length; i++) {
+			params[i + params1.length] = params2[i];
+		}
+
+		return params;
 	}
 
 	/**
@@ -291,24 +319,21 @@ public class QueryRunner extends AbstractQueryRunner {
 	 * @throws SQLException
 	 *             if a database access error occurs
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> T query(Connection conn, String sql, ResultSetHandler<T> rsh)
-			throws SQLException {
-
-		if (getPage() != null) {
-			String countSql = new SQLResult(sql).count();
-			long totalCount = this.queryCount(conn, countSql, (Object[]) null);
-
-			Object[] params = new Object[] { getPage().getStartCounting(),
-					getPage().getEndCounting() };
-
-			return (T) new Page(totalCount, getPage().getThisPage(), this
-					.query(conn, false, SQLHandler.getPagingSQL(sql), rsh, params));
-		}
-
-		return this.query(conn, false, sql, rsh, (Object[]) null);
-	}
-
+	// @SuppressWarnings("unchecked")
+	// public <T> T query(Connection conn, String sql, ResultSetHandler<T> rsh)
+	// throws SQLException {
+	//
+	// if (getPage() != null) {
+	// String countSql = new SQLResult(sql).count();
+	// long totalCount = this.queryCount(conn, countSql, (Object[]) null);
+	//
+	// return (T) new Page(totalCount, getPage().getThisPage() + 1,
+	// getPage().getPageSize(), this.query(conn, false, SQLHandler
+	// .getPagingSQL(sql), rsh, getObjectParams()));
+	// }
+	//
+	// return this.query(conn, false, sql, rsh, (Object[]) null);
+	// }
 	/**
 	 * Executes the given SELECT SQL with a single replacement parameter. The
 	 * <code>Connection</code> is retrieved from the <code>DataSource</code>
@@ -435,6 +460,8 @@ public class QueryRunner extends AbstractQueryRunner {
 	private <T> T query(Connection conn, boolean closeConn, String sql,
 			ResultSetHandler<T> rsh, Object... params) throws SQLException {
 
+		log.info(sql);
+
 		if (conn == null) {
 			throw new SQLException("Null connection");
 		}
@@ -485,6 +512,8 @@ public class QueryRunner extends AbstractQueryRunner {
 	 */
 	public long queryCount(Connection conn, String sql, Object... params)
 			throws SQLException {
+
+		log.info(sql);
 
 		if (conn == null) {
 			throw new SQLException("Null connection");

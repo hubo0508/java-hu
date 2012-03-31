@@ -1,5 +1,7 @@
 package org.easysql.core;
 
+import org.easysql.EasySQL;
+
 public class Page {
 
 	public Page() {
@@ -33,11 +35,11 @@ public class Page {
 	 * @param result
 	 *            查询结果
 	 */
-	public Page(long totalCount, int thisPage, Object result) {
+	public Page(long totalCount, int thisPage, int pageSize, Object result) {
 		this.totalCount = totalCount;
 		this.result = result;
 		this.thisPage = thisPage;
-
+		this.pageSize = pageSize;
 		this.totalPage = this.getTotalPages();// 共多少页
 
 		this.setPagePrev(thisPage > 1 ? thisPage - 1 : thisPage);
@@ -98,18 +100,34 @@ public class Page {
 	private Object result = new Object();
 
 	public int getStartCounting() {
-		return (startPage - 1) * pageSize == 0 ? 1 : (startPage - 1) * pageSize
-				+ 1;
+
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+
+		if ("mysql".equals(database)) {
+			int starts = (startPage - 1) * pageSize;
+			return starts == 0 ? 0 : starts;
+		} else if ("sqlserver".equals(database)) {
+
+		}
+
+		return 0;
 	}
 
 	public int getEndCounting() {
-		return startPage * pageSize;
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+
+		if ("mysql".equals(database)) {
+			return pageSize;
+		} else if ("sqlserver".equals(database)) {
+
+		}
+		return 0;
 	}
 
 	/**
 	 * 根据pageSize与totalCount计算总页数, 默认值为-1.
 	 */
-	public long getTotalPages() {
+	private long getTotalPages() {
 
 		if (totalCount < 0)
 			return -1;
