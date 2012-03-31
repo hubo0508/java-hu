@@ -2,6 +2,7 @@ package org.easysql.core;
 
 import org.easysql.handlers.EntityFilter;
 
+@SuppressWarnings("unchecked")
 public abstract class Entity extends ObjectManage implements
 		java.io.Serializable {
 	
