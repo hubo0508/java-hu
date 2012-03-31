@@ -31,8 +31,8 @@ public class UserServiceTest extends BaseTest {
 
 		UserServiceTest test = new UserServiceTest();
 		// test.save(u);
-		// test.update(u);
-		test.selectUser();
+		 test.update(u);
+		//test.selectUser();
 	}
 
 	public void selectUser() {
