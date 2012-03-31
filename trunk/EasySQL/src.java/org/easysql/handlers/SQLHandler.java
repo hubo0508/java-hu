@@ -16,10 +16,6 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	private EntityHandler eHandler;
 
-	private long startPage;
-
-	private long maxResult;
-
 	/**
 	 * 在实例化该对象时，必须传入org.easysql.handlers.EntityHandler实例化对象
 	 */
