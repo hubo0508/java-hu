@@ -48,7 +48,7 @@ public class UserServiceTest extends BaseTest {
 			String sql = sqlHandler.getSelectSQL();
 			// sql = sqlHandler.getPagingSQL(sql);
 
-			Object list = new QueryRunner(new Page(1, 2)).query(con, sql,
+			Object list = new QueryRunner(new Page(3, 2)).query(con, sql,
 					new BeanListHandler(User.class));
 
 			Page page = (Page) list;
