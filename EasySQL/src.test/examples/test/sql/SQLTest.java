@@ -29,6 +29,9 @@ public class SQLTest extends BaseTest {
 		String sql = sqlHandler.getSelectSQL("select * from User");
 		System.out.println(sql);
 		
+		sql = sqlHandler.getSelectSQL("from User");
+		System.out.println(sql);
+		
 		sql = sqlHandler.getSelectSQL();
 		System.out.println(sql);
 		
