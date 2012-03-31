@@ -1,8 +1,6 @@
 package org.easysql.core;
 
-import java.util.List;
-
-public class Page<T extends java.io.Serializable> {
+public class Page {
 
 	public Page() {
 
@@ -13,10 +11,38 @@ public class Page<T extends java.io.Serializable> {
 	 *            每页显示行数
 	 * @param startPage 起启页
 	 */
-	public Page(int pageSize, int startPage) {
+	public Page(int startPage, int pageSize) {
 		super();
 		this.pageSize = pageSize;
 		this.startPage = startPage;
+	}
+
+	/**
+	 * @param startPage 起启页
+	 */
+	public Page(int startPage) {
+		super();
+		this.startPage = startPage;
+	}
+
+	/**
+	 * @param pageSize
+	 *            每显显示记录数
+	 * @param totalCount
+	 *            总记录数
+	 * @param result
+	 *            查询结果
+	 */
+	public Page(long totalCount, int thisPage, Object result) {
+		this.totalCount = totalCount;
+		this.result = result;
+		this.thisPage = thisPage;
+
+		this.totalPage = this.getTotalPages();// 共多少页
+
+		this.setPagePrev(thisPage > 1 ? thisPage - 1 : thisPage);
+		this.setPageNext(thisPage < totalPage ? thisPage + 1 : thisPage);
+		this.setPageLast(Integer.parseInt((totalPage + "")));
 	}
 
 	/**
@@ -71,24 +97,13 @@ public class Page<T extends java.io.Serializable> {
 	// 返回结果 //
 	private Object result = new Object();
 
-	/**
-	 * @param pageSize
-	 *            每显显示记录数
-	 * @param totalCount
-	 *            总记录数
-	 * @param result
-	 *            查询结果
-	 */
-	public Page(long totalCount, int thisPage, List<T> result) {
-		this.totalCount = totalCount;
-		this.result = result;
-		this.thisPage = thisPage;
+	public int getStartCounting() {
+		return (startPage - 1) * pageSize == 0 ? 1 : (startPage - 1) * pageSize
+				+ 1;
+	}
 
-		this.totalPage = this.getTotalPages();// 共多少页
-
-		this.setPagePrev(thisPage > 1 ? thisPage - 1 : thisPage);
-		this.setPageNext(thisPage < totalPage ? thisPage + 1 : thisPage);
-		this.setPageLast(Integer.parseInt((totalPage + "")));
+	public int getEndCounting() {
+		return startPage * pageSize;
 	}
 
 	/**

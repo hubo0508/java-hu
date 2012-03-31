@@ -89,7 +89,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sb.toString();
 	}
 
-	public String getPagingSQL(String sqlText) {
+	public static String getPagingSQL(String sqlText) {
 
 		StringBuffer sb = new StringBuffer(100);
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
