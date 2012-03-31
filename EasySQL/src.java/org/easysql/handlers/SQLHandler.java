@@ -60,7 +60,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		int len = fields.length;
 		Object[] params = new Object[len - 1];
 		for (int i = 1; i < len; i++) {
-			if (i == 1 && getGenerationOfPrimaryKey(database)) {
+			if (i == 1 && primaryKeyMechanism(database)) {
 				if ("mysql".equals(database)) {
 					params = new Object[params.length - 1];
 					continue;
@@ -82,7 +82,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
-			String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
+			String[] fields = fieldsFilter(eHandler.getEntityFields());
 			int len = fields.length;
 			for (int i = 1; i < fields.length; i++) {
 				sb.append(fields[i]);
@@ -95,14 +95,14 @@ public class SQLHandler extends AbstractSQLHandlers {
 		sql = sql.substring(0, index) + sb.toString()
 				+ sql.substring(index + 1);
 
-		return setConditionsOfFilter(sql);
+		return sqlTextFilter(sql);
 	}
 
 	public String getDeleteSQL() {
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
-		String tablename = formatSingeField(eHandler.getClazz().getSimpleName());
+		String tablename = singleTextFilter(eHandler.getClazz().getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
@@ -116,21 +116,20 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getDeleteSQL(String where) {
 
-		String tablename = formatSingeField(eHandler.getClazz().getSimpleName());
+		String tablename = singleTextFilter(eHandler.getClazz().getSimpleName());
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
 		sb.append(tablename);
 		sb.append(" WHERE ");
-		sb.append(setConditionsOfFilter(where));
+		sb.append(sqlTextFilter(where));
 
 		return sb.toString();
 	}
 
 	public String getUpdateSQL(String[] filed) {
 
-		String[] fields = setConditionsOfFilter(filed);
-
+		String[] fields = fieldsFilter(filed);
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
@@ -138,8 +137,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL(String[] filed, String where) {
 
-		String[] fields = setConditionsOfFilter(filed);
-
+		String[] fields = fieldsFilter(filed);
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, where).toString();
@@ -147,7 +145,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL() {
 
-		String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
+		String[] fields = fieldsFilter(eHandler.getEntityFields());
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -158,20 +156,21 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String newWhere = where.toUpperCase();
 		if (newWhere.indexOf("UPDATE") >= 0) {
-			return standardFormattingOfSQL(setConditionsOfFilter(where));
+			return standardFormattingOfSQL(sqlTextFilter(where));
 		}
 
-		String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
+		String[] fields = fieldsFilter(eHandler.getEntityFields());
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
-		return standardFormattingOfSQL(generateUpdateSQL(fields, idkey,
-				setConditionsOfFilter(where)).toString());
+		String sql = generateUpdateSQL(fields, idkey, sqlTextFilter(where))
+				.toString();
+
+		return standardFormattingOfSQL(sql);
 	}
 
 	public String getInsertSQL() {
 
-		String[] fields = setConditionsOfFilter(eHandler.getEntityFields());
-
+		String[] fields = fieldsFilter(eHandler.getEntityFields());
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		// 主鍵生成機制
@@ -214,15 +213,14 @@ public class SQLHandler extends AbstractSQLHandlers {
 	private void setInsertKey(String database, String[] fields, StringBuffer sb) {
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
-			if (i == 1 && getGenerationOfPrimaryKey(database)) {
+			if (i == 1 && primaryKeyMechanism(database)) {
 				if ("mysql".equals(database)) {
 					continue;
 				} else if ("sqlserver".equals(database)) {
 					continue;
 				}
 			}
-			String field = fields[i];
-			sb.append(field);
+			sb.append(fields[i]);
 			if (i < len - 1) {
 				sb.append(", ");
 			}
@@ -234,7 +232,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
-			if (i == 1 && getGenerationOfPrimaryKey(database)) {
+			if (i == 1 && primaryKeyMechanism(database)) {
 				if ("oracle".equals(database)) {
 					sb.append(geneValue);
 					sb.append(".NEXTVAL");
@@ -252,7 +250,18 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 	}
 
-	private boolean getGenerationOfPrimaryKey(String databasename) {
+	/**
+	 * 取得主键生成机制</br></br>
+	 * 
+	 * 1、根据EasySQL.xml中的配置信息，判断主键的生成规则，是自动生成还是手动维护主键。</br>
+	 * 
+	 * @param databasename
+	 *            数据库类型(mysql、sqlserver、oracle)
+	 * 
+	 * @return true:主键生成机制为自动 || false:主键生成机制为手动维护
+	 * 
+	 */
+	private boolean primaryKeyMechanism(String databasename) {
 
 		Mapping mapping = Mapping.getInstance();
 		String generator = (String) mapping.get(EasySQL.GENERATOR);
@@ -278,6 +287,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	/** ******************************************************************************************** */
 
+	/**
+	 * 生成Update SQL
+	 */
 	private StringBuffer generateUpdateSQL(String[] fields, String idkey,
 			String where) {
 		StringBuffer sb = new StringBuffer();
@@ -292,35 +304,27 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sb;
 	}
 
-	public String formatSingeField(String elements) {
-
-		String[] replaceValue = (String[]) getFilter()
-				.get(EntityFilter.REPLACE);
-
-		return convertedElement(elements, replaceValue, getNameRule());
-	}
-
-	public String setConditionsOfFilter(String sql) {
+	/**
+	 * 设置文本过滤</br></br>
+	 */
+	public String sqlTextFilter(String text) {
 		String[] fields = eHandler.getEntityFields();
 		for (String s : fields) {
-			int matchIndex = sql.indexOf(s);
+			int matchIndex = text.indexOf(s);
 			if (matchIndex >= 0) {
-				String formatAfter = formatSingeField(s);
-				sql = sql.substring(0, matchIndex) + formatAfter
-						+ sql.substring(matchIndex + s.length());
+				String formatAfter = singleTextFilter(s);
+				text = text.substring(0, matchIndex) + formatAfter
+						+ text.substring(matchIndex + s.length());
 			}
 		}
 
-		return sql;
+		return text;
 	}
 
 	/**
 	 * 设置过滤条件
 	 */
-	public String[] setConditionsOfFilter(String[] fields) {
-
-		String[] replaceValue = (String[]) getFilter()
-				.get(EntityFilter.REPLACE);
+	public String[] fieldsFilter(String[] fields) {
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(getNameRule())) {
 			return fields;
@@ -328,18 +332,16 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
 			for (int i = 0; i < fields.length; i++) {
-				fields[i] = convertedElement(fields[i], replaceValue,
-						getNameRule());
+				fields[i] = singleTextFilter(fields[i]);
 			}
 		}
 
 		return fields;
 	}
 
-	public String reverseElement(String ele, String[] replaceValue,
-			String nameRule) {
+	public String reverseElement(String ele, String[] replaceValue) {
 
-		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
+		if (EasySQL.FIELD_RULE_HUMP.equals(getNameRule())) {
 			return ele;
 		}
 
@@ -347,29 +349,37 @@ public class SQLHandler extends AbstractSQLHandlers {
 			ele = replaceFiled(replaceValue, ele);
 		}
 
-		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
+		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
 			ele = convertedIntoSegmentation(ele);
 		}
 
 		return ele;
 	}
 
-	private String convertedElement(String ele, String[] replaceValue,
-			String nameRule) {
+	/**
+	 * 对单个字段设置过虑条件</br></br>
+	 * 
+	 * @param text
+	 *            单个字段
+	 */
+	private String singleTextFilter(String text) {
 
-		if (EasySQL.FIELD_RULE_HUMP.equals(nameRule)) {
-			return ele;
+		String[] replaceValue = (String[]) getFilter()
+				.get(EntityFilter.REPLACE);
+
+		if (EasySQL.FIELD_RULE_HUMP.equals(getNameRule())) {
+			return text;
 		}
 
 		if (replaceValue != null) {
-			ele = replaceFiled(replaceValue, ele);
+			text = replaceFiled(replaceValue, text);
 		}
 
-		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(nameRule)) {
-			ele = convertedIntoSegmentation(ele);
+		if (EasySQL.FIELD_RULE_SEGMENTATION.equals(getNameRule())) {
+			text = convertedIntoSegmentation(text);
 		}
 
-		return ele;
+		return text;
 	}
 
 	/**
