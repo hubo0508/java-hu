@@ -93,6 +93,29 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return sb.toString();
 	}
 
+	public String getPagingSQL(String sqlText) {
+
+		StringBuffer sb = new StringBuffer(100);
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+		if ("oracle".equals(database)) {
+			sb.append("select * from ( select row_.*, rownum rownum_ from ( ");
+			sb.append(sqlText);
+			sb.append(" ) row_ where rownum<=?) where rownum_>?");
+			return sb.toString();
+		}
+
+		if ("sqlserver".equals(database)) {
+
+		}
+
+		if ("mysql".equals(database)) {
+			// select * from table LIMIT 5,10; #返回第6-15行数据
+			return sqlText + " LIMIT ?,?";
+		}
+
+		return sqlText;
+	}
+
 	public String getSelectSQL() {
 
 		StringBuffer sb = new StringBuffer();
