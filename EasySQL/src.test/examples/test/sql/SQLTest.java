@@ -37,6 +37,8 @@ public class SQLTest extends BaseTest {
 		
 		sql = sqlHandler.getSelectSQLById();
 		System.out.println(sql);
+		
+		System.out.println(sqlHandler.getPagingSQL(sql));
 	}
 
 	public void deleteSQL() {
