@@ -9,6 +9,6 @@ public abstract class Entity extends ObjectManage implements
 	public static final String FILTER = "filter";
 
 	private static final long serialVersionUID = 1L;
-
+	
 	public abstract EntityFilter filter();
 }
