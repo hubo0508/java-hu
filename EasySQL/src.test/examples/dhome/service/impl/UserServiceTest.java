@@ -11,6 +11,8 @@ import org.apache.commons.dbutils.handlers.ArrayListHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.easysql.core.Entity;
+import org.easysql.core.Page;
+import org.easysql.core.SQLResult;
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
 
@@ -31,24 +33,34 @@ public class UserServiceTest extends BaseTest {
 
 		UserServiceTest test = new UserServiceTest();
 		// test.save(u);
-		 test.update(u);
-		//test.selectUser();
+		// test.update(u);
+		test.selectUser();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void selectUser() {
 		DBPool pool = MySqlPool.getInstance();
+		Connection con = pool.getConnection();
 		try {
 
 			SQLHandler sqlHandler = new SQLHandler(
 					new EntityHandler(User.class));
-			String sql = sqlHandler.getSelectSQL("select * from User");
+			String sql = sqlHandler.getSelectSQL();
+			// sql = sqlHandler.getPagingSQL(sql);
 
-			List<User> list = new QueryRunner().query(pool.getConnection(), sql, new BeanListHandler<User>(User.class));
+			Object list = new QueryRunner(new Page(1, 2)).query(con, sql,
+					new BeanListHandler(User.class));
 
-			System.out.println(list.size());
+			Page page = (Page) list;
+			List<User> listuser = (List<User>) page.getResult();
+
+			for (User user : listuser) {
+				System.out.println(user.getId());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			System.out.println(con == null);
 			pool.release();
 		}
 	}
