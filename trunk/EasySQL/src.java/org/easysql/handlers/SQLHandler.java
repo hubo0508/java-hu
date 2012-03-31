@@ -25,6 +25,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 				EasySQL.key(eHandler.getClazz())));
 		super.setNameRule((String) Mapping.getInstance()
 				.get(EasySQL.FIELD_RULE));
+		super
+				.setTableName(singleTextFilter(eHandler.getClazz()
+						.getSimpleName()));
 	}
 
 	/**
@@ -75,19 +78,27 @@ public class SQLHandler extends AbstractSQLHandlers {
 		return params;
 	}
 
+	public String getSelectSQL() {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT ");
+		String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
+		sb.append(queryFieldsToString(fields));
+		sb.append(" FORM ");
+		sb.append(getTableName());
+
+		return super.standardFormattingOfSQL(sqlTextFilter(sb.toString()));
+	}
+	
+	
+
 	public String getSelectSQL(String sql) {
 
 		StringBuffer sb = new StringBuffer();
 		int index = sql.indexOf("*");
 		if (sql.indexOf("*") >= 0) {
-			String[] fields = fieldsFilter(eHandler.getEntityFields());
-			int len = fields.length;
-			for (int i = 1; i < fields.length; i++) {
-				sb.append(fields[i]);
-				if (i < len - 1) {
-					sb.append(",");
-				}
-			}
+			String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
+			sb.append(queryFieldsToString(fields));
 		}
 
 		sql = sql.substring(0, index) + sb.toString()
@@ -100,11 +111,9 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
-		String tablename = singleTextFilter(eHandler.getClazz().getSimpleName());
-
 		StringBuffer sb = new StringBuffer();
 		sb.append("DELETE FROM ");
-		sb.append(tablename);
+		sb.append(getTableName());
 		sb.append(" WHERE ");
 		sb.append(idkey);
 		sb.append("=?");
@@ -127,7 +136,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL(String[] filed) {
 
-		String[] fields = fieldsFilter(filed);
+		String[] fields = fieldsFilterAfter(filed);
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, idkey + "=?").toString();
@@ -135,7 +144,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL(String[] filed, String where) {
 
-		String[] fields = fieldsFilter(filed);
+		String[] fields = fieldsFilterAfter(filed);
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		return generateUpdateSQL(fields, idkey, where).toString();
@@ -143,7 +152,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getUpdateSQL() {
 
-		String[] fields = fieldsFilter(eHandler.getEntityFields());
+		String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
 
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
@@ -157,7 +166,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 			return standardFormattingOfSQL(sqlTextFilter(where));
 		}
 
-		String[] fields = fieldsFilter(eHandler.getEntityFields());
+		String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
 		String idkey = (String) getFilter().get(EntityFilter.ID);
 
 		String sql = generateUpdateSQL(fields, idkey, sqlTextFilter(where))
@@ -168,7 +177,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 	public String getInsertSQL() {
 
-		String[] fields = fieldsFilter(eHandler.getEntityFields());
+		String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
 		// 主鍵生成機制
@@ -322,7 +331,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 	/**
 	 * 设置过滤条件
 	 */
-	public String[] fieldsFilter(String[] fields) {
+	public String[] fieldsFilterAfter(String[] fields) {
 
 		if (EasySQL.FIELD_RULE_HUMP.equals(getNameRule())) {
 			return fields;

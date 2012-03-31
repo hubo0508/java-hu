@@ -26,6 +26,11 @@ public class AbstractSQLHandlers {
 	 * POJO与数据库字段名字规则(hump segmentation)
 	 */
 	private String nameRule;
+	
+	/**
+	 * POJO所对应的表名
+	 */
+	private String tableName;
 
 	/**
 	 * SQL关键字
@@ -165,6 +170,20 @@ public class AbstractSQLHandlers {
 
 		return sb.toString().toLowerCase();
 	}
+	
+	protected String queryFieldsToString(String[] fields){
+		
+		StringBuffer sb = new StringBuffer();
+		int len = fields.length;
+		for (int i = 1; i < fields.length; i++) {
+			sb.append(fields[i]);
+			if (i < len - 1) {
+				sb.append(",");
+			}
+		}
+		
+		return sb.toString();
+	} 
 
 	/**
 	 * POJO过滤条件
@@ -186,6 +205,17 @@ public class AbstractSQLHandlers {
 
 	public void setNameRule(String nameRule) {
 		this.nameRule = nameRule;
+	}
+
+	/**
+	 * POJO所对应的表名
+	 */
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 }
