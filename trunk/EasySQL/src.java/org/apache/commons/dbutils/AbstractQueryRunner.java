@@ -44,7 +44,7 @@ public abstract class AbstractQueryRunner {
 	/**
 	 * 分页对象
 	 */
-	private Page<?> page;
+	private Page page;
 
 	/**
 	 * Is {@link ParameterMetaData#getParameterType(int)} broken (have we tried
@@ -439,11 +439,11 @@ public abstract class AbstractQueryRunner {
 		DbUtils.close(rs);
 	}
 
-	public Page<?> getPage() {
+	public Page getPage() {
 		return page;
 	}
 
-	public void setPage(Page<?> page) {
+	public void setPage(Page page) {
 		this.page = page;
 	}
 
