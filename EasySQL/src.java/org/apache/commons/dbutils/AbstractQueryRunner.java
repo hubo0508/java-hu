@@ -32,7 +32,10 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.easysql.core.Page;
+import org.easysql.handlers.AbstractSQLHandlers;
 
 /**
  * The base class for QueryRunner & AsyncQueryRunner. This class is thread safe.
@@ -40,6 +43,8 @@ import org.easysql.core.Page;
  * @since 1.4 (mostly extracted from QueryRunner)
  */
 public abstract class AbstractQueryRunner {
+
+	protected Log log = LogFactory.getLog(AbstractQueryRunner.class);
 
 	/**
 	 * 分页对象
@@ -447,4 +452,8 @@ public abstract class AbstractQueryRunner {
 		this.page = page;
 	}
 
+	public Object[] getObjectParams() {
+		return new Object[] { getPage().getStartCounting(),
+				getPage().getEndCounting() };
+	}
 }

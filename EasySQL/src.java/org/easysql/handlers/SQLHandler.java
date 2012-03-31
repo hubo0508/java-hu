@@ -142,6 +142,15 @@ public class SQLHandler extends AbstractSQLHandlers {
 				sb.append(" ");
 				sb.append(sql);
 				sql = sb.toString();
+			} else {
+				String[] fields = fieldsFilterAfter(eHandler.getEntityFields());
+				sb.append("SELECT ");
+				sb.append(fieldsIntoString(fields));
+				sb.append(" FROM ");
+				sb.append(this.getTableName());
+				sb.append(" WHERE ");
+				sb.append(sql);
+				sql = sb.toString();
 			}
 		}
 
