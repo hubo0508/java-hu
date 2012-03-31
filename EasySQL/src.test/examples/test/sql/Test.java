@@ -1,10 +1,11 @@
-package examples.test;
+package examples.test.sql;
 
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
 import examples.dhome.domain.Device;
+import examples.dhome.domain.User;
 
 public class Test extends BaseTest {
 
@@ -23,10 +24,8 @@ public class Test extends BaseTest {
 
 	public void selectSQL() {
 
-		String sql = "select * from Device";
-
-		SQLHandler sqlHandler = new SQLHandler(new EntityHandler(Device.class));
-		sql = sqlHandler.getSelectSQL(sql);
+		SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
+		String sql = sqlHandler.getSelectSQL("select * from User");
 
 		System.out.println(sql);
 	}
