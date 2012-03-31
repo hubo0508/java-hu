@@ -23,7 +23,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.StringUtils;
 import org.easysql.core.Page;
 import org.easysql.core.SQLResult;
 import org.easysql.handlers.SQLHandler;
