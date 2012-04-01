@@ -103,11 +103,14 @@ public class Page {
 
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
-		if ("mysql".equals(database)) {
+		if (EasySQL.MYSQL.equals(database)) {
 			int starts = (startPage - 1) * pageSize;
 			return starts == 0 ? 0 : starts;
-		} else if ("sqlserver".equals(database)) {
+		} else if (EasySQL.SQLSERVICE.equals(database)) {
 
+		} else if (EasySQL.ORACLE.equals(database)) {
+			int starts = (startPage - 1) * pageSize;
+			return starts == 0 ? 1 : starts + 1;
 		}
 
 		return 0;
@@ -116,10 +119,12 @@ public class Page {
 	public int getEndCounting() {
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
 
-		if ("mysql".equals(database)) {
+		if (EasySQL.MYSQL.equals(database)) {
 			return pageSize;
-		} else if ("sqlserver".equals(database)) {
+		} else if (EasySQL.SQLSERVICE.equals(database)) {
 
+		} else if (EasySQL.ORACLE.equals(database)) {
+			return startPage * pageSize;
 		}
 		return 0;
 	}
