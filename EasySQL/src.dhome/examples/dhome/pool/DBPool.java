@@ -9,21 +9,12 @@ import java.util.Timer;
 
 import org.apache.log4j.Logger;
 
-/**
- * 
- * <p>
- * Oracle9i��ݿ�l�ӳ�
- * </p>
- * 
- * @User: HUBO
- * @Date Feb 29, 2012
- * @Time 9:40:03 PM
- */
 public class DBPool {
 
 	protected static Logger log = Logger.getLogger(DBPool.class);
 
 	protected static Object initLock = new Object();
+
 
 	/**
 	 * 连接接口
