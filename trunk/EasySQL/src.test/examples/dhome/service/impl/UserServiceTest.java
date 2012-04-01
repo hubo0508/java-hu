@@ -17,14 +17,17 @@ import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
 
 import examples.BaseTest;
+import examples.dhome.domain.Device;
 import examples.dhome.domain.User;
 import examples.dhome.pool.DBPool;
 import examples.dhome.pool.MySqlPool;
+import examples.dhome.pool.OraclePool;
 
 @SuppressWarnings("unused")
 public class UserServiceTest extends BaseTest {
 
-	private static DBPool pool = MySqlPool.getInstance();
+	// protected DBPool pool = MySqlPool.getInstance();
+	protected static DBPool pool = OraclePool.getInstance();
 
 	public static void main(String[] args) {
 
@@ -38,28 +41,28 @@ public class UserServiceTest extends BaseTest {
 		UserServiceTest test = new UserServiceTest();
 		// test.save(u);
 		// test.update(u);
-		// test.selectUserA();
-		test.selectUserB(con);
+		// test.queryDeviceListA();
+		test.queryDeviceListB(con);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void selectUserB(Connection con) {
+	public void queryDeviceListB(Connection con) {
 
 		try {
 
-			SQLHandler sqlHandler = new SQLHandler(
-					new EntityHandler(User.class));
+			SQLHandler sqlHandler = new SQLHandler(new EntityHandler(
+					Device.class));
 			String sql = sqlHandler.getSelectSQL("id>?");
 
 			Object[] params = new Object[] { 0 };
 
 			Page page = (Page) new QueryRunner(new Page(2, 2)).query(con, sql,
-					new BeanListHandler(User.class), params);
+					new BeanListHandler(Device.class), params);
 
-			List<User> listuser = (List<User>) page.getResult();
+			List<Device> listdevice = (List<Device>) page.getResult();
 
-			for (User user : listuser) {
-				System.out.println(user.getId());
+			for (Device d : listdevice) {
+				System.out.println(d.getId());
 			}
 			System.out.println("当前页：" + page.getThisPage());
 			System.out.println("下一页：" + page.getPageNext());
@@ -73,7 +76,7 @@ public class UserServiceTest extends BaseTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void selectUserA(Connection con) {
+	public void queryDeviceListA(Connection con) {
 		try {
 
 			SQLHandler sqlHandler = new SQLHandler(
