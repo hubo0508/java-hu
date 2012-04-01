@@ -43,6 +43,8 @@ public class UserServiceTest extends BaseTest {
 		// test.update(u);
 		// test.queryDeviceListA();
 		test.queryDeviceListB(con);
+
+		// test.queryDeviceList(con);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,7 +58,7 @@ public class UserServiceTest extends BaseTest {
 
 			Object[] params = new Object[] { 0 };
 
-			Page page = (Page) new QueryRunner(new Page(2, 2)).query(con, sql,
+			Page page = (Page) new QueryRunner(new Page(1, 2)).query(con, sql,
 					new BeanListHandler(Device.class), params);
 
 			List<Device> listdevice = (List<Device>) page.getResult();
@@ -67,7 +69,9 @@ public class UserServiceTest extends BaseTest {
 			System.out.println("当前页：" + page.getThisPage());
 			System.out.println("下一页：" + page.getPageNext());
 			System.out.println("上一页：" + page.getPagePrev());
-			System.out.println("共页：" + page.getTotalPage());
+			System.out.println("尾  页：" + page.getPageLast());
+			System.out.println("总页数：" + page.getTotalPage());
+			System.out.println("总行数：" + page.getTotalCount());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -95,6 +99,27 @@ public class UserServiceTest extends BaseTest {
 			System.out.println("下一页：" + page.getPageNext());
 			System.out.println("上一页：" + page.getPagePrev());
 			System.out.println("共页：" + page.getTotalPage());
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pool.release();
+		}
+	}
+
+	public void queryDeviceList(Connection con) {
+		try {
+
+			SQLHandler sqlHandler = new SQLHandler(new EntityHandler(
+					Device.class));
+			String sql = sqlHandler.getSelectSQL();
+
+			List<Device> listDevice = new QueryRunner().query(con, sql,
+					new BeanListHandler<Device>(Device.class));
+
+			for (Device o : listDevice) {
+				System.out.println(o.getId());
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
