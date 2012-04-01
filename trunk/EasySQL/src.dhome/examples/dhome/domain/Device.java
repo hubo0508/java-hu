@@ -1,166 +1,82 @@
 package examples.dhome.domain;
 
-import java.util.Date;
-
 import org.easysql.core.Entity;
 import org.easysql.handlers.EntityFilter;
 
-
-
 @SuppressWarnings("serial")
-public class Device  extends Entity {
+public class Device extends Entity {
 
-	private Long id;
-	private String factoryCode;// 厂家编号
-	private String deviceCode;// 设备编号
-	private String infoTypeId;// 信息类型ID
-	private String content;// 信息内容
-	private String storagePerson;// 入库人
-	private Date storageDate = new Date();// 入库时间
-	private Integer active = 0;// 设备状态
-	private Date activeDate;// 激活操作时间
-
-	// private Date lastDate;//最后操作时间
-
-	private String activeStr;// 设备状态(未存储数据库)
+	private long id;
+	private String deviceIp;
+	private String deviceEname;
+	private String deviceCname;
+	private String deviceType;
+	private String deviceFactory;
+	private long hasData;
 
 	@Override
 	public EntityFilter filter() {
-		
+
 		EntityFilter ef = new EntityFilter();
-
-		// 不作表字段
-		ef.notTask("activeStr");
-		ef.notTask("active");
-
-		// 当前字段与数据库字段不一样，需替换
-		ef.put(EntityFilter.REPLACE,
-				new String[] { "factoryCode:factoryCodeReplace" });
-
-		// 對每張表單獨設值虛列
-		ef.put(EntityFilter.GENERATOR_SEQ_VALUE, "deviceSeq");
+		ef.put(EntityFilter.REPLACE, new String[]{"Device:nhwm_config_device"});
 
 		return ef;
 	}
-	
-	
-	public Device(String factoryCode, String deviceCode) {
-		super();
-		this.factoryCode = factoryCode;
-		this.deviceCode = deviceCode;
-	}
 
-	public Device() {
-		super();
-	}
-
-	public Device(Long id, String factoryCode, String deviceCode,
-			String infoTypeId, String content, String storagePerson,
-			Date storageDate, Integer active, Date activeDate, String activeStr) {
-		super();
-		this.id = id;
-		this.factoryCode = factoryCode;
-		this.deviceCode = deviceCode;
-		this.infoTypeId = infoTypeId;
-		this.content = content;
-		this.storagePerson = storagePerson;
-		this.storageDate = storageDate;
-		this.active = active;
-		this.activeDate = activeDate;
-		this.activeStr = activeStr;
-	}
-
-	public Device(String factoryCode, String deviceCode, String infoTypeId,
-			String content, String storagePerson, Date storageDate,
-			Integer active) {
-		super();
-		this.factoryCode = factoryCode;
-		this.deviceCode = deviceCode;
-		this.infoTypeId = infoTypeId;
-		this.content = content;
-		this.storagePerson = storagePerson;
-		this.storageDate = storageDate;
-		this.active = active;
-	}
-
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	public String getFactoryCode() {
-		return factoryCode;
+	public String getDeviceIp() {
+		return deviceIp;
 	}
 
-	public void setFactoryCode(String factoryCode) {
-		this.factoryCode = factoryCode;
+	public void setDeviceIp(String deviceIp) {
+		this.deviceIp = deviceIp;
 	}
 
-	public String getDeviceCode() {
-		return deviceCode;
+	public String getDeviceEname() {
+		return deviceEname;
 	}
 
-	public void setDeviceCode(String deviceCode) {
-		this.deviceCode = deviceCode;
+	public void setDeviceEname(String deviceEname) {
+		this.deviceEname = deviceEname;
 	}
 
-	public String getInfoTypeId() {
-		return infoTypeId;
+	public String getDeviceCname() {
+		return deviceCname;
 	}
 
-	public void setInfoTypeId(String infoTypeId) {
-		this.infoTypeId = infoTypeId;
+	public void setDeviceCname(String deviceCname) {
+		this.deviceCname = deviceCname;
 	}
 
-	public String getContent() {
-		return content;
+	public String getDeviceType() {
+		return deviceType;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setDeviceType(String deviceType) {
+		this.deviceType = deviceType;
 	}
 
-	public String getStoragePerson() {
-		return storagePerson;
+	public String getDeviceFactory() {
+		return deviceFactory;
 	}
 
-	public void setStoragePerson(String storagePerson) {
-		this.storagePerson = storagePerson;
+	public void setDeviceFactory(String deviceFactory) {
+		this.deviceFactory = deviceFactory;
 	}
 
-	public Date getStorageDate() {
-		return storageDate;
+	public long getHasData() {
+		return hasData;
 	}
 
-	public void setStorageDate(Date storageDate) {
-		this.storageDate = storageDate;
-	}
-
-	public Integer getActive() {
-		return active;
-	}
-
-	public void setActive(Integer active) {
-		this.active = active;
-	}
-
-	public Date getActiveDate() {
-		return activeDate;
-	}
-
-	public void setActiveDate(Date activeDate) {
-		this.activeDate = activeDate;
-	}
-
-	public String getActiveStr() {
-		return activeStr;
-	}
-
-	public void setActiveStr(String activeStr) {
-		this.activeStr = activeStr;
+	public void setHasData(long hasData) {
+		this.hasData = hasData;
 	}
 
 }
