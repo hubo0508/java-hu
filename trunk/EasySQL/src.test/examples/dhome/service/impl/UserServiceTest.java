@@ -26,9 +26,6 @@ import examples.dhome.pool.OraclePool;
 @SuppressWarnings("unused")
 public class UserServiceTest extends BaseTest {
 
-	// protected DBPool pool = MySqlPool.getInstance();
-	protected static DBPool pool = OraclePool.getInstance();
-
 	public static void main(String[] args) {
 
 		Connection con = pool.getConnection();
@@ -54,7 +51,7 @@ public class UserServiceTest extends BaseTest {
 
 			SQLHandler sqlHandler = new SQLHandler(new EntityHandler(
 					Device.class));
-			String sql = sqlHandler.getSelectSQL("id>?");
+			String sql = sqlHandler.getSelectSQL("id>? ORDER BY id DESC");
 
 			Object[] params = new Object[] { 0 };
 
