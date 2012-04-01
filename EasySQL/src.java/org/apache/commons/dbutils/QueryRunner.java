@@ -280,7 +280,8 @@ public class QueryRunner extends AbstractQueryRunner {
 			if (params != null && params.length > 0) {
 				params = mergerObject(params, getObjectParams());
 			}
-			return (T) new Page(totalCount, getPage().getThisPage() + 1,
+
+			return (T) new Page(totalCount, getPage().getStartPage() + 1,
 					getPage().getPageSize(), this.query(conn, false, SQLHandler
 							.getPagingSQL(sql), rsh, params));
 		}
@@ -288,19 +289,7 @@ public class QueryRunner extends AbstractQueryRunner {
 		return this.query(conn, false, sql, rsh, params);
 	}
 
-	private Object[] mergerObject(Object[] params1, Object[] params2) {
-		Object[] params = new Object[params1.length + params2.length];
 
-		for (int i = 0; i < params1.length; i++) {
-			params[i] = params1[i];
-		}
-
-		for (int i = 0; i < params2.length; i++) {
-			params[i + params1.length] = params2[i];
-		}
-
-		return params;
-	}
 
 	/**
 	 * Execute an SQL SELECT query without any replacement parameters. The
