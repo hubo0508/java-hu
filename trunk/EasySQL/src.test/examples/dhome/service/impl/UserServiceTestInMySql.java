@@ -22,7 +22,7 @@ import examples.dhome.pool.DBPool;
 import examples.dhome.pool.MySqlPool;
 
 @SuppressWarnings("unused")
-public class UserServiceTest extends BaseTest {
+public class UserServiceTestInMySql extends BaseTest {
 
 	public static void main(String[] args) {
 
@@ -31,7 +31,7 @@ public class UserServiceTest extends BaseTest {
 		u.setUsername("hubo-te-----");
 		u.setPassword("hubo-password");
 
-		UserServiceTest test = new UserServiceTest();
+		UserServiceTestInMySql test = new UserServiceTestInMySql();
 		// test.save(u);
 		// test.update(u);
 		//test.selectUserA();
