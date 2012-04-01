@@ -35,8 +35,7 @@ public class OraclePool extends DBPool {
 						e.printStackTrace();
 					}
 
-					log
-							.info("*****************����OraclePoolʵ��*****************");
+					log.info("******开启OraclePool实例******");
 				}
 			}
 		}
