@@ -93,19 +93,18 @@ public class SQLHandler extends AbstractSQLHandlers {
 
 		StringBuffer sb = new StringBuffer(100);
 		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
-		if ("oracle".equals(database)) {
+		if (EasySQL.ORACLE.equals(database)) {
 			sb.append("select * from ( select row_.*, rownum rownum_ from ( ");
 			sb.append(sqlText);
 			sb.append(" ) row_ where rownum<=?) where rownum_>?");
 			return sb.toString();
 		}
 
-		if ("sqlserver".equals(database)) {
+		if (EasySQL.SQLSERVICE.equals(database)) {
 
 		}
 
-		if ("mysql".equals(database)) {
-			// select * from table LIMIT 5,10; #返回第6-15行数据
+		if (EasySQL.MYSQL.equals(database)) {
 			return sqlText + " LIMIT ?,?";
 		}
 
@@ -323,17 +322,17 @@ public class SQLHandler extends AbstractSQLHandlers {
 		Mapping mapping = Mapping.getInstance();
 		String generator = (String) mapping.get(EasySQL.GENERATOR);
 
-		if ("oracle".equals(databasename)) {
+		if (EasySQL.ORACLE.equals(databasename)) {
 			if ("native".equals(generator) || "sequence".equals(generator)) {
 				return true;
 			}
 		}
 
-		if ("sqlserver".equals(databasename)) {
+		if (EasySQL.SQLSERVICE.equals(databasename)) {
 
 		}
 
-		if ("mysql".equals(databasename)) {
+		if (EasySQL.MYSQL.equals(databasename)) {
 			if ("native".equals(generator) || "identity".equals(generator)) {
 				return true;
 			}

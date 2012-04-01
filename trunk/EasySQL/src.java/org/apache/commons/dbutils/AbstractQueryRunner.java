@@ -35,7 +35,6 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.easysql.core.Page;
-import org.easysql.handlers.AbstractSQLHandlers;
 
 /**
  * The base class for QueryRunner & AsyncQueryRunner. This class is thread safe.

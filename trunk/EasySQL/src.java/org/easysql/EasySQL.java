@@ -13,6 +13,14 @@ public class EasySQL {
 
 	/** ************************************************************************************************************************************** */
 	
+	public final static String ORACLE = "oracle";
+	
+	public final static String MYSQL = "mysql";
+	
+	public final static String SQLSERVICE = "sqlserver";
+	
+	/** ************************************************************************************************************************************** */
+
 	/**
 	 * POJO字段命名与数据命名的方式为：驼峰命名法。如：userName;
 	 */
@@ -24,7 +32,7 @@ public class EasySQL {
 	public final static String FIELD_RULE_SEGMENTATION = "segmentation";
 
 	/** ************************************************************************************************************************************** */
-	
+
 	public static final String GENERATOR = "easysql-mapping/generator";
 
 	public static final String GENERATOR_SEQ_VALUE = "easysql-mapping/generator/param";
