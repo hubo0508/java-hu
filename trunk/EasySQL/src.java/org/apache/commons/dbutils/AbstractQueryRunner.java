@@ -34,6 +34,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.easysql.EasySQL;
+import org.easysql.core.Mapping;
 import org.easysql.core.Page;
 
 /**
@@ -454,5 +456,39 @@ public abstract class AbstractQueryRunner {
 	public Object[] getObjectParams() {
 		return new Object[] { getPage().getStartCounting(),
 				getPage().getEndCounting() };
+	}
+
+	public Object[] mergerObject(Object[] params, Object[] paramsPage) {
+		Object[] newparams = new Object[params.length + paramsPage.length];
+
+		for (int i = 0; i < params.length; i++) {
+			newparams[i] = params[i];
+		}
+
+		String database = (String) Mapping.getInstance().get(EasySQL.DATABASE);
+
+		if (EasySQL.MYSQL.equals(database)) {
+			for (int i = 0; i < paramsPage.length; i++) {
+				newparams[i + params.length] = paramsPage[i];
+			}
+		} else if (EasySQL.SQLSERVICE.equals(database)) {
+
+		} else if (EasySQL.ORACLE.equals(database)) {
+			int len = paramsPage.length-1;
+			int count = params.length;
+			for (int i = len; i >= 0; i--) {
+				newparams[count] = paramsPage[i];
+				count++;
+				
+			}
+		}
+
+		return newparams;
+	}
+
+	public static void main(String[] args) {
+		for (int i = 1; i >= 0; i--) {
+			System.out.println(i);
+		}
 	}
 }

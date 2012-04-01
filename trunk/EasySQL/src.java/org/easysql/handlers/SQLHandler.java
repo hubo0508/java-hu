@@ -96,7 +96,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		if (EasySQL.ORACLE.equals(database)) {
 			sb.append("select * from ( select row_.*, rownum rownum_ from ( ");
 			sb.append(sqlText);
-			sb.append(" ) row_ where rownum<=?) where rownum_>?");
+			sb.append(" ) row_ where rownum<=?) where rownum_>=?");
 			return sb.toString();
 		}
 
