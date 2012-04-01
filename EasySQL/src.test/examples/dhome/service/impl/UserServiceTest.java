@@ -24,7 +24,11 @@ import examples.dhome.pool.MySqlPool;
 @SuppressWarnings("unused")
 public class UserServiceTest extends BaseTest {
 
+	private static DBPool pool = MySqlPool.getInstance();
+
 	public static void main(String[] args) {
+
+		Connection con = pool.getConnection();
 
 		User u = new User();
 		u.setId(7);
@@ -34,24 +38,23 @@ public class UserServiceTest extends BaseTest {
 		UserServiceTest test = new UserServiceTest();
 		// test.save(u);
 		// test.update(u);
-		//test.selectUserA();
-		test.selectUserB();
+		// test.selectUserA();
+		test.selectUserB(con);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void selectUserB() {
-		DBPool pool = MySqlPool.getInstance();
-		Connection con = pool.getConnection();
+	public void selectUserB(Connection con) {
+
 		try {
 
 			SQLHandler sqlHandler = new SQLHandler(
 					new EntityHandler(User.class));
 			String sql = sqlHandler.getSelectSQL("id>?");
-			
-			Object[] params = new Object[]{0};
+
+			Object[] params = new Object[] { 0 };
 
 			Page page = (Page) new QueryRunner(new Page(2, 2)).query(con, sql,
-					new BeanListHandler(User.class),params);
+					new BeanListHandler(User.class), params);
 
 			List<User> listuser = (List<User>) page.getResult();
 
@@ -70,9 +73,7 @@ public class UserServiceTest extends BaseTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void selectUserA() {
-		DBPool pool = MySqlPool.getInstance();
-		Connection con = pool.getConnection();
+	public void selectUserA(Connection con) {
 		try {
 
 			SQLHandler sqlHandler = new SQLHandler(
@@ -98,9 +99,8 @@ public class UserServiceTest extends BaseTest {
 		}
 	}
 
-	public void update(User u) {
+	public void update(User u, Connection con) {
 
-		DBPool pool = MySqlPool.getInstance();
 		try {
 
 			SQLHandler sqlHandler = new SQLHandler(
@@ -110,7 +110,7 @@ public class UserServiceTest extends BaseTest {
 
 			System.out.println(sql);
 
-			int i = new QueryRunner().update(pool.getConnection(), sql, params);
+			int i = new QueryRunner().update(con, sql, params);
 
 			System.out.println(i);
 		} catch (Exception e) {
@@ -121,7 +121,7 @@ public class UserServiceTest extends BaseTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void save(User u) {
+	public void save(User u, Connection con) {
 
 		DBPool pool = MySqlPool.getInstance();
 
@@ -133,7 +133,7 @@ public class UserServiceTest extends BaseTest {
 
 			System.out.println(sql);
 
-			int i = new QueryRunner().update(pool.getConnection(), sql, params);
+			int i = new QueryRunner().update(con, sql, params);
 
 			System.out.println(i);
 		} catch (Exception e) {
