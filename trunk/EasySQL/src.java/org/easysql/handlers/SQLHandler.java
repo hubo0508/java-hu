@@ -62,10 +62,10 @@ public class SQLHandler extends AbstractSQLHandlers {
 		Object[] params = new Object[len - 1];
 		for (int i = 1; i < len; i++) {
 			if (i == 1 && primaryKeyMechanism(database)) {
-				if ("mysql".equals(database)) {
+				if (EasySQL.MYSQL.equals(database)) {
 					params = new Object[params.length - 1];
 					continue;
-				} else if ("sqlserver".equals(database)) {
+				} else if (EasySQL.SQLSERVICE.equals(database)) {
 					params = new Object[params.length - 1];
 					continue;
 				}
@@ -255,14 +255,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
 			String field = fields[i];
-			// if (!idkey.equals(field)) {
 			sb.append(field);
 			if (i < len - 1) {
 				sb.append("=?, ");
 			} else {
 				sb.append("=? ");
 			}
-			// }
 		}
 	}
 
@@ -289,12 +287,12 @@ public class SQLHandler extends AbstractSQLHandlers {
 		int len = fields.length;
 		for (int i = 1; i < len; i++) {
 			if (i == 1 && primaryKeyMechanism(database)) {
-				if ("oracle".equals(database)) {
+				if (EasySQL.ORACLE.equals(database)) {
 					sb.append(geneValue);
 					sb.append(".NEXTVAL");
-				} else if ("mysql".equals(database)) {
+				} else if (EasySQL.MYSQL.equals(database)) {
 					continue;
-				} else if ("sqlserver".equals(database)) {
+				} else if (EasySQL.SQLSERVICE.equals(database)) {
 					continue;
 				}
 			} else {
@@ -323,7 +321,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		String generator = (String) mapping.get(EasySQL.GENERATOR);
 
 		if (EasySQL.ORACLE.equals(databasename)) {
-			if ("native".equals(generator) || "sequence".equals(generator)) {
+			if (EasySQL.NATIVE.equals(generator) || EasySQL.SEQUENCE.equals(generator)) {
 				return true;
 			}
 		}
@@ -333,7 +331,7 @@ public class SQLHandler extends AbstractSQLHandlers {
 		}
 
 		if (EasySQL.MYSQL.equals(databasename)) {
-			if ("native".equals(generator) || "identity".equals(generator)) {
+			if (EasySQL.NATIVE.equals(generator) || EasySQL.IDENTITY.equals(generator)) {
 				return true;
 			}
 		}
