@@ -1,6 +1,8 @@
 package org.easysql.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -13,6 +15,17 @@ public class ObjectManage<T extends java.io.Serializable> {
 	private String canonicalName;
 
 	private Class<Entity> clazz;
+	
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+		List list = new ArrayList();
+		if(list.getClass().newInstance() instanceof List){
+			System.out.println("xx");
+		}
+		
+		if(list.getClass().isInstance(list)){
+			System.out.println("xx");
+		}
+	}
 	
 	protected static Map<String, Boolean> collection = new HashMap<String, Boolean>();
 

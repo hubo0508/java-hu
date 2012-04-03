@@ -1,5 +1,8 @@
 package org.easysql;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.easysql.core.Entity;
 
 /**
@@ -51,5 +54,6 @@ public class EasySQL {
 	public static String key(Class<?> clazz) {
 		return clazz.getCanonicalName() + "." + Entity.FILTER;
 	}
+
 
 }

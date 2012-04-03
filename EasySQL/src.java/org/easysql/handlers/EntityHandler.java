@@ -1,11 +1,11 @@
 package org.easysql.handlers;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 
 import org.easysql.EasySQL;
 import org.easysql.core.Mapping;
 import org.easysql.core.ObjectManage;
-
 
 /**
  * 实体简化操作类
@@ -54,11 +54,14 @@ public class EntityHandler extends ObjectManage {
 			Field field = fields[i];
 
 			// 判断类型是否为List、Set、Map
-			Object isFalg = collection.get(field.getType().toString());
-			if (isFalg != null && (Boolean) isFalg) {
-				count++;
-				continue;
+			try {
+				if (field.getType().newInstance() instanceof Collection) {
+					count++;
+					continue;
+				}
+			} catch (Exception e) {				
 			}
+
 			String value = null;
 			if (filter == null) {
 				value = field.getName();
