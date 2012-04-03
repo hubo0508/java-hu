@@ -2,9 +2,6 @@ package examples.test.sql;
 
 import java.sql.SQLException;
 
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.easysql.core.Page;
 import org.easysql.core.SQLResult;
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
