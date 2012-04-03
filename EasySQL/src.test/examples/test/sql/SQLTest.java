@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.easysql.core.Page;
+import org.easysql.core.SQLResult;
 import org.easysql.handlers.EntityHandler;
 import org.easysql.handlers.SQLHandler;
 
@@ -30,6 +31,7 @@ public class SQLTest extends BaseTest {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public void selectSQL() throws SQLException {
 
 		SQLHandler sqlHandler = new SQLHandler(new EntityHandler(User.class));
@@ -46,14 +48,9 @@ public class SQLTest extends BaseTest {
 		sql = sqlHandler.getSelectSQLById();
 		System.out.println(sql);
 
-		// sql = new SQLResult(sql).count();
-		// System.out.println(sql);
-
-		sql = sqlHandler.getPagingSQL(sql);
+		sql = new SQLResult(sql).count();
 		System.out.println(sql);
 
-		new QueryRunner(new Page(1, 2)).query(sql, new BeanListHandler<User>(
-				User.class));
 	}
 
 	public void deleteSQL() {
