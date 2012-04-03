@@ -98,7 +98,7 @@ public class XmlAnalyze extends ObjectManage {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws DocumentException {
+	public static void main(String[] args)  {
 
 		new XmlAnalyze().init();
 		Mapping m = Mapping.getInstance();
