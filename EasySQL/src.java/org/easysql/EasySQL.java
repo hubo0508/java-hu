@@ -1,7 +1,5 @@
 package org.easysql;
 
-import java.util.Collection;
-import java.util.List;
 
 import org.easysql.core.Entity;
 
@@ -21,6 +19,12 @@ public class EasySQL {
 	public final static String MYSQL = "mysql";
 	
 	public final static String SQLSERVICE = "sqlserver";
+	
+	public final static String NATIVE  = "native";
+	
+	public final static String SEQUENCE = "sequence";
+	
+	public final static String IDENTITY = "identity";
 	
 	/** ************************************************************************************************************************************** */
 
@@ -54,6 +58,4 @@ public class EasySQL {
 	public static String key(Class<?> clazz) {
 		return clazz.getCanonicalName() + "." + Entity.FILTER;
 	}
-
-
 }
