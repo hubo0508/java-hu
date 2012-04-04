@@ -1,11 +1,9 @@
-/**
- * @Project: XEntityNode
- * @Title: XEntityNode.java
- * @Package org.hu.xnode.xml
- * @Description: TODO
- * @author HUBO hubo.0508@gmail.com  
+/*
+ * @author HUBO hubo.0508@gmail.com
  * @date 2011-3-12 PM 02:45:58
- * @version V1.0  
+ * 
+ * @version V0.1(2011-03-12创建)
+ * @version V0.2(2012-04-04重构)
  */
 package org.hu.xnode.xml;
 
@@ -21,12 +19,7 @@ import java.util.Set;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * @ClassName: XEntityNode
- * @Description: 根据实体类产生XML数据
- * @author HUBO hubo.0508@gmail.com
- * @date 2011-3-12 PM 10:43:40
- * 
- * v0.2
+ * @Description: 根据POJO产生XML数据
  */
 public class XNode {
 
@@ -169,65 +162,10 @@ public class XNode {
 		return instanceMethod.invoke(parentPojo, new Object[] {});
 	}
 
-	private XStream setAttribute(XStream xStream, Object entity,
-			String rootName, Map<String, String> filtrate) throws Exception {
-
-		Class entityCls = null;
-		try {
-			entityCls = entity.getClass();
-		} catch (NullPointerException e) {
-			System.err.println("property is empty");
-			return xStream;
-		}
-
-		xStream.alias(rootName, entityCls);
-
-		Field[] entityField = entityCls.getDeclaredFields();
-		for (int i = 0; i < entityField.length; i++) {
-			Field field = entityField[i];
-
-			if (filtrateAttribute(field, filtrate)) {
-
-				if (isBasicType(field.getType())) {
-					xStream.aliasAttribute(entityCls, field.getName(), field
-							.getName());
-				} else {
-
-					String methodName = getMethoName("get", field.getName());
-					Method getMethod = entityCls.getMethod(methodName,
-							new Class[] {});
-					Object childObj = getMethod.invoke(entity, new Object[] {});
-
-					setAttribute(xStream, childObj, rootName, filtrate);
-				}
-			}
-
-		}
-
-		return xStream;
-	}
-
-	@SuppressWarnings("unchecked")
-	private boolean filtrateAttribute(Field field, Map<String, String> filtrate) {
-
-		String fieldName = field.getName();
-		// String fieldType = field.getType().toString();
-
-		Set keys = filtrate.keySet();
-		Iterator it = keys.iterator();
-		while (it.hasNext()) {
-			String filtrateName = (String) it.next();
-			// String filtrateType = (String) filtrate.get(filtrateName);
-			if (filtrateName.equals(fieldName)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
+	/**
+	 * 取得
+	 */
 	private String getAliasName(String path) {
-
 		Object aliasName = filter.get(path);
 
 		if (aliasName instanceof Boolean && (Boolean) aliasName) {
