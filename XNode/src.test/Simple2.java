@@ -3,7 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hu.xnode.xml.XNode;
+import org.xnode.xml.XNode;
+
 
 import com.xnode.domain.Application;
 import com.xnode.domain.Chart;
