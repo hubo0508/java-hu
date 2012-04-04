@@ -1,3 +1,9 @@
+/*
+ * @author HUBO hubo.0508@gmail.com  
+ * 
+ * @version V0.1 (创建2011-3-12 PM 02:45:58)
+ * @version V0.2 (重构2012-04-04)
+ */
 package org.xnode.xml;
 
 
