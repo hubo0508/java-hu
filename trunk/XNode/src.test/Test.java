@@ -3,7 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hu.xnode.xml.XEntityNode;
+import org.hu.xnode.xml.XNode;
+
 
 import com.xnode.vo.Categories;
 import com.xnode.vo.Chart;
@@ -35,7 +36,7 @@ public class Test {
 		listCategories.add(new Categories("D小区"));
 		listCategories.add(new Categories("E小区"));
 
-		String xml = XEntityNode.entitiesIntoNodeList(listCategories);
+		String xml = XNode.xmlInList(listCategories);
 
 		System.err.println(xml);
 	}
@@ -58,9 +59,9 @@ public class Test {
 
 		Map<String, Object> replaceNode = new HashMap<String, Object>();
 		replaceNode.put("com.vo.Categories", "newNode");
-		XEntityNode.node = replaceNode;
+		XNode.node = replaceNode;
 
-		String xml = XEntityNode.entitiesIntoNodeList(listCategories);
+		String xml = XNode.xmlInList(listCategories);
 
 		System.err.println(xml);
 	}
@@ -79,7 +80,7 @@ public class Test {
 		chart.setyAxisName("Revenue");
 		chart.setShowValues("0");
 		
-		String xml = XEntityNode.entitiesIntoNode(chart);
+		String xml = XNode.xmlInPojo(chart);
 
 		System.err.println(xml);
 	}
@@ -93,7 +94,7 @@ public class Test {
 		  <categories label="E小区"/>
 		</chart>
 	 */
-	public static void entitiesIntoNode2() {
+	public static void xmlInPojo2() {
 
 		Chart chart = new Chart();
 		chart.setDefaultValue();
@@ -111,7 +112,7 @@ public class Test {
 
 		chart.setCategories(listCategories);		
 		
-		String xml = XEntityNode.entitiesIntoNode(chart);
+		String xml = XNode.xmlInPojo(chart);
 
 		System.err.println(xml);
 	}
@@ -127,7 +128,7 @@ public class Test {
 	  </categories>
 	</chart>
 	 */
-	public static void entitiesIntoNode3() {
+	public static void xmlInPojo3() {
 
 		Chart chart = new Chart();
 		chart.setDefaultValue();
@@ -149,8 +150,8 @@ public class Test {
 		node.put("com.vo.Categories", "newNode");
 		node.put("categories", true);
 		
-		XEntityNode.node = node;
-		String xml = XEntityNode.entitiesIntoNode(chart);
+		XNode.node = node;
+		String xml = XNode.xmlInPojo(chart);
 
 		System.err.println(xml);
 	}

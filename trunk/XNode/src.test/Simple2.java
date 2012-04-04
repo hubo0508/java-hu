@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hu.xnode.xml.XEntityNode;
+import org.hu.xnode.xml.XNode;
 
 import com.xnode.domain.Application;
 import com.xnode.domain.Chart;
@@ -80,10 +80,10 @@ public class Simple2 {
 		List<Application> application = new ArrayList<Application>();
 		application.add(new Application("Canvas","CanvasAnim"));
 		
-//		chart.setSet(listSet);
-//		chart.setVLine(new VLine("2","FF5904"));
-//		chart.setTrendlines(trendlines);
-//		chart.setStyles(new Styles(definition,application));
+		chart.setSet(listSet);
+		chart.setVLine(new VLine("2","FF5904"));
+		chart.setTrendlines(trendlines);
+		chart.setStyles(new Styles(definition,application));
 		
 		Map<String, Object> node = new HashMap<String, Object>();
 		node.put("com.xnode.domain.Trendlines", "line");
@@ -93,8 +93,8 @@ public class Simple2 {
 //		node.put("styles", true);
 		node.put("definition", true);
 		node.put("application", true);
-		XEntityNode.node = node;
-		String xml = XEntityNode.entitiesIntoNode(chart);
+		XNode.node = node;
+		String xml = XNode.xmlInPojo(chart);
 
 		System.err.println(xml);
 	}
