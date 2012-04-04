@@ -90,10 +90,10 @@ public class Simple2 {
 		node.put("com.xnode.domain.Trendlines", "line");
 		node.put("com.xnode.domain.Definition", "style");
 		node.put("com.xnode.domain.Application", "apply");
-		node.put("trendlines", true);
+		node.put("trendlines", XNode.RATING);
 		// node.put("styles", true);
-		node.put("definition", true);
-		node.put("application", true);
+		node.put("definition", XNode.RATING);
+		node.put("application", XNode.RATING);
 		String xml = new XNode(node).xmlInPojo(chart);
 
 		System.err.println(xml);
