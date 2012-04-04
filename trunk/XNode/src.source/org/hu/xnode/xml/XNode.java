@@ -28,6 +28,13 @@ public class XNode {
 	 */
 	private Map<String, Object> filter;
 
+	/**
+	 * <p>
+	 * 对POJO产生的XML节点具有等级形式。
+	 * </p>
+	 */
+	public final static String RATING = "rating";
+
 	public XNode() {
 
 	}
@@ -117,17 +124,18 @@ public class XNode {
 	 * </p>
 	 */
 	private void collectionHandler(XStream xStream, Object parentPojo,
-			String fieldName) throws Exception {
+			String parentFieldName) throws Exception {
 
 		Class<?> entityCls = parentPojo.getClass();
-		Object nodeMark = filter.get(fieldName);
-		if ((nodeMark != null && (Boolean) nodeMark)) {
+		Object nodeMark = filter.get(parentFieldName);
+		if (RATING.equals(nodeMark)) {
 
 		} else {
-			xStream.addImplicitCollection(entityCls, fieldName);
+			xStream.addImplicitCollection(entityCls, parentFieldName);
 		}
 
-		Object subCollectionItem = getSubPojoOrCollection(parentPojo, fieldName);
+		Object subCollectionItem = getSubPojoOrCollection(parentPojo,
+				parentFieldName);
 
 		if (subCollectionItem instanceof List) {
 			List<?> subListItem = (List<?>) subCollectionItem;
@@ -147,7 +155,7 @@ public class XNode {
 
 	/**
 	 * <p>
-	 * 取得子POJO对象实例
+	 * 取得子POJO对象或子集合实例
 	 * </p>
 	 */
 	private Object getSubPojoOrCollection(Object parentPojo, String subPojoName)
@@ -163,21 +171,23 @@ public class XNode {
 	}
 
 	/**
-	 * 取得
+	 * <p>取得XML节点名称</p>
+	 * 
+	 * @param classpath 当前节点POJO对象全路径
 	 */
-	private String getAliasName(String path) {
-		Object aliasName = filter.get(path);
+	private String getAliasName(String classpath) {
 
-		if (aliasName instanceof Boolean && (Boolean) aliasName) {
+		Object aliasName = filter.get(classpath);
+		if (RATING.equals(aliasName)) {
 			return null;
 		}
 
 		if (aliasName == null) {
-			int lastIndex = path.lastIndexOf(".");
+			int lastIndex = classpath.lastIndexOf(".");
 			if (lastIndex < 0) {
-				return path.toLowerCase();
+				return classpath.toLowerCase();
 			} else {
-				return path.substring(lastIndex + 1, path.length())
+				return classpath.substring(lastIndex + 1, classpath.length())
 						.toLowerCase();
 			}
 		} else {
