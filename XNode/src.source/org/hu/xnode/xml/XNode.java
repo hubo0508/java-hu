@@ -30,22 +30,17 @@ import com.thoughtworks.xstream.XStream;
  */
 public class XNode {
 
-	private Map<String, Object> node;
+	/**
+	 * 条件过滤
+	 */
+	private Map<String, Object> filter;
 
 	public XNode() {
 
 	}
 
-	public XNode(Map<String, Object> node) {
-		this.node = node;
-	}
-
-	public Map<String, Object> getNode() {
-		return node;
-	}
-
-	public void setNode(Map<String, Object> node) {
-		this.node = node;
+	public XNode(Map<String, Object> filter) {
+		this.filter = filter;
 	}
 
 	/**
@@ -68,9 +63,8 @@ public class XNode {
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} finally {
-			node = null;
 		}
+
 		return buff.toString();
 	}
 
@@ -90,8 +84,6 @@ public class XNode {
 			return xs.toXML(pojo);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		} finally {
-			node = null;
 		}
 	}
 
@@ -135,7 +127,7 @@ public class XNode {
 			String fieldName) throws Exception {
 
 		Class<?> entityCls = parentPojo.getClass();
-		Object nodeMark = node.get(fieldName);
+		Object nodeMark = filter.get(fieldName);
 		if ((nodeMark != null && (Boolean) nodeMark)) {
 
 		} else {
@@ -236,7 +228,7 @@ public class XNode {
 
 	private String getAliasName(String path) {
 
-		Object aliasName = node.get(path);
+		Object aliasName = filter.get(path);
 
 		if (aliasName instanceof Boolean && (Boolean) aliasName) {
 			return null;
@@ -348,7 +340,20 @@ public class XNode {
 		}
 
 		return false;
+	}
 
+	/**
+	 * 取得条件过滤
+	 */
+	public Map<String, Object> getFilter() {
+		return filter;
+	}
+
+	/**
+	 * 设置条件过滤
+	 */
+	public void setFilter(Map<String, Object> filter) {
+		this.filter = filter;
 	}
 
 }
