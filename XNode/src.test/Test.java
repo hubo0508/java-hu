@@ -38,12 +38,11 @@ public class Test {
 		listCategories.add(new Categories("E小区"));
 
 		String xml = new XNode().xmlInList(listCategories);
-
 		System.err.println(xml);
 	}
 	
 	/*
-	 <newNode label="A小区"/>
+	<newNode label="A小区"/>
 	<newNode label="B小区"/>
 	<newNode label="C小区"/>
 	<newNode label="D小区"/>
@@ -60,7 +59,6 @@ public class Test {
 
 		Map<String, Object> replaceNode = new HashMap<String, Object>();
 		replaceNode.put("com.vo.Categories", "newNode");
-
 		String xml = new XNode(replaceNode).xmlInList(listCategories);
 
 		System.err.println(xml);
