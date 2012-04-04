@@ -13,7 +13,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +28,25 @@ import com.thoughtworks.xstream.XStream;
  * 
  * v0.2
  */
-public class XNode<T> {
+public class XNode {
 
-	public static Map<String, Object> node = new HashMap<String, Object>();
+	private Map<String, Object> node;
+
+	public XNode() {
+
+	}
+
+	public XNode(Map<String, Object> node) {
+		this.node = node;
+	}
+
+	public Map<String, Object> getNode() {
+		return node;
+	}
+
+	public void setNode(Map<String, Object> node) {
+		this.node = node;
+	}
 
 	/**
 	 * <p>
@@ -43,7 +58,7 @@ public class XNode<T> {
 	 * 
 	 * @return XML字符串
 	 */
-	public static String xmlInList(List<?> listPojo) {
+	public String xmlInList(List<?> listPojo) {
 
 		StringBuffer buff = new StringBuffer();
 		try {
@@ -69,7 +84,7 @@ public class XNode<T> {
 	 * 
 	 * @return XML字符串
 	 */
-	public static String xmlInPojo(Object pojo) {
+	public String xmlInPojo(Object pojo) {
 		try {
 			XStream xs = setAttribute(new XStream(), pojo);
 			return xs.toXML(pojo);
@@ -82,8 +97,7 @@ public class XNode<T> {
 
 	// ///////////////////////////////////////////////////////////////////////////////////
 
-	private static XStream setAttribute(XStream xStream, Object pojo)
-			throws Exception {
+	private XStream setAttribute(XStream xStream, Object pojo) throws Exception {
 
 		Class<?> pojoClazz = pojo.getClass();
 		String aliasName = getAliasName(pojoClazz.getName());
@@ -101,7 +115,7 @@ public class XNode<T> {
 				if (isCollection(field.getType())) {
 					collectionHandler(xStream, pojo, name);
 				} else {
-					Object instanceSubPojo = getSubPojo(pojo, name);
+					Object instanceSubPojo = getSubPojoOrCollection(pojo, name);
 					if (instanceSubPojo != null) {
 						setAttribute(xStream, instanceSubPojo);
 					}
@@ -117,10 +131,10 @@ public class XNode<T> {
 	 * Java集合(List\Set\Map)处理
 	 * </p>
 	 */
-	private static void collectionHandler(XStream xStream, Object entity,
+	private void collectionHandler(XStream xStream, Object parentPojo,
 			String fieldName) throws Exception {
 
-		Class<?> entityCls = entity.getClass();
+		Class<?> entityCls = parentPojo.getClass();
 		Object nodeMark = node.get(fieldName);
 		if ((nodeMark != null && (Boolean) nodeMark)) {
 
@@ -128,9 +142,8 @@ public class XNode<T> {
 			xStream.addImplicitCollection(entityCls, fieldName);
 		}
 
-		Object subCollectionItem = getSubPojo(entity, fieldName);
+		Object subCollectionItem = getSubPojoOrCollection(parentPojo, fieldName);
 
-		// 判断具体类型
 		if (subCollectionItem instanceof List) {
 			List<?> subListItem = (List<?>) subCollectionItem;
 			for (int j = 0; j < subListItem.size(); j++) {
@@ -152,7 +165,7 @@ public class XNode<T> {
 	 * 取得子POJO对象实例
 	 * </p>
 	 */
-	private static Object getSubPojo(Object parentPojo, String subPojoName)
+	private Object getSubPojoOrCollection(Object parentPojo, String subPojoName)
 			throws SecurityException, NoSuchMethodException,
 			IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
@@ -164,8 +177,7 @@ public class XNode<T> {
 		return instanceMethod.invoke(parentPojo, new Object[] {});
 	}
 
-	@SuppressWarnings( { "unchecked", "unused" })
-	private static XStream setAttribute(XStream xStream, Object entity,
+	private XStream setAttribute(XStream xStream, Object entity,
 			String rootName, Map<String, String> filtrate) throws Exception {
 
 		Class entityCls = null;
@@ -204,8 +216,7 @@ public class XNode<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static boolean filtrateAttribute(Field field,
-			Map<String, String> filtrate) {
+	private boolean filtrateAttribute(Field field, Map<String, String> filtrate) {
 
 		String fieldName = field.getName();
 		// String fieldType = field.getType().toString();
@@ -223,7 +234,7 @@ public class XNode<T> {
 		return true;
 	}
 
-	private static String getAliasName(String path) {
+	private String getAliasName(String path) {
 
 		Object aliasName = node.get(path);
 
@@ -256,7 +267,7 @@ public class XNode<T> {
 	 * 
 	 * @return getName || setName
 	 */
-	public static String getMethoName(String methodPrefix, String fieldName) {
+	public String getMethoName(String methodPrefix, String fieldName) {
 		String firstLetter = fieldName.substring(0, 1).toUpperCase();
 		return methodPrefix + firstLetter + fieldName.substring(1);
 	}
@@ -268,7 +279,7 @@ public class XNode<T> {
 	 * 
 	 * @return true:clazz的类型为List或Map、List，false则反之。
 	 */
-	private static boolean isCollection(Class<?> clazz) {
+	private boolean isCollection(Class<?> clazz) {
 		String str = clazz.toString();
 		if ("interface java.util.List".equals(str)) {
 			return true;
@@ -285,7 +296,7 @@ public class XNode<T> {
 	 * 判断Class的类型是否为Java基础类型
 	 * </p>
 	 */
-	public static boolean isBasicType(Class<?> clazz) {
+	public boolean isBasicType(Class<?> clazz) {
 		// 字符�?
 		if (clazz == String.class) {
 			return true;
@@ -340,7 +351,4 @@ public class XNode<T> {
 
 	}
 
-	public static void main(String[] args) {
-		System.out.println(isBasicType(int.class));
-	}
 }
