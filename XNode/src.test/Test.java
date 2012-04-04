@@ -36,7 +36,7 @@ public class Test {
 		listCategories.add(new Categories("D小区"));
 		listCategories.add(new Categories("E小区"));
 
-		String xml = XNode.xmlInList(listCategories);
+		String xml = new XNode().xmlInList(listCategories);
 
 		System.err.println(xml);
 	}
@@ -59,9 +59,8 @@ public class Test {
 
 		Map<String, Object> replaceNode = new HashMap<String, Object>();
 		replaceNode.put("com.vo.Categories", "newNode");
-		XNode.node = replaceNode;
 
-		String xml = XNode.xmlInList(listCategories);
+		String xml = new XNode(replaceNode).xmlInList(listCategories);
 
 		System.err.println(xml);
 	}
@@ -80,7 +79,7 @@ public class Test {
 		chart.setyAxisName("Revenue");
 		chart.setShowValues("0");
 		
-		String xml = XNode.xmlInPojo(chart);
+		String xml = new XNode().xmlInPojo(chart);
 
 		System.err.println(xml);
 	}
@@ -112,7 +111,7 @@ public class Test {
 
 		chart.setCategories(listCategories);		
 		
-		String xml = XNode.xmlInPojo(chart);
+		String xml = new XNode().xmlInPojo(chart);
 
 		System.err.println(xml);
 	}
@@ -150,8 +149,7 @@ public class Test {
 		node.put("com.vo.Categories", "newNode");
 		node.put("categories", true);
 		
-		XNode.node = node;
-		String xml = XNode.xmlInPojo(chart);
+		String xml = new XNode(node).xmlInPojo(chart);
 
 		System.err.println(xml);
 	}
