@@ -30,7 +30,7 @@ public class XNode {
 
 	/**
 	 * <p>
-	 * 对POJO产生的XML节点具有等级形式。
+	 * 对POJO产生的XML节点具有等级形式的标识。
 	 * </p>
 	 */
 	public final static String RATING = "rating";
@@ -171,9 +171,12 @@ public class XNode {
 	}
 
 	/**
-	 * <p>取得XML节点名称</p>
+	 * <p>
+	 * 取得XML节点名称
+	 * </p>
 	 * 
-	 * @param classpath 当前节点POJO对象全路径
+	 * @param classpath
+	 *            当前节点POJO对象全路径
 	 */
 	private String getAliasName(String classpath) {
 
