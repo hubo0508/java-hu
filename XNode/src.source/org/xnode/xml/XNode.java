@@ -27,7 +27,7 @@ public class XNode {
 	 * 对POJO产生的XML节点具有等级形式的标识。
 	 * </p>
 	 */
-	public final static String RATING = "rating";
+	public final static String LEVEL = "level";
 
 	public XNode() {
 
@@ -122,7 +122,7 @@ public class XNode {
 
 		Class<?> entityCls = parentPojo.getClass();
 		Object nodeMark = filter.get(parentFieldName);
-		if (RATING.equals(nodeMark)) {
+		if (LEVEL.equals(nodeMark)) {
 
 		} else {
 			xStream.addImplicitCollection(entityCls, parentFieldName);
@@ -175,7 +175,7 @@ public class XNode {
 	private String getAliasName(String classpath) {
 
 		Object aliasName = filter.get(classpath);
-		if (RATING.equals(aliasName)) {
+		if (LEVEL.equals(aliasName)) {
 			return null;
 		}
 
