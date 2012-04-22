@@ -14,7 +14,7 @@ import org.db.pool.DBPool;
 import org.db.pool.MySqlPool;
 import org.db.pool.OraclePool;
 import org.dbtools.DBTools;
-import org.dbtools.run.DBUtil;
+import org.dbtools.run.DBRun;
 
 
 public class DeviceTest {
@@ -39,7 +39,7 @@ public class DeviceTest {
 
 		Map map = null;
 		try {
-			DBUtil db = new DBUtil(Device.class, DBTools.SEGMENTATION);
+			DBRun db = new DBRun(Device.class, DBTools.SEGMENTATION);
 			// ��ʽ1
 			// map = db.queryResultToHashMap(sql, con, params});
 
@@ -78,7 +78,7 @@ public class DeviceTest {
 
 			// ��ʽ3
 			sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME FROM nhwm_config_device where id = ?";
-			DBUtil db = new DBUtil(Map.class, DBTools.SEGMENTATION);
+			DBRun db = new DBRun(Map.class, DBTools.SEGMENTATION);
 			Map map = (HashMap) db.queryResultToUnique(sql, con, params);
 			System.out.println(db.convertedMapFieldToBean(Device.class, map));
 		} catch (SQLException e) {
@@ -105,7 +105,7 @@ public class DeviceTest {
 			// }
 
 			// ��ʽ2
-			DBUtil db = new DBUtil(Map.class, DBTools.SEGMENTATION);
+			DBRun db = new DBRun(Map.class, DBTools.SEGMENTATION);
 			List list = db.queryResultToArrayList(sql, con);
 
 			for (int i = 0; i < list.size(); i++) {
