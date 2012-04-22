@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.dbtools.AbstractDBRun;
 import org.dbtools.DBTools;
 
 /**
@@ -34,7 +35,7 @@ import org.dbtools.DBTools;
  * @Date Apr 20, 2012
  * @Time 10:43:09 AM
  */
-public class DBUtil {
+public class DBRun extends AbstractDBRun{
 
 	/**
 	 * 数据库字段命名规则，默认为常量HUMP
@@ -61,11 +62,11 @@ public class DBUtil {
 	 */
 	private String resultTypes;
 
-	public DBUtil(Class clazz) {
+	public DBRun(Class clazz) {
 		this.clazz = clazz;
 	}
 
-	public DBUtil(Class clazz, String ruleName) {
+	public DBRun(Class clazz, String ruleName) {
 		this.clazz = clazz;
 		this.ruleName = ruleName;
 	}
@@ -229,57 +230,6 @@ public class DBUtil {
 	/** ******************************************************************************************* */
 	// ///////////////////////////////////////////////////////////////////////////////////////////////
 	// 供外部查询使用 end//
-	// ///////////////////////////////////////////////////////////////////////////////////////////////
-	/** ******************************************************************************************* */
-
-	/** ******************************************************************************************* */
-	// ///////////////////////////////////////////////////////////////////////////////////////////////
-	// 供外部关闭对象使用 start//
-	// ///////////////////////////////////////////////////////////////////////////////////////////////
-	/** ******************************************************************************************* */
-
-	public void close(ResultSet rs, PreparedStatement stmt) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void close(PreparedStatement stmt) {
-		try {
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void close(ResultSet rs) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/** ******************************************************************************************* */
-	// ///////////////////////////////////////////////////////////////////////////////////////////////
-	// 供外部关闭对象使用 end//
 	// ///////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************* */
 
@@ -832,7 +782,6 @@ public class DBUtil {
 
 	public void setClazz(Class clazz) {
 		this.clazz = clazz;
-
 	}
 
 }
