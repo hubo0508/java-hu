@@ -305,17 +305,36 @@ public class JdbcUtils {
 	/**
 	 * @param conn
 	 *            数据库连库
-	 * @param params
-	 *            参数
-	 * @param whereIf
-	 *            自定义追加SQL
+	 * @param whereIfOrSql
+	 *            自定义追加SQL或SQL
 	 * @return 影响行数
 	 * 
 	 * @throws SQLException
 	 */
-	public int delete(Connection conn, String whereIf, Object[] params)
+	public int delete(Connection conn, String whereIfOrSql) throws SQLException {
+		if (whereIfOrSql.toUpperCase().indexOf("DELETE") == 0) {
+			return execute(conn, whereIfOrSql, null);
+		}
+		return execute(conn, sqlPro.makeDeleteSql(whereIfOrSql), null);
+	}
+
+	/**
+	 * @param conn
+	 *            数据库连库
+	 * @param params
+	 *            参数
+	 * @param whereIfOrSql
+	 *            自定义追加SQL或SQL
+	 * @return 影响行数
+	 * 
+	 * @throws SQLException
+	 */
+	public int delete(Connection conn, String whereIfOrSql, Object[] params)
 			throws SQLException {
-		return execute(conn, sqlPro.makeDeleteSql(whereIf), params);
+		if (whereIfOrSql.toUpperCase().indexOf("DELETE") == 0) {
+			return execute(conn, whereIfOrSql, params);
+		}
+		return execute(conn, sqlPro.makeDeleteSql(whereIfOrSql), params);
 	}
 
 	/**
