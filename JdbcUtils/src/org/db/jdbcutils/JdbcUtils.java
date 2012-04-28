@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * <li>目前版本对sqlserver的API不支持</li>
  * </ul>
  * 
- * @User: HUBO
+ * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
  * @Time 10:43:09 AM
  * 
