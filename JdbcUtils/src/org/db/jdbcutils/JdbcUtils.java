@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * @Date Apr 20, 2012
  * @Time 10:43:09 AM
  * 
- * @since 0.1
+ * @since 0.2
  */
 public class JdbcUtils {
 
