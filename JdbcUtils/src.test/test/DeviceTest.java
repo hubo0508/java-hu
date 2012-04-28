@@ -45,6 +45,7 @@ public class DeviceTest {
 
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
+		
 		try {
 			int rows = db.insert(con, d, JdbcUtils.MYSQL, JdbcUtils.MYSQL_SEQ);
 			System.out.println(rows);
