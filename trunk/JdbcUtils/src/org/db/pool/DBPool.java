@@ -20,21 +20,21 @@ public class DBPool extends BasicDataSource {
 
 	public void printDataSourceStats() {
 		StringBuffer writeLog = new StringBuffer();
-		writeLog.append("\ndriverClassName：" + getDriverClassName());
-		writeLog.append("\ndefaultAutoCommit：" + getDefaultAutoCommit());
-		writeLog.append("\ninitialSize：" + getInitialSize());
-		writeLog.append("\nmaxIdle：" + getMaxIdle());
-		writeLog.append("\nminIdle：" + getMinIdle());
-		writeLog.append("\nmaxWait：" + getMaxWait());
-		writeLog.append("\npoolPreparedStatements：" + poolPreparedStatements);
-		writeLog.append("\nmaxOpenPreparedStatements："
-				+ getMaxOpenPreparedStatements());
-		writeLog.append("\ntimeBetweenEvictionRunsMillis："
-				+ getTimeBetweenEvictionRunsMillis());
-		writeLog.append("\nremoveAbandoned：" + getRemoveAbandoned());
-		writeLog.append("\nremoveAbandonedTimeout："
-				+ getRemoveAbandonedTimeout());
-		writeLog.append("\nlogAbandoned：" + getLogAbandoned());
+//		writeLog.append("\ndriverClassName：" + getDriverClassName());
+		//writeLog.append("\ndefaultAutoCommit：" + getDefaultAutoCommit());
+//		writeLog.append("\ninitialSize：" + getInitialSize());
+		writeLog.append(" maxIdle：" + getMaxIdle());
+		writeLog.append(" minIdle：" + getMinIdle());
+//		writeLog.append("\nmaxWait：" + getMaxWait());
+//		writeLog.append("\npoolPreparedStatements：" + poolPreparedStatements);
+//		writeLog.append("\nmaxOpenPreparedStatements："
+//				+ getMaxOpenPreparedStatements());
+//		writeLog.append("\ntimeBetweenEvictionRunsMillis："
+//				+ getTimeBetweenEvictionRunsMillis());
+//		writeLog.append("\nremoveAbandoned：" + getRemoveAbandoned());
+//		writeLog.append("\nremoveAbandonedTimeout："
+//				+ getRemoveAbandonedTimeout());
+//		writeLog.append("\nlogAbandoned：" + getLogAbandoned());
 
 		log.info(writeLog.toString());
 	}
