@@ -1,21 +1,8 @@
 package org.db.pool;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.Map.Entry;
 
 public class SqlServerConnectionTest {
-
-	private static String FORMAT = "yyyy/MM/dd HH:mm:ss ms";
-
-	//DBPool pool = SqlServerPool.getInstance();
-
-	Map map = new LinkedHashMap();
 
 	// dataSource = (BasicDataSource)BasicDataSourceFactory.createDataSource(p);
 	public static void main(String[] args) throws InterruptedException,
@@ -23,27 +10,26 @@ public class SqlServerConnectionTest {
 
 		SqlServerConnectionTest test = new SqlServerConnectionTest();
 		test.createConnection();
-		test.map.put("主线程 Create a successful!", new Date());
-		
-		System.out.println("主线程 Create a successful!");
-		SqlServerPool.getInstance().printDataSourceStats();
-		
+
+		SqlServerPool.getInstance().printDataSourceStats("主线程");
+
 		test.setupThread();
 
-		Thread.sleep(10 * 1000);
-		
+		for (int i = 1; i < 20; i++) {
+			Thread.sleep(10 * 1000);
+			if (i == 1) {
+				System.out.println("");
+			}
+			SqlServerPool.getInstance().printDataSourceStats(
+					"maxWait=" + (i * 10));
+		}
+
 		System.out.println("colse.");
 		SqlServerPool.getInstance().close();
 
-		Iterator it = test.map.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry entry = (Entry) it.next();
-			String msg = timeToString((Date) entry.getValue());
-			System.out.println(msg + " | " + entry.getKey());
-		}
 	}
-	
-	private void setupThread(){
+
+	private void setupThread() {
 		new ThreadA().start();
 		new ThreadB().start();
 		new ThreadC().start();
@@ -55,12 +41,6 @@ public class SqlServerConnectionTest {
 		new ThreadI().start();
 	}
 
-	private static String timeToString(Date d) {
-		SimpleDateFormat df = new SimpleDateFormat(FORMAT);
-		df.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-		return df.format(d);
-	}
-
 	public void createConnection() {
 		Connection conn = null;
 		try {
@@ -68,6 +48,11 @@ public class SqlServerConnectionTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			SqlServerPool.getInstance().freeConnection(conn);
 		}
 	}
@@ -78,98 +63,71 @@ public class SqlServerConnectionTest {
 	class ThreadA extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadA Create a successful!", new Date());
-
-			System.out.println("ThreadA Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadA");
 		}
 	}
 
 	// 线程测试B
-	public class ThreadB extends Thread{
+	public class ThreadB extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadB Create a successful!", new Date());
-			
-			System.out.println("ThreadB Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadB");
 		}
 	}
 
 	// 线程测试C
-	public class ThreadC extends Thread{
+	public class ThreadC extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadC Create a successful!", new Date());
-			
-			System.out.println("ThreadC Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadC");
 		}
 	}
 
 	// 线程测试D
-	public class ThreadD extends Thread{
+	public class ThreadD extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadD Create a successful!", new Date());
-			
-			System.out.println("ThreadD Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadD");
 		}
 	}
-	
+
 	// 线程测试E
-	public class ThreadE extends Thread{
+	public class ThreadE extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadE Create a successful!", new Date());
-			
-			System.out.println("ThreadE Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadE");
 		}
 	}
 
 	// 线程测试F
-	public class ThreadF extends Thread{
+	public class ThreadF extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadF Create a successful!", new Date());
-			
-			System.out.println("ThreadF Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadF");
 		}
 	}
 
 	// 线程测试G
-	public class ThreadG extends Thread{
+	public class ThreadG extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadG Create a successful!", new Date());
-			
-			System.out.println("ThreadG Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadG");
 		}
 	}
 
 	// 线程测试H
-	public class ThreadH extends Thread{
+	public class ThreadH extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadH Create a successful!", new Date());
-			
-			System.out.println("ThreadH Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadH");
 		}
 	}
-	
+
 	// 线程测试I
-	public class ThreadI extends Thread{
+	public class ThreadI extends Thread {
 		public void run() {
 			createConnection();
-			map.put("ThreadI Create a successful!", new Date());
-			
-			System.out.println("ThreadI Create a successful!");
-			SqlServerPool.getInstance().printDataSourceStats();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadI");
 		}
 	}
 }
