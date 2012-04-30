@@ -39,6 +39,11 @@ public class SqlServerConnectionTest {
 		new ThreadG().start();
 		new ThreadH().start();
 		new ThreadI().start();
+		new ThreadJ().start();
+		new ThreadK().start();
+		new ThreadL().start();
+		new ThreadM().start();
+		new ThreadN().start();
 	}
 
 	public void createConnection() {
@@ -128,6 +133,46 @@ public class SqlServerConnectionTest {
 		public void run() {
 			createConnection();
 			SqlServerPool.getInstance().printDataSourceStats("ThreadI");
+		}
+	}
+	
+	// 线程测试J
+	public class ThreadJ extends Thread {
+		public void run() {
+			createConnection();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadJ");
+		}
+	}
+	
+	// 线程测试K
+	public class ThreadK extends Thread {
+		public void run() {
+			createConnection();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadK");
+		}
+	}
+	
+	// 线程测试L
+	public class ThreadL extends Thread {
+		public void run() {
+			createConnection();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadL");
+		}
+	}
+	
+	// 线程测试M
+	public class ThreadM extends Thread {
+		public void run() {
+			createConnection();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadM");
+		}
+	}
+	
+	// 线程测试N
+	public class ThreadN extends Thread {
+		public void run() {
+			createConnection();
+			SqlServerPool.getInstance().printDataSourceStats("ThreadN");
 		}
 	}
 }
