@@ -17,15 +17,20 @@ public class DBPool extends BasicDataSource {
 	public DBPool() {
 		super();
 	}
-
+	
 	public void printDataSourceStats() {
-		StringBuffer writeLog = new StringBuffer();
+		printDataSourceStats("");
+	}
+
+	public void printDataSourceStats(String msg) {
+		StringBuffer writeLog = new StringBuffer(msg);
 //		writeLog.append("\ndriverClassName：" + getDriverClassName());
 		//writeLog.append("\ndefaultAutoCommit：" + getDefaultAutoCommit());
 //		writeLog.append("\ninitialSize：" + getInitialSize());
-		writeLog.append(" maxIdle：" + getMaxIdle());
-		writeLog.append(" minIdle：" + getMinIdle());
-//		writeLog.append("\nmaxWait：" + getMaxWait());
+		writeLog.append(" NumActive：" + this.getNumActive());
+		writeLog.append(" NumIdle：" + this.getNumIdle());
+		writeLog.append(" timeBetweenEvictionRunsMillis：" + getTimeBetweenEvictionRunsMillis()/1000+"s");
+		writeLog.append(" minIdle：" + this.getMinIdle());
 //		writeLog.append("\npoolPreparedStatements：" + poolPreparedStatements);
 //		writeLog.append("\nmaxOpenPreparedStatements："
 //				+ getMaxOpenPreparedStatements());

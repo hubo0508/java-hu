@@ -9,7 +9,7 @@ public class SqlServerPool extends DBPool {
 	static {
 		log.info("Setting up data source.");
 		setupProperties();
-		log.info("Done.");
+		log.info("Setting up data source done.");
 	}
 
 	private static void setupProperties() {
@@ -55,11 +55,29 @@ public class SqlServerPool extends DBPool {
 		boolean logAbandoned = Boolean.valueOf(
 				p.getProperty(path, "sqlserver.jdbc.logAbandoned"))
 				.booleanValue();
+		int numTestsPerEvictionRun = Integer.valueOf(
+				p.getProperty(path, "sqlserver.jdbc.numTestsPerEvictionRun"))
+				.intValue();
+		boolean testWhileIdle = Boolean.valueOf(
+				p.getProperty(path, "sqlserver.jdbc.testWhileIdle"))
+				.booleanValue();
+		boolean testOnBorrow = Boolean.valueOf(
+				p.getProperty(path, "sqlserver.jdbc.testOnBorrow"))
+				.booleanValue();
+		boolean testOnReturn = Boolean.valueOf(
+				p.getProperty(path, "sqlserver.jdbc.testOnReturn"))
+				.booleanValue();
+		String validationQuery = p.getProperty(path,
+				"sqlserver.jdbc.validationQuery");
 
 		if (pool == null) {
 			getInstance();
 		}
-
+		
+		pool.setValidationQuery(validationQuery);
+		pool.setTestOnReturn(testOnReturn);
+		pool.setTestOnBorrow(testOnBorrow);
+		pool.setTestWhileIdle(testWhileIdle);
 		pool.setUsername(username);
 		pool.setPassword(password);
 		pool.setUrl(url);
@@ -76,6 +94,7 @@ public class SqlServerPool extends DBPool {
 		pool.setRemoveAbandoned(removeAbandoned);
 		pool.setRemoveAbandonedTimeout(removeAbandonedTimeout);
 		pool.setLogAbandoned(logAbandoned);
+		pool.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
 	}
 
 	public static DBPool getInstance() {
