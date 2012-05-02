@@ -117,29 +117,31 @@ public class DBPool {
 	 */
 	public synchronized Connection getConnection() {
 
-		int count = 0;
-		Connection con = null;
-
-		if (this.freeConnections.size() > 0 && inUsed <= maxConn) {
-
-			con = (Connection) this.freeConnections.get(0);
-			this.freeConnections.remove(0);// 如果连接分配出去了，就从空闲连接里删除
-
-			if (con == null && count < freeConnections.size()) {
-				con = getConnection();
-				count++;
-			}
-
-		} else {
-			con = newConnection();
-		}
-
-		if (con != null) {
-			this.inUsed++;
-			writeLog("得到");
-		}
-
-		return con;
+//		int count = 0;
+//		Connection con = null;
+//
+//		if (this.freeConnections.size() > 0 && inUsed <= maxConn) {
+//
+//			con = (Connection) this.freeConnections.get(0);
+//			this.freeConnections.remove(0);// 如果连接分配出去了，就从空闲连接里删除
+//
+//			if (con == null && count < freeConnections.size()) {
+//				con = getConnection();
+//				count++;
+//			}
+//
+//		} else {
+//			con = newConnection();
+//		}
+//
+//		if (con != null) {
+//			this.inUsed++;
+//			writeLog("得到");
+//		}
+//
+//		return con;
+		
+		return newConnection();
 	}
 
 	/**
@@ -230,6 +232,14 @@ public class DBPool {
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+	public static void close(Connection con) {
+		try {
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

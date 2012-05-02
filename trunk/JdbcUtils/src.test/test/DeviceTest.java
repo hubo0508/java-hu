@@ -20,7 +20,7 @@ public class DeviceTest {
 
 		DeviceTest test = new DeviceTest();
 
-		new DeviceTest().queryResultToArrayList();
+		test.queryResultToArrayList();
 		// new DeviceTest().queryResultToUnique();
 		// new DeviceTest().queryResultToHashMap();
 		// System.out.println(Map.class);
@@ -52,7 +52,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 	}
 
@@ -107,7 +107,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 	}
 
@@ -130,7 +130,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 		System.out.println(map);
 	}
@@ -166,7 +166,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 	}
 
@@ -204,7 +204,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			pool.release();
+			DBPool.close(con);
 		}
 
 	}
