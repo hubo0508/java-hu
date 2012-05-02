@@ -948,7 +948,7 @@ public class JdbcUtils {
 				}
 
 				// Don't call setter if the value object isn't the right type
-				if (this.isCompatibleType(value.getClass(), params[0])) {
+				if (this.isCompatibleType(value, params[0])) {
 					setter.invoke(target, new Object[] { value });
 				} else {
 					throw new SQLException("Cannot set " + prop.getName()
@@ -1057,32 +1057,28 @@ public class JdbcUtils {
 			if (value == null || type.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Integer.TYPE)
-					&& Integer.class.isInstance(value)) {
+			} else if (Integer.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Long.TYPE) && Long.class.isInstance(value)) {
+			} else if (Long.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Double.TYPE)
-					&& Double.class.isInstance(value)) {
+			} else if (Double.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Float.TYPE) && Float.class.isInstance(value)) {
+			} else if (Float.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Short.TYPE) && Short.class.isInstance(value)) {
+			} else if (Short.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Byte.TYPE) && Byte.class.isInstance(value)) {
+			} else if (Byte.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Character.TYPE)
-					&& Character.class.isInstance(value)) {
+			} else if (Character.class.isInstance(value)) {
 				return true;
 
-			} else if (type.equals(Boolean.TYPE)
-					&& Boolean.class.isInstance(value)) {
+			} else if (Boolean.class.isInstance(value)) {
 				return true;
 
 			}
