@@ -23,8 +23,6 @@ public class DBPool {
 
 	protected static Logger log = Logger.getLogger(DBPool.class);
 
-	protected static Object initLock = new Object();
-
 	/**
 	 * 连接接口
 	 */

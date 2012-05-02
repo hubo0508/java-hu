@@ -1,48 +1,24 @@
 package pool;
 
-import java.io.IOException;
-
 import util.PropertiesUtil;
 
-/**
- * 
- * <p>
- * Oracle9i数据库连接池
- * </p>
- * 
- * @User: HUBO
- * @Date Feb 29, 2012
- * @Time 9:53:03 PM
- */
 public class OraclePool extends DBPool {
-
-	private static DBPool pool = null;
-
-	public OraclePool() {
-
+	
+	private static class Instance {
+		public static final OraclePool pool = new OraclePool();
 	}
 
 	public static DBPool getInstance() {
-		if (pool == null) {
-			synchronized (initLock) {
-				if (pool == null) {
-					pool = new DBPool();
-
-					try {
-						initProperties();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					log
-							.info("*****************开启OraclePool实例*****************");
-				}
-			}
-		}
-		return pool;
+		return Instance.pool;
 	}
 
-	private static void initProperties() throws IOException {
+	static {
+		log.info("Setting up data source.");
+		setupProperties();
+		log.info("Setting up data source done.");
+	}
+
+	private static void setupProperties() {
 
 		PropertiesUtil proUtil = PropertiesUtil.getInstance();
 		String path = "D:\\work\\myeclipse6.6\\JdbcUtils\\src.test\\jdbc.properties";
@@ -55,15 +31,11 @@ public class OraclePool extends DBPool {
 		int maxCon = Integer.parseInt(proUtil.getProperty(path,
 				"oracle.jdbc.maxConn"));
 
-		pool.setPoolName(poolName);
-		pool.setDriver(driver);
-		pool.setUrl(URL);
-		pool.setUser(username);
-		pool.setPassword(password);
-		pool.setMaxConn(maxCon);
-	}
-
-	public static void main(String[] args) throws IOException {
-		initProperties();
+		getInstance().setPoolName(poolName);
+		getInstance().setDriver(driver);
+		getInstance().setUrl(URL);
+		getInstance().setUser(username);
+		getInstance().setPassword(password);
+		getInstance().setMaxConn(maxCon);
 	}
 }
