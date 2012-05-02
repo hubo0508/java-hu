@@ -582,6 +582,14 @@ public class JdbcUtils {
 
 		return false;
 	}
+	
+	public boolean isInsert(String sql){
+		if (sql.toUpperCase().indexOf("INSERT") == 0) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	/**
 	 * 判断字符串类型等于nul或空字符串。
@@ -1167,7 +1175,6 @@ public class JdbcUtils {
 			sb.append(" FROM ");
 			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
 			if (isNotEmpty(key)) {
-				sb.append(" WHERE ");
 				appendParamsId(sb, key);
 			}
 
@@ -1385,11 +1392,10 @@ public class JdbcUtils {
 
 			sql = standardFormatting(sql);
 
-			if (sql.toUpperCase().indexOf("INSERT") == 0) {
+			if (isInsert(sql)) {
 				return columnsKeyOfInsert(sql);
 			}
-			if (sql.toUpperCase().indexOf("UPDATE") == 0
-					|| sql.toUpperCase().indexOf("DELETE") == 0) {
+			if (isUpate(sql) || isDelete(sql)) {
 				return columnsKeyOfUpdate(sql);
 			}
 
