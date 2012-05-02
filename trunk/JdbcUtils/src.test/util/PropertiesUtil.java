@@ -8,62 +8,38 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-/**
- * <p>
- * 属性文件读取
- * </p>
- * 
- * @User: HUBO
- * @Date Feb 29, 2012
- * @Time 3:45:02 PM
- * 
- */
 public class PropertiesUtil {
-
+	
 	Logger log = Logger.getLogger(PropertiesUtil.class);
-
-	private static Object initLock = new Object();
-
-	private static PropertiesUtil proUtil = null;
-
-	private Properties props = null;
-
 	private static String cachePath;
 
+	private static class Instance {
+		public final static PropertiesUtil pro = new PropertiesUtil();
+		public static Properties props = new Properties();
+	}
+
 	public static PropertiesUtil getInstance() {
-		if (proUtil == null) {
-			synchronized (initLock) {
-				if (proUtil == null) {
-					proUtil = new PropertiesUtil();
-				}
-			}
-		}
-		return proUtil;
+		return Instance.pro;
+	}
+	
+	private static Properties getProps() {
+		return Instance.props;
 	}
 
 	private synchronized void loadProperties(String typeOrPath)
 			throws IOException {
 
-		this.log.info("typeOrPath : " + typeOrPath);
-
 		cachePath = typeOrPath;
-
-		props = new Properties();
-		props.load(new FileInputStream(typeOrPath));
+		getProps().load(new FileInputStream(typeOrPath));
 
 	}
 
 	public String getProperty(String typeOrPath, String key) {
-
-		if (proUtil == null) {
-			proUtil = getInstance();
-		}
-
 		try {
-			if (props == null || !typeOrPath.equals(cachePath)) {
+			if (getProps() == null || !typeOrPath.equals(cachePath)) {
 				loadProperties(typeOrPath);
 			}
-			return props.getProperty(key);
+			return getProps().getProperty(key);
 		} catch (IOException e) {
 			log.info(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage());
@@ -73,10 +49,10 @@ public class PropertiesUtil {
 	public void setProperty(String path, String key, String value)
 			throws IOException {
 		try {
-			if (props == null) {
+			if (getProps() == null) {
 				loadProperties(path);
 			}
-			props.setProperty(key, value);
+			getProps().setProperty(key, value);
 
 			saveConfig(path);
 		} catch (Exception e) {
@@ -87,7 +63,7 @@ public class PropertiesUtil {
 
 	public void saveConfig(String filePath) throws IOException {
 		OutputStream outputStream = new FileOutputStream(filePath);
-		props.store(outputStream, "set");
+		getProps().store(outputStream, "set");
 		outputStream.close();
 	}
 
