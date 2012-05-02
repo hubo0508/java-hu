@@ -56,6 +56,8 @@ public class JdbcUtils {
 
 	public final static String UNIQUE = "Unique";
 
+	public final static String REPLACE = "_REPLACE";
+
 	/**
 	 * POJO字段命名与数据库字段命名的方式为：驼峰命名法。如：userName;
 	 */
@@ -122,10 +124,27 @@ public class JdbcUtils {
 	 */
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param clazz
+	 *            返回结果集的类型格式。自定义Domain或Map/List/基本类型(如，Integer.class)
+	 */
 	public JdbcUtils(Class clazz) {
 		this.clazz = clazz;
 	}
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param clazz
+	 *            返回结果集的类型格式。自定义Domain或Map/List/基本类型(如，Integer.class)
+	 * @param rule
+	 *            数据库字段命名规则，默认为常量HUMP。
+	 * 
+	 * @see JdbcUtils#HUMP
+	 * @see JdbcUtils#SEGMENTATION
+	 */
 	public JdbcUtils(Class clazz, String rule) {
 		this.clazz = clazz;
 		this.rule = rule;
@@ -845,6 +864,11 @@ public class JdbcUtils {
 	 */
 	class BeanProcessor {
 
+		private Map getFilter() {
+
+			return null;
+		}
+
 		public Object[] objectArray(Object instanceDomain, String sql)
 				throws SQLException {
 			return objectArray(instanceDomain, sql, null, null);
@@ -1094,9 +1118,6 @@ public class JdbcUtils {
 
 		}
 
-		/**
-		 * 
-		 */
 		private boolean isCompatibleType(Object value, Class type) {
 			if (value == null || type.isInstance(value)) {
 				return true;
@@ -1143,7 +1164,7 @@ public class JdbcUtils {
 		/**
 		 * 根据clazz属性构造SELECT语句
 		 * 
-		 * @return <b><code>SELECT id,user_name FROM user WHERE id=?</code></b>
+		 * @return <b><code>SELECT id,user_name FROM user</code></b>
 		 */
 		public String makeSelectSql() throws SQLException {
 			return makeSelectSql(null);
@@ -1153,10 +1174,10 @@ public class JdbcUtils {
 		 * 根据clazz属性构造SELECT语句
 		 * 
 		 * <p>
-		 * 当<code>makeSelectSql("id=? and user_name=?")</code>时,返回<b><code>SELECT id,user_name FROM user WHERE id=? and user_name=?</code></b>
+		 * 当<code>makeSelectSql("where id=? and user_name=?")</code>时,返回<b><code>SELECT id,user_name FROM user WHERE id=? and user_name=?</code></b>
 		 * </p>
 		 * <p>
-		 * 当<code>makeSelectSql(null)</code>时,返回<b><code>SELECT id,user_name FROM user WHERE id=?</code></b>
+		 * 当<code>makeSelectSql(null)</code>时,返回<b><code>SELECT id,user_name FROM user</code></b>
 		 * </p>
 		 */
 		public String makeSelectSql(String key) throws SQLException {
@@ -1166,6 +1187,7 @@ public class JdbcUtils {
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
+
 				if (beanPro.isBasicType(pro.getPropertyType())) {
 					sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
 					if (i < (len - 1)) {
