@@ -48,14 +48,29 @@ import test.NhwmConfigDevice;
  */
 public class JdbcUtils {
 
+	/**
+	 * 执行查询操作数据返回类型：<code>java.util.ArrayList</code>
+	 */
 	public final static String ARRAY_LIST = "ArryList";
 
+	/**
+	 * 执行查询操作数据返回类型：<code>java.util.HashMap</code>
+	 */
 	public final static String HASH_MAP = "HashMap";
 
+	/**
+	 * 执行查询操作数据返回类型：<code>java.util.LinkedHashMap</code>
+	 */
 	public final static String LINKED_HASH_MAP = "LinkedHashMap";
 
+	/**
+	 * 执行查询操作数据返回类型必须唯一，结果超过1条则抛出异常
+	 */
 	public final static String UNIQUE = "Unique";
 
+	/**
+	 * 过滤条件常量
+	 */
 	public final static String REPLACE = "_REPLACE";
 
 	/**
@@ -68,32 +83,41 @@ public class JdbcUtils {
 	 */
 	public final static String SEGMENTATION = "segmentation";
 
+	/**
+	 * 数据库类型：oracle
+	 */
 	public final static String ORACLE = "oracle";
 
+	/**
+	 * 数据库类型：mysql
+	 */
 	public final static String MYSQL = "mysql";
 
+	/**
+	 * 数据库类型：sqlserver
+	 */
 	public final static String SQLSERVER = "sqlserver";
 
+	/**
+	 * 数据库ID键值是否递增
+	 */
 	public final static String MYSQL_SEQ = "increase by degrees";
 
 	/**
-	 * 数据库类型{ "oracle", "mysql","sqlserver","increase by degrees" }
-	 */
-	public final static String[] DATABASE = { "oracle", "mysql", "sqlserver",
-			"increase by degrees" };
-
-	/**
 	 * 数据库字段命名规则，默认为常量HUMP
+	 * 
+	 * @see JdbcUtils#HUMP
+	 * @see JdbcUtils#SEGMENTATION
 	 */
 	private String rule = HUMP;
 
 	/**
-	 * POJO Class
+	 * 返回结果集的类型格式
 	 */
 	private Class clazz;
 
 	/**
-	 * POJO 主键
+	 * Domain主键字段，默认为id
 	 */
 	private String primaryKey = "id";
 
@@ -149,7 +173,7 @@ public class JdbcUtils {
 		this.clazz = clazz;
 		this.rule = rule;
 	}
-
+	
 	public ArrayList queryResultToArrayList(Connection con) throws SQLException {
 		this.resultTypes = ARRAY_LIST;
 		return (ArrayList) query(sqlPro.makeSelectSql(), con, null,
@@ -718,7 +742,7 @@ public class JdbcUtils {
 	 * @Time 11:01:37 PM
 	 */
 	class ResultProcessor {
-
+		
 		Object handle(ResultSet rs, Class rshType) throws SQLException {
 
 			if (ARRAY_LIST.equals(resultTypes)) {
