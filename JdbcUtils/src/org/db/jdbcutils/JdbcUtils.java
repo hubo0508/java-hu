@@ -1698,6 +1698,3 @@ public class JdbcUtils {
 
 }
 
-class Te{
-	
-}
