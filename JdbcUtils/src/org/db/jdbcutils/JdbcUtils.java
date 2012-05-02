@@ -25,6 +25,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import test.NhwmConfigDevice;
+
 /**
  * 数据库底层工具类
  * 
@@ -582,12 +584,12 @@ public class JdbcUtils {
 
 		return false;
 	}
-	
-	public boolean isInsert(String sql){
+
+	public boolean isInsert(String sql) {
 		if (sql.toUpperCase().indexOf("INSERT") == 0) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1171,10 +1173,10 @@ public class JdbcUtils {
 					}
 				}
 			}
-
 			sb.append(" FROM ");
 			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
 			if (isNotEmpty(key)) {
+				sb.append(" ");
 				appendParamsId(sb, key);
 			}
 
@@ -1204,8 +1206,10 @@ public class JdbcUtils {
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
 			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
-			sb.append(" WHERE ");
-			appendParamsId(sb, whereIf);
+			if (isNotEmpty(whereIf)) {
+				sb.append(" ");
+				appendParamsId(sb, whereIf);
+			}
 
 			return sb.toString();
 		}
@@ -1247,8 +1251,9 @@ public class JdbcUtils {
 					}
 				}
 			}
-			sb.append("WHERE ");
-			appendParamsId(sb, whereIf);
+			if (isNotEmpty(whereIf)) {
+				appendParamsId(sb, whereIf);
+			}
 
 			return sb.toString();
 		}
@@ -1708,13 +1713,13 @@ public class JdbcUtils {
 		// new DbTools(DeviceTest.class, DbTools.SEGMENTATION).sqlPro
 		// .makeSelectSql("id=?");
 
-		// JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
-		// JdbcUtils.SEGMENTATION);
-		// System.out.println(db.sqlPro.makeSelectSql("id=?"));
-		// System.out.println(db.sqlPro.makeDeleteSql("id=?"));
-		// System.out.println(db.sqlPro.makeUpdateSql());
-		// System.out.println(db.sqlPro.makeInsertSql(DbTools.MYSQL,
-		// DbTools.MYSQL_SEQ));
+		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+				JdbcUtils.SEGMENTATION);
+		System.out.println(db.sqlPro.makeSelectSql());
+		System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
+		System.out.println(db.sqlPro.makeUpdateSql());
+		System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL,
+				JdbcUtils.MYSQL_SEQ));
 
 		// NhwmConfigDevice d = new NhwmConfigDevice();
 		// d.setId(new Integer(1));
