@@ -1787,6 +1787,8 @@ public class JdbcUtils {
 		// for (int i = 0; i < columns.length; i++) {
 		// System.out.println(columns[i]);
 		// }
+		
+		System.out.println(ArrayList.class);
 	}
 
 }
