@@ -129,10 +129,20 @@ public class JdbcUtils {
 		this.rule = rule;
 	}
 
-	public ArrayList queryResultToArrayList(String sql, Connection con)
+	public ArrayList queryResultToArrayList(Connection con) throws SQLException {
+		this.resultTypes = ARRAY_LIST;
+		return (ArrayList) query(sqlPro.makeSelectSql(), con, null,
+				ArrayList.class);
+	}
+
+	public ArrayList queryResultToArrayList(String sqlOrWhereIf, Connection con)
 			throws SQLException {
 		this.resultTypes = ARRAY_LIST;
-		return (ArrayList) query(sql, con, null, ArrayList.class);
+		if (isSelect(sqlOrWhereIf)) {
+			return (ArrayList) query(sqlOrWhereIf, con, null, ArrayList.class);
+		}
+		return (ArrayList) query(sqlPro.makeSelectSql(sqlOrWhereIf), con, null,
+				ArrayList.class);
 	}
 
 	public ArrayList queryResultToArrayList(String sql, Connection con,
@@ -548,6 +558,30 @@ public class JdbcUtils {
 	}
 
 	/** ******************************************************************************************** */
+
+	public boolean isSelect(String sql) {
+		if (sql.toString().indexOf("SELECT") == 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isUpate(String sql) {
+		if (sql.toString().indexOf("UPDATE") == 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isDelete(String sql) {
+		if (sql.toString().indexOf("DELETE") == 0) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * 判断字符串类型等于nul或空字符串。
@@ -1132,8 +1166,10 @@ public class JdbcUtils {
 
 			sb.append(" FROM ");
 			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
-			sb.append(" WHERE ");
-			appendParamsId(sb, key);
+			if (isNotEmpty(key)) {
+				sb.append(" WHERE ");
+				appendParamsId(sb, key);
+			}
 
 			return sb.toString();
 		}
@@ -1697,4 +1733,3 @@ public class JdbcUtils {
 	}
 
 }
-
