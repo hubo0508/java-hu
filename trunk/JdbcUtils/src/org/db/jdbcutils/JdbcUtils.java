@@ -1010,6 +1010,7 @@ public class JdbcUtils {
 	 */
 	public void setSqlMappingClass(Class sqlMappingClass) {
 		this.sqlMappingClass = sqlMappingClass;
+		this.sqlPro.setDataMappingClass(sqlMappingClass);
 	}
 
 	/**
@@ -1213,16 +1214,14 @@ public class JdbcUtils {
 
 			for (int j = 0; j < columnsLen; j++) {
 				String domainField = sqlPro.filter(columns[j], TOTYPE[0]);
+				System.out.println(domainField);
 				for (int i = 0; i < len; i++) {
 					PropertyDescriptor prop = proDesc[i];
 					if (beanPro.isBasicType(prop.getPropertyType())
 							&& prop.getName().equals(domainField)) {
-						if (ORACLE.equals(database)
-								&& domainField.equals(getPrimaryKey())
-								&& isNotEmpty(sequence)) {
-						} else if (MYSQL.equals(database)
-								&& domainField.equals(getPrimaryKey())
-								&& isEmpty(sequence)) {
+						if (sqlPro.isOracleAutomatic(prop, database, sequence)) {
+						} else if (sqlPro.isMySqlAutomatic(prop, database,
+								sequence)) {
 						} else {
 							params[j] = beanPro
 									.callGetter(instanceDomain, prop);
@@ -1233,15 +1232,6 @@ public class JdbcUtils {
 			}
 
 			return cleanEmpty(params);
-		}
-
-		String getSimpleName() {
-			String text = dataMappingClass.getName();
-			int index = text.lastIndexOf(".");
-			if (index >= 0) {
-				return text.substring(text.lastIndexOf(".") + 1);
-			}
-			return text;
 		}
 
 		public Map columnsToBean(Class beanClazz, Map map) throws SQLException {
@@ -1501,6 +1491,15 @@ public class JdbcUtils {
 			_dataMappingClass = mappingClass;
 		}
 
+		private String getSimpleName() {
+			String text = getDataMappingClass().getName();
+			int index = text.lastIndexOf(".");
+			if (index >= 0) {
+				return text.substring(text.lastIndexOf(".") + 1);
+			}
+			return text;
+		}
+
 		/**
 		 * 根据clazz属性构造SELECT语句
 		 * 
@@ -1537,7 +1536,7 @@ public class JdbcUtils {
 				}
 			}
 			sb.append(" FROM ");
-			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
+			sb.append(filter(getSimpleName(), TOTYPE[1]));
 			if (isNotEmpty(key)) {
 				sb.append(" ");
 				appendParamsId(sb, key);
@@ -1568,7 +1567,7 @@ public class JdbcUtils {
 		public String makeDeleteSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
-			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
+			sb.append(filter(getSimpleName(), TOTYPE[1]));
 			if (isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
@@ -1599,7 +1598,7 @@ public class JdbcUtils {
 		public String makeUpdateSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
-			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
+			sb.append(filter(getSimpleName(), TOTYPE[1]));
 			sb.append(" SET ");
 			PropertyDescriptor[] proDesc = beanPro
 					.propertyDescriptors(_dataMappingClass);
@@ -1663,7 +1662,7 @@ public class JdbcUtils {
 				throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
-			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
+			sb.append(filter(getSimpleName(), TOTYPE[1]));
 			sb.append(" (");
 
 			StringBuffer paramsvalue = new StringBuffer();
