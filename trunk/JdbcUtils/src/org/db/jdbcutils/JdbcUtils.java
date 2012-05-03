@@ -189,7 +189,6 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
@@ -208,11 +207,9 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
-	 * 
 	 * @param params
 	 *            查询参数
 	 * 
@@ -247,7 +244,6 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
@@ -266,11 +262,9 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
-	 * 
 	 * @param params
 	 *            查询参数
 	 * 
@@ -308,7 +302,6 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
@@ -330,11 +323,9 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
-	 * 
 	 * @param params
 	 *            查询参数
 	 * 
@@ -356,11 +347,9 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
-	 * 
 	 * @return 唯一值对象
 	 * 
 	 * @throws SQLException
@@ -375,11 +364,9 @@ public class JdbcUtils {
 	 * 
 	 * @param con
 	 *            数据库连接对象
-	 * 
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
 	 *            id=1</code>)
-	 * 
 	 * @param 查询参数
 	 * 
 	 * @return 唯一值对象
@@ -394,7 +381,21 @@ public class JdbcUtils {
 		return this.query(con, sqlOrWhereIf, params, clazz);
 	}
 
-	private Object query(Connection conn, String sql, Object[] params,
+	/**
+	 * @param conn
+	 *            数据库连接对象
+	 * @param sql
+	 *            查询SQL
+	 * @param params
+	 *            查询参数
+	 * @param instanceCollectionOrClass 
+	 * 
+	 * @return
+	 * 
+	 * @throws SQLException
+	 * 
+	 */
+	public Object query(Connection conn, String sql, Object[] params,
 			Object instanceCollectionOrClass) throws SQLException {
 
 		if (conn == null) {
