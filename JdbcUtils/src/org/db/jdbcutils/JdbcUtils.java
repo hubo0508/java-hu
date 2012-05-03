@@ -388,7 +388,7 @@ public class JdbcUtils {
 	 *            查询SQL
 	 * @param params
 	 *            查询参数
-	 * @param instanceCollectionOrClass 
+	 * @param instanceCollectionOrClass
 	 * 
 	 * @return
 	 * 
@@ -750,7 +750,9 @@ public class JdbcUtils {
 	}
 
 	/** ******************************************************************************************** */
-
+	// ////////////////////////////////////////////////////////////////////////////////////////////////
+	/** ******************************************************************************************** */
+	
 	public boolean isSelect(String sql) {
 		if (sql.toString().indexOf("SELECT") == 0) {
 			return true;
