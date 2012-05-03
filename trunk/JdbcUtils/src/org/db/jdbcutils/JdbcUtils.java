@@ -117,8 +117,7 @@ public class JdbcUtils {
 	/*
 	 * SQL处理(私有)
 	 */
-	private final SqlProcessor sqlPro = new JdbcUtils.SqlProcessor(
-			getDataMappingClass());
+	private final SqlProcessor sqlPro = new JdbcUtils.SqlProcessor();
 
 	/*
 	 * POJO处理(私有)
@@ -134,7 +133,11 @@ public class JdbcUtils {
 	 * 构造函数
 	 * 
 	 * @param dataMappingClass
-	 *            返回结果集映射格式。自定义{Domain}.class或Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/基本类型(如，Integer.class)
+	 *            返回结果集映射格式。
+	 *            <li>{Domain}.class</li>
+	 *            <li>Map.class/HashMap.class/LinkedHashMap.class</li>
+	 *            <li>List.class/ListArray.class</li>
+	 *            <li>Integer.class 或其它基本数据类型</li>
 	 */
 	public JdbcUtils(Class dataMappingClass) {
 		this.setDataMappingClass(dataMappingClass);
@@ -144,7 +147,11 @@ public class JdbcUtils {
 	 * 构造函数
 	 * 
 	 * @param dataMappingClass
-	 *            返回结果集映射格式。自定义{Domain}.class或Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/基本类型(如，Integer.class)
+	 *            返回结果集映射格式。
+	 *            <li>{Domain}.class</li>
+	 *            <li>Map.class/HashMap.class/LinkedHashMap.class</li>
+	 *            <li>List.class/ListArray.class</li>
+	 *            <li>Integer.class 或其它基本数据类型</li>
 	 * @param rule
 	 *            数据库字段命名规则，默认为常量HUMP。
 	 * 
@@ -1443,6 +1450,9 @@ public class JdbcUtils {
 				"<=?", ")", "(", ">" };
 
 		private final String[] notequalsparams = new String[] { "(", ">" };
+
+		public SqlProcessor() {
+		}
 
 		public SqlProcessor(Class _dataMappingClass) {
 			this._dataMappingClass = _dataMappingClass;
