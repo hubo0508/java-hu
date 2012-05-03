@@ -37,16 +37,62 @@ public class DeviceTest {
 
 		// test.insertObjectToMySqlA();
 		// test.insertObjectToMySqlB();
-		test.insertObjectToMySqlC();
+		// test.insertObjectToMySqlC();
 
 		// test.insertObjectToOracleA();
 		// test.insertObjectToOracleB();
+
+		// test.updateObjectA();
+		// test.updateObjectB();
+		// test.updateObjectC();
 	}
 
-	public void updateObject() {
+	public void updateObjectC() {
 
 		NhwmConfigDevice d = new NhwmConfigDevice();
-		d.setId(new Integer(1));
+		d.setId(new Integer(5886));
+		d.setDeviceCname("中文名++++++++++++++++++++++++");
+		d.setDeviceFactory("厂家");
+		d.setDeviceIp("133.40.60.24");
+		d.setDeviceType("g-dkb-type");
+		d.setHasData(new Integer(11111111));
+		d.setDeviceEname("ename");
+
+		String sql = "update Nhwm_Config_Device set has_data=? where id=?";
+
+		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+				JdbcUtils.SEGMENTATION);
+		try {
+			int rows = db.update(con, sql, d);
+			System.out.println(rows);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+	}
+
+	public void updateObjectB() {
+
+		Object[] params = new Object[] { new Integer(1), new Integer(5886) };
+		String sql = "update Nhwm_Config_Device set has_data=? where id=?";
+
+		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+				JdbcUtils.SEGMENTATION);
+		try {
+			int rows = db.update(con, sql, params);
+			System.out.println(rows);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+	}
+
+	public void updateObjectA() {
+
+		NhwmConfigDevice d = new NhwmConfigDevice();
+		d.setId(new Integer(5885));
 		d.setDeviceCname("中文名");
 		d.setDeviceFactory("厂家");
 		d.setDeviceIp("133.40.60.24");
@@ -58,22 +104,6 @@ public class DeviceTest {
 				JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.update(con, d);
-			System.out.println(rows);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBPool.close(con);
-		}
-	}
-
-	public void updateSQL() {
-		String sql = "UPDATE nhwm_config_device set DEVICE_ENAME = ?";
-
-		Object[] params = new Object[] { new String("1111") };
-		JdbcUtils db = new JdbcUtils(null);
-		try {
-			int rows = db.update(sql, con, params);
-
 			System.out.println(rows);
 		} catch (SQLException e) {
 			e.printStackTrace();
