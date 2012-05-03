@@ -45,6 +45,7 @@ import test.NhwmConfigDevice;
  * @Time 10:43:09 AM
  * 
  * @since 0.2
+ * @since 0.3 返回结果集优化2012-05-02
  */
 public class JdbcUtils {
 
@@ -600,6 +601,19 @@ public class JdbcUtils {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 关闭连接
+	 */
+	public static void close(Connection conn) {
+		try {
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 关闭连接
@@ -732,7 +746,7 @@ public class JdbcUtils {
 	/** ******************************************************************************************** */
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************** */
-	
+
 	public boolean isSelect(String sql) {
 		if (sql.toString().indexOf("SELECT") == 0) {
 			return true;
