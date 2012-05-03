@@ -45,7 +45,8 @@ import test.NhwmConfigDevice;
  * @Time 10:43:09 AM
  * 
  * @since 0.2
- * @since 0.3 返回结果集优化2012-05-02
+ * @since 0.2.1 返回结果集优化2012-05-02
+ * @since 0.2.2 注释的添加
  * 
  */
 public class JdbcUtils {
