@@ -601,7 +601,7 @@ public class JdbcUtils {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 关闭连接
 	 */
@@ -1049,7 +1049,7 @@ public class JdbcUtils {
 			int cols = rsmd.getColumnCount();
 
 			for (int i = 1; i <= cols; i++) {
-				if (isHashMap(clazz)) {
+				if (isMap(clazz)) {
 					rsh.put(rsmd.getColumnName(i), rs.getObject(i));
 				} else {
 					rsh.put(sqlPro.filter(rsmd.getColumnName(i), TOTYPE[0]), rs
@@ -1077,6 +1077,8 @@ public class JdbcUtils {
 			while (rs.next()) {
 				if (isHashMap(clazz)) {
 					rsh.add(toMap(new HashMap(), rs));
+				} else if (isLinkedHashMap(clazz)) {
+					rsh.add(toMap(new LinkedHashMap(), rs));
 				} else {
 					Object instDomain = beanPro.newInstance(clazz);
 					for (int i = 0; i < cols; i++) {

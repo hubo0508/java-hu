@@ -3,6 +3,7 @@ package test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,10 @@ public class DeviceTest {
 
 		// test.queryResultToUniqueA();
 		// test.queryResultToUniqueB();
-		test.queryResultToUniqueC();
+		// test.queryResultToUniqueC();
+
+		// test.queryResultToArrayListA();
+		test.queryResultToArrayListB();
 
 		// test.queryResultToArrayList();
 		// new DeviceTest().queryResultToUnique();
@@ -139,6 +143,55 @@ public class DeviceTest {
 		System.out.println(map);
 	}
 
+	public void queryResultToArrayListB() {
+
+		String sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME "
+				+ " FROM nhwm_config_device where id > ?";
+		Object[] params = new Object[] { new Integer(15) };
+		try {
+
+			JdbcUtils db = new JdbcUtils(LinkedHashMap.class, JdbcUtils.SEGMENTATION);
+			List list = db.queryResultToArrayList(con, sql, params);
+
+			for (int i = 0; i < list.size(); i++) {
+				System.out.println(list.get(i));
+			}
+
+			System.out.println("+++++++++++++++++++++++++++++++++++++++");
+
+			List afterConver = db.columnsToBean(NhwmConfigDevice.class, list);
+			for (int i = 0; i < afterConver.size(); i++) {
+				System.out.println(afterConver.get(i));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+
+	}
+
+	public void queryResultToArrayListA() {
+
+		try {
+			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+					JdbcUtils.SEGMENTATION);
+			List list = db.queryResultToArrayList(con);
+
+			for (int i = 0; i < list.size(); i++) {
+				NhwmConfigDevice d = (NhwmConfigDevice) list.get(i);
+				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+
+	}
+
 	public void queryResultToUniqueB() {
 
 		String sql = "SELECT count(*) FROM nhwm_config_device where id > ?";
@@ -192,42 +245,5 @@ public class DeviceTest {
 		} finally {
 			JdbcUtils.close(con);
 		}
-	}
-
-	public void queryResultToArrayList() {
-
-		try {
-			// 方式1
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
-					JdbcUtils.SEGMENTATION);
-			List list = db.queryResultToArrayList(con);
-
-			for (int i = 0; i < list.size(); i++) {
-				NhwmConfigDevice d = (NhwmConfigDevice) list.get(i);
-				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
-			}
-
-			// 方式2
-			// JdbcUtils db = new JdbcUtils(Map.class, JdbcUtils.SEGMENTATION);
-			// List list = db.queryResultToArrayList(sql, con);
-			//
-			// for (int i = 0; i < list.size(); i++) {
-			// System.out.println(list.get(i));
-			// }
-			//
-			// System.out.println("+++++++++++++++++++++++++++++++++++++++");
-			//
-			// List afterConver = db.columnsToBean(NhwmConfigDevice.class,
-			// list);
-			// for (int i = 0; i < afterConver.size(); i++) {
-			// System.out.println(afterConver.get(i));
-			// }
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBPool.close(con);
-		}
-
 	}
 }
