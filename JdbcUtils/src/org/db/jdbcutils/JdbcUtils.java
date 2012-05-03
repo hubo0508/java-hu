@@ -442,6 +442,10 @@ public class JdbcUtils {
 
 	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
 
+	public int update(Connection conn, String sql) throws SQLException {
+		return this.execute(conn, sql, null);
+	}
+
 	/**
 	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
 	 * 
@@ -667,7 +671,7 @@ public class JdbcUtils {
 
 	public int delete(Connection conn, Object instanceDomain)
 			throws SQLException {
-		return this.delete(conn, instanceDomain, "");
+		return delete(conn, sqlPro.makeDeleteSql(), instanceDomain);
 	}
 
 	public int delete(Connection conn, Object[] params) throws SQLException {
@@ -677,17 +681,17 @@ public class JdbcUtils {
 	/**
 	 * @param conn
 	 *            数据库连库
-	 * @param whereIfOrSql
-	 *            自定义追加SQL或SQL
+	 * @param sql
+	 *            sql语句
 	 * @return 影响行数
 	 * 
 	 * @throws SQLException
 	 */
-	public int delete(Connection conn, String whereIfOrSql) throws SQLException {
-		if (whereIfOrSql.toUpperCase().indexOf("DELETE") == 0) {
-			return execute(conn, whereIfOrSql, null);
+	public int delete(Connection conn, String sql) throws SQLException {
+		if (!isDelete(sql)) {
+			throw new SQLException();
 		}
-		return execute(conn, sqlPro.makeDeleteSql(whereIfOrSql), null);
+		return execute(conn, sql, null);
 	}
 
 	/**
@@ -701,12 +705,12 @@ public class JdbcUtils {
 	 * 
 	 * @throws SQLException
 	 */
-	public int delete(Connection conn, String whereIfOrSql, Object[] params)
+	public int delete(Connection conn, String sqlOrWhereIf, Object[] params)
 			throws SQLException {
-		if (whereIfOrSql.toUpperCase().indexOf("DELETE") == 0) {
-			return execute(conn, whereIfOrSql, params);
+		if (!isDelete(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
-		return execute(conn, sqlPro.makeDeleteSql(whereIfOrSql), params);
+		return execute(conn, sqlPro.makeDeleteSql(sqlOrWhereIf), params);
 	}
 
 	/**
@@ -714,17 +718,21 @@ public class JdbcUtils {
 	 *            数据库连库
 	 * @param instanceDomain
 	 *            实例化POJO对象
-	 * @param whereIf
+	 * @param sqlOrWhereIf
 	 *            自定义追加SQL
 	 * @return 影响行数
 	 * 
 	 * @throws SQLException
 	 */
-	public int delete(Connection conn, Object instanceDomain, String whereIf)
-			throws SQLException {
-		String sql = sqlPro.makeDeleteSql(whereIf);
-		Object[] params = beanPro.objectArray(instanceDomain, sql);
-		return execute(conn, sql, params);
+	public int delete(Connection conn, String sqlOrWhereIf,
+			Object instanceDomain) throws SQLException {
+
+		if (!isDelete(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
+		}
+
+		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
+		return execute(conn, sqlOrWhereIf, params);
 	}
 
 	// //////////////////////DELETE-END///////////////////////////////////////////////////////////////
@@ -1756,6 +1764,9 @@ public class JdbcUtils {
 			if (isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
+			} else {
+				sb.append(" ");
+				appendParamsId(sb, null);
 			}
 
 			return sb.toString();
@@ -2268,8 +2279,8 @@ public class JdbcUtils {
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		// System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
-		System.out.println(db.sqlPro.makeUpdateSql());
+		System.out.println(db.sqlPro.makeDeleteSql());
+		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
 	}
