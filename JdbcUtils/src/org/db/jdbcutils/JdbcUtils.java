@@ -30,7 +30,6 @@ import test.NhwmConfigDevice;
 /**
  * 数据库底层工具类
  * 
- * <ul>
  * <li>封装了常用的CURD </li>
  * <li>无泛型定义，适用于jdk1.4+以上(对于老版本项目很适用) </li>
  * <li>部分代码采用或参照apache dbutils项目，项目网址为<code>http://commons.apache.org/dbutils/</code></li>
@@ -38,7 +37,6 @@ import test.NhwmConfigDevice;
  * <li>对于数据库列字段与POJO的字段可以互换，如userName=>user_name或user_name=>userName</li>
  * <li>可实现跨数据库分页(暂未开发)</li>
  * <li>目前版本对sqlserver的API不支持</li>
- * </ul>
  * 
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
