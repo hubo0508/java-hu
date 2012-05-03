@@ -2,6 +2,7 @@ package test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,8 @@ public class DeviceTest {
 		DeviceTest test = new DeviceTest();
 
 		// test.queryResultToUniqueA();
-		test.queryResultToUniqueB();
+		// test.queryResultToUniqueB();
+		test.queryResultToUniqueC();
 
 		// test.queryResultToArrayList();
 		// new DeviceTest().queryResultToUnique();
@@ -145,11 +147,12 @@ public class DeviceTest {
 			sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME "
 					+ " FROM nhwm_config_device where id = ?";
 			sql = "where id=?";
+
 			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
 			NhwmConfigDevice device = (NhwmConfigDevice) db
 					.queryResultToUnique(con, sql, params);
-			
+
 			System.out.println(device.getDeviceIp() + "|"
 					+ device.getDeviceCname());
 		} catch (SQLException e) {
@@ -175,42 +178,15 @@ public class DeviceTest {
 		}
 	}
 
-	public void queryResultToUnique() {
+	public void queryResultToUniqueC() {
 
-		String sql = "SELECT count(*) FROM nhwm_config_device where id > ?";
-
+		String sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME"
+				+ " FROM nhwm_config_device where id = ?";
 		Object[] params = new Object[] { new Integer(10) };
-
 		try {
-			// 方式1
-			// DBUtil db = new DBUtil(Long.class);
-			// Long totalCount = (Long) db.queryResultToUnique(sql, con,
-			// params);
-			// System.out.println(totalCount);
-
-			// 方式2
-			// sql = "SELECT " +
-			// "ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME
-			// "+
-			// "FROM nhwm_config_device where id = ?";
-			sql = "where id=?";
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
-					JdbcUtils.SEGMENTATION);
-			NhwmConfigDevice device = (NhwmConfigDevice) db
-					.queryResultToUnique(con, sql, params);
-			System.out.println(device.getDeviceIp() + "|"
-					+ device.getDeviceCname());
-
-			// 方式3
-			// sql = "SELECT
-			// ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME
-			// FROM nhwm_config_device where id = 10";
-			// sql = "where id=10";
-			// JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
-			// JdbcUtils.SEGMENTATION);
-			// Map map = (HashMap) db.queryResultToUnique(con, sql, params);
-			// System.out.println(db.columnsToBean(NhwmConfigDevice.class,
-			// map));
+			JdbcUtils db = new JdbcUtils(HashMap.class, JdbcUtils.SEGMENTATION);
+			Map map = (HashMap) db.queryResultToUnique(con, sql, params);
+			System.out.println(db.columnsToBean(NhwmConfigDevice.class, map));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
