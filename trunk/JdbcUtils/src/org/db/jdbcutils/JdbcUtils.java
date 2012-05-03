@@ -442,7 +442,7 @@ public class JdbcUtils {
 
 	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
 
-	public int update(String sql, Connection conn, Object[] params)
+	public int update(Connection conn, String sql, Object[] params)
 			throws SQLException {
 		return this.execute(conn, sql, params);
 	}
@@ -510,6 +510,15 @@ public class JdbcUtils {
 	 *            新增sql语句
 	 * @param instanceDomain
 	 *            设置有值的领域对象
+	 * @param database
+	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 * @param sequence
+	 *            序列類型
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
 	 * 
 	 * @return 影响的行数
 	 * 
@@ -522,11 +531,11 @@ public class JdbcUtils {
 	 */
 	public int insert(Connection conn, String insertSql, Object instanceDomain,
 			String database, String sequence) throws SQLException {
-		
-		if(getDataMappingClass() == null){
+
+		if (getDataMappingClass() == null) {
 			setDataMappingClass(instanceDomain.getClass());
 		}
-		
+
 		Object[] params = beanPro.objectArray(instanceDomain, insertSql,
 				database, sequence);
 		return execute(conn, insertSql, params);
@@ -541,6 +550,15 @@ public class JdbcUtils {
 	 *            新增sql语句
 	 * @param params
 	 *            参数值
+	 * @param database
+	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 * @param sequence
+	 *            序列類型
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
 	 * 
 	 * @return 影响的行数
 	 * 
@@ -1281,7 +1299,7 @@ public class JdbcUtils {
 	class BeanProcessor {
 
 		private Class _dataMappingClass;
-		
+
 		public BeanProcessor() {
 		}
 
@@ -1296,7 +1314,7 @@ public class JdbcUtils {
 		public void setDataMappingClass(Class mappingClass) {
 			_dataMappingClass = mappingClass;
 		}
-		
+
 		/**
 		 * 根据Entity取得取得Object[]值
 		 * 
@@ -1727,6 +1745,8 @@ public class JdbcUtils {
 			}
 			if (isNotEmpty(whereIf)) {
 				appendParamsId(sb, whereIf);
+			} else {
+				appendParamsId(sb, null);
 			}
 
 			return sb.toString();
@@ -1855,9 +1875,10 @@ public class JdbcUtils {
 		 * 当<code>appendParamsId(sb, null || "")</code>时，默认在SQL文本最后追加<code>id=?</code>
 		 */
 		private void appendParamsId(StringBuffer sb, String whereIf) {
-			if (whereIf != null && !whereIf.equals("")) {
+			if (isNotEmpty(whereIf)) {
 				sb.append(whereIf);
 			} else {
+				sb.append("where ");
 				sb.append(getPrimaryKey());
 				sb.append("=?");
 			}
@@ -2193,31 +2214,7 @@ public class JdbcUtils {
 		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
 		// System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
 		System.out.println(db.sqlPro.makeUpdateSql());
-
-		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL,
-		// JdbcUtils.MYSQL_SEQ));
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
-
-		// NhwmConfigDevice d = new NhwmConfigDevice();
-		// d.setId(new Integer(1));
-		// d.setDeviceCname("中文名");
-		// d.setDeviceFactory("厂家");
-		// d.setDeviceIp("133.40.60.24");
-		// d.setDeviceType("g-dkb-type");
-		// d.setHasData(new Integer(0));
-		// d.setDeviceEname("ename");
-		//
-		// String sql = db.sqlPro.makeInsertSql(ORACLE, "sq");
-		// Object[] params = db.beanPro.objectArray(d, sql, ORACLE, "sq");
-		//
-		// for (int i = 0; i < params.length; i++) {
-		// Object object = params[i];
-		// System.out.println(object);
-		// }
-		// String[] columns = db.sqlPro.getColumnsKey(sql);
-		// for (int i = 0; i < columns.length; i++) {
-		// System.out.println(columns[i]);
-		// }
 
 	}
 
