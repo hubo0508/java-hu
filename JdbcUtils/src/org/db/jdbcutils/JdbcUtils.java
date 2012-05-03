@@ -103,6 +103,15 @@ public class JdbcUtils {
 	private Class dataMappingClass;
 
 	/**
+	 * SQL数据映射Class。</br>
+	 * 
+	 * 在自动构造sql时，SDK默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
+	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
+	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
+	 */
+	private Class sqlMappingClass;
+
+	/**
 	 * Domain主键字段，默认为id
 	 */
 	private String primaryKey = "id";
@@ -975,6 +984,28 @@ public class JdbcUtils {
 
 	public void setPrimaryKey(String primaryKey) {
 		this.primaryKey = primaryKey;
+	}
+
+	/**
+	 * 取得SQL数据映射Class。</br>
+	 * 
+	 * 在自动构造sql时，SDK默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
+	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
+	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
+	 */
+	public Class getSqlMappingClass() {
+		return sqlMappingClass;
+	}
+
+	/**
+	 * 设置SQL数据映射Class。</br>
+	 * 
+	 * 在自动构造sql时，SDK默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
+	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
+	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
+	 */
+	public void setSqlMappingClass(Class sqlMappingClass) {
+		this.sqlMappingClass = sqlMappingClass;
 	}
 
 	/**
