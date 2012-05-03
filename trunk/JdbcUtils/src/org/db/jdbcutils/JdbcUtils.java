@@ -491,7 +491,7 @@ public class JdbcUtils {
 	 */
 	public int update(Connection conn, Object instanceDomain)
 			throws SQLException {
-		return update(conn, instanceDomain, null);
+		return update(conn, null, instanceDomain);
 	}
 
 	/**
@@ -509,8 +509,8 @@ public class JdbcUtils {
 	 * 
 	 * @throws SQLException
 	 */
-	public int update(Connection conn, Object instanceDomain,
-			String sqlOrWhereIf) throws SQLException {
+	public int update(Connection conn, String sqlOrWhereIf,
+			Object instanceDomain) throws SQLException {
 		if (!isUpate(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
 		}
@@ -939,7 +939,7 @@ public class JdbcUtils {
 	/** ******************************************************************************************** */
 
 	public boolean isSelect(String sql) {
-		if (isNotEmpty(sql) && sql.toString().indexOf("SELECT") == 0) {
+		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("SELECT") == 0) {
 			return true;
 		}
 
@@ -947,7 +947,7 @@ public class JdbcUtils {
 	}
 
 	public boolean isUpate(String sql) {
-		if (isNotEmpty(sql) && sql.toString().indexOf("UPDATE") == 0) {
+		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("UPDATE") == 0) {
 			return true;
 		}
 
@@ -955,7 +955,7 @@ public class JdbcUtils {
 	}
 
 	public boolean isDelete(String sql) {
-		if (isNotEmpty(sql) && sql.toString().indexOf("DELETE") == 0) {
+		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("DELETE") == 0) {
 			return true;
 		}
 
