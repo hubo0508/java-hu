@@ -465,22 +465,8 @@ public class JdbcUtils {
 
 	// //////////////////////INSERT-BEGIN///////////////////////////////////////////////////////////////
 
-	public int insert(Connection conn, String sql, Object[] params,
-			String database, String sequence) throws SQLException {
-		return execute(conn, sql, params);
-	}
-
-	public int insert(Connection conn, String sql, Object[] params)
-			throws SQLException {
-		return execute(conn, sql, params);
-	}
-
-	public int insert(Connection conn, Object[] params) throws SQLException {
-		return execute(conn, sqlPro.makeInsertSql(), params);
-	}
-
 	/**
-	 * 将领域对象保存至数据库，sql根据参数<code>instanceDomain</code>中的字段自动构造。
+	 * 将领域对象保存至数据库，sql根据<code>JdbcUtils.dataMappingClass</code>中的字段自动构造。
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -511,6 +497,86 @@ public class JdbcUtils {
 		Object[] params = beanPro.objectArray(instanceDomain, sql, database,
 				sequence);
 		return execute(conn, sql, params);
+	}
+
+	/**
+	 * 保存数据，sql手动维护，参数根据<code>instanceDomain</code>中的值自动构造
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param insertSql
+	 *            新增sql语句
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#ORACLE
+	 * @see JdbcUtils#MYSQL
+	 * @see JdbcUtils#SQLSERVER
+	 * @see JdbcUtils#MYSQL_SEQ
+	 */
+	public int insert(Connection conn, String insertSql, Object instanceDomain,
+			String database, String sequence) throws SQLException {
+		Object[] params = beanPro.objectArray(instanceDomain, insertSql);
+		return execute(conn, insertSql, params);
+	}
+
+	/**
+	 * 保存数据，sql手动维护，参数手动维护。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param insertSql
+	 *            新增sql语句
+	 * @param params
+	 *            参数值
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#ORACLE
+	 * @see JdbcUtils#MYSQL
+	 * @see JdbcUtils#SQLSERVER
+	 * @see JdbcUtils#MYSQL_SEQ
+	 */
+	public int insert(Connection conn, String insertSql, Object[] params)
+			throws SQLException {
+		return execute(conn, insertSql, params);
+	}
+
+	/**
+	 * 保存数据，sql根据<code>JdbcUtils.dataMappingClass</code>中的字段自动构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param params
+	 *            参数值
+	 * @param database
+	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 * @param sequence
+	 *            序列類型
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#ORACLE
+	 * @see JdbcUtils#MYSQL
+	 * @see JdbcUtils#SQLSERVER
+	 * @see JdbcUtils#MYSQL_SEQ
+	 */
+	public int insert(Connection conn, Object[] params, String database,
+			String sequence) throws SQLException {
+		return execute(conn, sqlPro.makeInsertSql(database, sequence), params);
 	}
 
 	public int insert(Connection conn, Object instanceDomain)
