@@ -838,7 +838,10 @@ public class JdbcUtils {
 	 * @return true(为Map)，false(不为Map)
 	 */
 	private boolean isMap(Class clazz) {
-		if ("interface java.util.Map".equals(clazz.toString())) {
+		String type = clazz.toString();
+		if ("interface java.util.Map".equals(type)
+				|| "class java.util.HashMap".equals(type)
+				|| "class java.util.LinkedHashMap".equals(type)) {
 			return true;
 		}
 		return false;
