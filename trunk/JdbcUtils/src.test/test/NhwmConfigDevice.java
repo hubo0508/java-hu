@@ -16,6 +16,7 @@ public class NhwmConfigDevice {
 	private Integer hasData;
 	private String deviceCname;
 	
+	
 	public Map filter(){
 		
 		Map filter = new HashMap();
