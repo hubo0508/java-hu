@@ -49,26 +49,6 @@ import test.NhwmConfigDevice;
 public class JdbcUtils {
 
 	/**
-	 * 执行查询操作数据返回类型：<code>java.util.ArrayList</code>
-	 */
-	public final static String ARRAY_LIST = "ArryList";
-
-	/**
-	 * 执行查询操作数据返回类型：<code>java.util.HashMap</code>
-	 */
-	public final static String HASH_MAP = "HashMap";
-
-	/**
-	 * 执行查询操作数据返回类型：<code>java.util.LinkedHashMap</code>
-	 */
-	public final static String LINKED_HASH_MAP = "LinkedHashMap";
-
-	/**
-	 * 执行查询操作数据返回类型必须唯一，结果超过1条则抛出异常
-	 */
-	public final static String UNIQUE = "Unique";
-
-	/**
 	 * 过滤条件常量
 	 */
 	public final static String REPLACE = "_REPLACE";
