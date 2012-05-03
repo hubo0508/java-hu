@@ -34,10 +34,10 @@ import test.NhwmConfigDevice;
  * <li>该版本适用于jdk1.4+以上，jdk1.4以下未测试过；</li>
  * <li>部分代码采用或参照apache dbutils项目，项目网址为<code>http://commons.apache.org/dbutils/</code>；</li>
  * <li>操作底层可为纯SQL，适用习惯于写SQL的开发人员；</li>
- * <li>操作底层可为对象，适用习惯用Hibernate操作的开发人员； </li>
- * <li>对于数据库列字段与POJO的字段可以互换，如userName=>user_name或user_name=>userName</li>
- * <li>可实现跨数据库分页(暂未开发)</li>
- * <li>目前版本对sqlserver的API不支持</li>
+ * <li>操作底层可为对象，适用习惯用Hibernate操作的开发人员，于Hiberante类似80%；</li>
+ * <li>操作底层为对象时，可以指定SQL字段的命名方式，如userName或user_name；</li>
+ * <li>可为不同数据之间的简单兼容进行处理；Insert的主键维护机制(sqlserver未实现)、分页构造机制(分页暂时未实现)；</li>
+ * <li>目前版本对sqlserver的API不支持；</li>
  * 
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
