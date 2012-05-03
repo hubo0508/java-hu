@@ -126,11 +126,6 @@ public class JdbcUtils {
 	 */
 	private volatile boolean pmdKnownBroken = false;
 
-	/*
-	 * (私有)
-	 */
-	private String resultTypes;
-
 	public final static String[] TOTYPE = { "bean", "database" };
 
 	/*
@@ -173,83 +168,234 @@ public class JdbcUtils {
 		this.clazz = clazz;
 		this.rule = rule;
 	}
-	
+
+	/**
+	 * 自动构造SQL语言，无条件查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @return ArrayList
+	 * 
+	 * @throws SQLException
+	 */
 	public ArrayList queryResultToArrayList(Connection con) throws SQLException {
-		this.resultTypes = ARRAY_LIST;
-		return (ArrayList) query(sqlPro.makeSelectSql(), con, null,
-				ArrayList.class);
+		return (ArrayList) query(con, sqlPro.makeSelectSql(), null,
+				new ArrayList());
 	}
 
-	public ArrayList queryResultToArrayList(String sqlOrWhereIf, Connection con)
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @return ArrayList
+	 * 
+	 * @throws SQLException
+	 */
+	public ArrayList queryResultToArrayList(Connection con, String sqlOrWhereIf)
 			throws SQLException {
-		this.resultTypes = ARRAY_LIST;
-		if (isSelect(sqlOrWhereIf)) {
-			return (ArrayList) query(sqlOrWhereIf, con, null, ArrayList.class);
+		return queryResultToArrayList(con, sqlOrWhereIf, null);
+	}
+
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @param params
+	 *            查询参数
+	 * 
+	 * @return ArrayList
+	 * 
+	 * @throws SQLException
+	 */
+	public ArrayList queryResultToArrayList(Connection con,
+			String sqlOrWhereIf, Object[] params) throws SQLException {
+		if (!isSelect(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return (ArrayList) query(sqlPro.makeSelectSql(sqlOrWhereIf), con, null,
-				ArrayList.class);
+		return (ArrayList) query(con, sqlOrWhereIf, params, new ArrayList());
 	}
 
-	public ArrayList queryResultToArrayList(String sql, Connection con,
-			Object[] params) throws SQLException {
-		this.resultTypes = ARRAY_LIST;
-		return (ArrayList) query(sql, con, params, ArrayList.class);
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @return HashMap
+	 * 
+	 * @throws SQLException
+	 */
+	public HashMap queryResultToHashMap(Connection con) throws SQLException {
+		return (HashMap) query(con, sqlPro.makeSelectSql(), null, new HashMap());
 	}
 
-	public LinkedHashMap queryResultToLinkedHashMap(String sql, Connection con,
-			Object[] params) throws SQLException {
-		this.resultTypes = LINKED_HASH_MAP;
-		return (LinkedHashMap) query(sql, con, params, HashMap.class);
-	}
-
-	public LinkedHashMap queryResultToLinkedHashMap(String sql, Connection con)
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @return HashMap
+	 * 
+	 * @throws SQLException
+	 */
+	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf)
 			throws SQLException {
-		this.resultTypes = LINKED_HASH_MAP;
-		return (LinkedHashMap) query(sql, con, null, LinkedHashMap.class);
+		return queryResultToHashMap(con, sqlOrWhereIf, null);
 	}
 
-	public HashMap queryResultToHashMap(String sql, Connection con,
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @param params
+	 *            查询参数
+	 * 
+	 * @return HashMap
+	 * 
+	 * @throws SQLException
+	 */
+	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
-		this.resultTypes = HASH_MAP;
-		return (HashMap) query(sql, con, params, HashMap.class);
-	}
 
-	public HashMap queryResultToHashMap(String sql, Connection con)
-			throws SQLException {
-		this.resultTypes = HASH_MAP;
-		return (HashMap) query(sql, con, null, HashMap.class);
-	}
-
-	public Object queryResultToUnique(String sql, Connection con,
-			Object[] params) throws SQLException {
-		this.resultTypes = UNIQUE;
-		return query(sql, con, params, clazz);
-	}
-
-	public Object queryResultToUnique(String sql, Connection con)
-			throws SQLException {
-		this.resultTypes = UNIQUE;
-		return query(sql, con, null, clazz);
-	}
-
-	public Object query(String sql, Connection conn, Object[] params,
-			Class paramsTypes, String resultTypes) throws SQLException {
-		return query(sql, conn, params, paramsTypes);
-	}
-
-	public Object query(String sql, Connection conn, Class paramsTypes,
-			String resultTypes) throws SQLException {
-
-		if (isEmpty(resultTypes)) {
-			throw new SQLException("Null connection");
+		if (!isSelect(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-
-		this.resultTypes = resultTypes;
-		return query(sql, conn, null, paramsTypes);
+		return (HashMap) query(con, sqlOrWhereIf, params, new HashMap());
 	}
 
-	private Object query(String sql, Connection conn, Object[] params,
-			Class rshType) throws SQLException {
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @return LinkedHashMap
+	 * 
+	 * @throws SQLException
+	 */
+	public LinkedHashMap queryResultToLinkedHashMap(Connection con)
+			throws SQLException {
+		return (LinkedHashMap) query(con, sqlPro.makeSelectSql(), null,
+				new LinkedHashMap());
+	}
+
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @return LinkedHashMap
+	 * 
+	 * @throws SQLException
+	 */
+	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
+			String sqlOrWhereIf) throws SQLException {
+		if (!isSelect(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
+		}
+		return queryResultToLinkedHashMap(con, sqlOrWhereIf, null);
+	}
+
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @param params
+	 *            查询参数
+	 * 
+	 * @return LinkedHashMap
+	 * 
+	 * @throws SQLException
+	 */
+	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
+			String sqlOrWhereIf, Object[] params) throws SQLException {
+		if (!isSelect(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
+		}
+		return (LinkedHashMap) query(con, sqlOrWhereIf, params,
+				new LinkedHashMap());
+	}
+
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @return 唯一值对象
+	 * 
+	 * @throws SQLException
+	 */
+	public Object queryResultToUnique(Connection con, String sqlOrWhereIf)
+			throws SQLException {
+		return queryResultToUnique(con, sqlOrWhereIf, null);
+	}
+
+	/**
+	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 
+	 * @param con
+	 *            数据库连接对象
+	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
+	 *            id=1</code>)
+	 * 
+	 * @param 查询参数
+	 * 
+	 * @return 唯一值对象
+	 * 
+	 * @throws SQLException
+	 */
+	public Object queryResultToUnique(Connection con, String sqlOrWhereIf,
+			Object[] params) throws SQLException {
+		if (!isSelect(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
+		}
+		return this.query(con, sqlOrWhereIf, params, clazz);
+	}
+
+	private Object query(Connection conn, String sql, Object[] params,
+			Object instanceCollectionOrClass) throws SQLException {
 
 		if (conn == null) {
 			throw new SQLException("Null connection");
@@ -259,8 +405,8 @@ public class JdbcUtils {
 			throw new SQLException("Null SQL statement");
 		}
 
-		if (rshType == null) {
-			throw new SQLException("Null ResultSetHandler");
+		if (instanceCollectionOrClass == null) {
+			throw new SQLException("Null result set");
 		}
 
 		if (clazz == null) {
@@ -274,7 +420,7 @@ public class JdbcUtils {
 			stmt = this.prepareStatement(conn, sql);
 			this.fillStatement(stmt, params);
 			rs = this.wrap(stmt.executeQuery());
-			result = rsPro.handle(rs, rshType);
+			result = rsPro.handle(rs, instanceCollectionOrClass);
 		} catch (SQLException e) {
 			this.rethrow(e, sql, params);
 		} finally {
@@ -661,6 +807,44 @@ public class JdbcUtils {
 	}
 
 	/**
+	 * 判断Class是否为List或为List的子集ArrayList
+	 * 
+	 * @return true(为List或为List的子集ArrayList)，false(不为List或为List的子集ArrayList)
+	 */
+	private boolean isArrayList(Class clazz) {
+		String type = clazz.toString();
+		if ("class java.util.ArrayList".equals(type)
+				|| "interface java.util.List".equals(type)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 判断Class是否为List
+	 * 
+	 * @return true(为List)，false(不为List)
+	 */
+	private boolean isList(Class clazz) {
+		if ("interface java.util.List".equals(clazz.toString())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 判断Class是否为Map
+	 * 
+	 * @return true(为Map)，false(不为Map)
+	 */
+	private boolean isMap(Class clazz) {
+		if ("interface java.util.Map".equals(clazz.toString())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * 判断Class是否为Map或为Map的子集HashMap
 	 * 
 	 * @return true(为Map或为Map的子集HashMap)，false(不为Map或为Map的子集HashMap)
@@ -671,6 +855,21 @@ public class JdbcUtils {
 				|| "interface java.util.Map".equals(rshTypeStr)) {
 			return true;
 		}
+		return false;
+	}
+
+	/**
+	 * 判断Class是否为Map或为Map的子集LinkedHashMap
+	 * 
+	 * @return true(为Map或为Map的子集LinkedHashMap)，false(不为Map或为Map的子集LinkedHashMap)
+	 */
+	private boolean isLinkedHashMap(Class clazz) {
+		String rshTypeStr = clazz.toString();
+		if ("class java.util.LinkedHashMap".equals(rshTypeStr)
+				|| "interface java.util.Map".equals(rshTypeStr)) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -742,38 +941,46 @@ public class JdbcUtils {
 	 * @Time 11:01:37 PM
 	 */
 	class ResultProcessor {
-		
-		Object handle(ResultSet rs, Class rshType) throws SQLException {
 
-			if (ARRAY_LIST.equals(resultTypes)) {
-				return rsPro.toArrayList(new ArrayList(), rs);
+		Object handle(ResultSet rs, Object instanceCollectionOrClass)
+				throws SQLException {
+
+			if (instanceCollectionOrClass == null) {
+				throw new SQLException("Null result set");
 			}
 
-			if (LINKED_HASH_MAP.equals(resultTypes)) {
-				checkDataUnique(rs);
-				return rs.next() ? rsPro.toMap(new LinkedHashMap(), rs) : null;
+			// Result is ArrayList
+			if (ArrayList.class.isInstance(instanceCollectionOrClass)) {
+				return rsPro.toArrayList((ArrayList) instanceCollectionOrClass,
+						rs);
 			}
 
-			if (HASH_MAP.equals(resultTypes)) {
+			// Result is LinkedHashMap Or HashMap
+			if (LinkedHashMap.class.isInstance(instanceCollectionOrClass)
+					|| HashMap.class.isInstance(instanceCollectionOrClass)) {
 				checkDataUnique(rs);
-				return rs.next() ? rsPro.toMap(new HashMap(), rs) : null;
+				return rs.next() ? rsPro.toMap((Map) instanceCollectionOrClass,
+						rs) : null;
 			}
 
-			if (UNIQUE.equals(resultTypes) && isHashMap(clazz)) {
+			// Back to the only result set
+			if (instanceCollectionOrClass.toString().indexOf("class") == 0) {
 				checkDataUnique(rs);
-				return rs.next() ? rsPro.toUniqueObject(new HashMap(), rs)
-						: null;
-			} else {
-				if (UNIQUE.equals(resultTypes) && !beanPro.isBasicType(rshType)) {
-					checkDataUnique(rs);
+
+				if (isHashMap(clazz)) {
+					return rs.next() ? rsPro.toUniqueObject(new HashMap(), rs)
+							: null;
+				} else if (isLinkedHashMap(clazz)) {
+					return rs.next() ? rsPro.toUniqueObject(
+							new LinkedHashMap(), rs) : null;
+				} else if (isArrayList(clazz)) {
+					return rs.next() ? rsPro
+							.toUniqueObject(new ArrayList(), rs) : null;
+				} else if (beanPro.isBasicType(clazz)) {
+					return rs.next() ? rsPro.toUniqueBiscType(rs, clazz) : null;
+				} else {
 					return rs.next() ? rsPro.toUniqueObject(beanPro
 							.newInstance(clazz), rs) : null;
-				} else {
-					checkDataUnique(rs);
-					if (beanPro.isBasicType(rshType)) {
-						return rs.next() ? rsPro.toUniqueBaseType(rs, rshType)
-								: null;
-					}
 				}
 			}
 
@@ -792,7 +999,7 @@ public class JdbcUtils {
 			return rowCount;
 		}
 
-		private Object toUniqueBaseType(ResultSet rs, Class clazz)
+		private Object toUniqueBiscType(ResultSet rs, Class clazz)
 				throws SQLException {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
@@ -818,14 +1025,12 @@ public class JdbcUtils {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 
-			Map map = null;
 			for (int i = 0; i < cols; i++) {
 				String field = rsmd.getColumnName(i + 1);
-				if (isHashMap(clazz)) {
-					if (map == null) {
-						map = (HashMap) instanceObject;
-					}
-					map.put(field, rs.getObject(field));
+				if (isMap(instanceObject.getClass())) {
+					((Map) instanceObject).put(field, rs.getObject(field));
+				} else if (isList(instanceObject.getClass())) {
+					((List) instanceObject).add(rs.getObject(field));
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
 							.filter(field, TOTYPE[0]));
@@ -834,6 +1039,7 @@ public class JdbcUtils {
 									.getObject(field));
 				}
 			}
+
 			return instanceObject;
 		}
 
@@ -854,28 +1060,36 @@ public class JdbcUtils {
 			return rsh;
 		}
 
-		private List toArrayList(List rsh, ResultSet rs) {
-			try {
-				ResultSetMetaData rsmd = rs.getMetaData();
-				int cols = rsmd.getColumnCount();
-				while (rs.next()) {
-					if (isHashMap(clazz)) {
-						rsh.add(toMap(new HashMap(), rs));
-					} else {
-						Object instanceDomain = beanPro.newInstance(clazz);
-						for (int i = 0; i < cols; i++) {
-							String field = rsmd.getColumnName(i + 1);
-							PropertyDescriptor pro = beanPro
-									.getProDescByName(sqlPro.filter(field,
-											TOTYPE[0]));
-							beanPro.callSetter(instanceDomain, pro, rs
-									.getObject(field));
-						}
-						rsh.add(instanceDomain);
+		/**
+		 * @param rsh
+		 *            返回数据类型(实例集合对象)
+		 * @param rs
+		 *            查询结果集
+		 * 
+		 * @return ArrayList数据集
+		 * 
+		 * @throws SQLException
+		 */
+		private List toArrayList(ArrayList rsh, ResultSet rs)
+				throws SQLException {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int cols = rsmd.getColumnCount();
+			while (rs.next()) {
+				if (isHashMap(clazz)) {
+					rsh.add(toMap(new HashMap(), rs));
+				} else {
+					Object instDomain = beanPro.newInstance(clazz);
+					for (int i = 0; i < cols; i++) {
+						String field = rsmd.getColumnName(i + 1);
+						PropertyDescriptor pro = beanPro
+								.getProDescByName(sqlPro.filter(field,
+										TOTYPE[0]));
+						beanPro
+								.callSetter(instDomain, pro, rs
+										.getObject(field));
 					}
+					rsh.add(instDomain);
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 
 			return rsh;
@@ -888,10 +1102,10 @@ public class JdbcUtils {
 	 */
 	class BeanProcessor {
 
-		private Map getFilter() {
-
-			return null;
-		}
+		// private Map getFilter() {
+		//
+		// return null;
+		// }
 
 		public Object[] objectArray(Object instanceDomain, String sql)
 				throws SQLException {
@@ -1761,7 +1975,7 @@ public class JdbcUtils {
 
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
-		System.out.println(db.sqlPro.makeSelectSql());
+		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
 		System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
 		System.out.println(db.sqlPro.makeUpdateSql());
 		System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL,
@@ -1787,8 +2001,9 @@ public class JdbcUtils {
 		// for (int i = 0; i < columns.length; i++) {
 		// System.out.println(columns[i]);
 		// }
-		
-		System.out.println(ArrayList.class);
+
+		System.out.println(new ArrayList());
+		System.out.println(List.class);
 	}
 
 }
