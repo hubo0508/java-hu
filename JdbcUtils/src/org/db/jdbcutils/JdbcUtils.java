@@ -2034,18 +2034,14 @@ public class JdbcUtils {
 		 * 
 		 * <p>
 		 * 将userName按分段命名法转换成user_name类型，定义如下
-		 * <ul>
 		 * <li>定义全局属性rule的命名规则为：segmentation</li>
 		 * <li>toType应传入值为：database</li>
-		 * </ul>
 		 * </p>
 		 * 
 		 * <p>
 		 * 将的user_name按分段命名法转换成userName类型，定义如下
-		 * <ul>
 		 * <li>定义全局属性rule的命名规则为：hump</li>
 		 * <li>toType应传入值为：bean</li>
-		 * </ul>
 		 * </p>
 		 * 
 		 * @param text
