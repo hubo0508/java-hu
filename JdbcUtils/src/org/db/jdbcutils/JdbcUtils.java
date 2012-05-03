@@ -93,9 +93,14 @@ public class JdbcUtils {
 	private String rule = HUMP;
 
 	/**
-	 * 返回结果集的类型格式
+	 * 返回结果集映射格式。
+	 * 
+	 * <li>{Domain}.class</li>
+	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
+	 * <li>List.class/ListArray.class</li>
+	 * <li>Integer.class 或其它基本数据类型</li>
 	 */
-	private Class clazz;
+	private Class dataMappingClass;
 
 	/**
 	 * Domain主键字段，默认为id
@@ -112,7 +117,8 @@ public class JdbcUtils {
 	/*
 	 * SQL处理(私有)
 	 */
-	private final SqlProcessor sqlPro = new JdbcUtils.SqlProcessor();
+	private final SqlProcessor sqlPro = new JdbcUtils.SqlProcessor(
+			getDataMappingClass());
 
 	/*
 	 * POJO处理(私有)
@@ -127,26 +133,26 @@ public class JdbcUtils {
 	/**
 	 * 构造函数
 	 * 
-	 * @param clazz
-	 *            返回结果集的类型格式。自定义Domain或Map/List/基本类型(如，Integer.class)
+	 * @param dataMappingClass
+	 *            返回结果集映射格式。自定义{Domain}.class或Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/基本类型(如，Integer.class)
 	 */
-	public JdbcUtils(Class clazz) {
-		this.clazz = clazz;
+	public JdbcUtils(Class dataMappingClass) {
+		this.setDataMappingClass(dataMappingClass);
 	}
 
 	/**
 	 * 构造函数
 	 * 
-	 * @param clazz
-	 *            返回结果集的类型格式。自定义Domain或Map/List/基本类型(如，Integer.class)
+	 * @param dataMappingClass
+	 *            返回结果集映射格式。自定义{Domain}.class或Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/基本类型(如，Integer.class)
 	 * @param rule
 	 *            数据库字段命名规则，默认为常量HUMP。
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
 	 */
-	public JdbcUtils(Class clazz, String rule) {
-		this.clazz = clazz;
+	public JdbcUtils(Class dataMappingClass, String rule) {
+		this.setDataMappingClass(dataMappingClass);
 		this.rule = rule;
 	}
 
@@ -359,7 +365,7 @@ public class JdbcUtils {
 		if (!isSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return this.query(con, sqlOrWhereIf, params, clazz);
+		return this.query(con, sqlOrWhereIf, params, dataMappingClass);
 	}
 
 	/**
@@ -391,8 +397,8 @@ public class JdbcUtils {
 			throw new SQLException("Null result set");
 		}
 
-		if (clazz == null) {
-			throw new SQLException("Null Clazz");
+		if (dataMappingClass == null) {
+			throw new SQLException("Null dataMappingClass");
 		}
 
 		PreparedStatement stmt = null;
@@ -657,14 +663,16 @@ public class JdbcUtils {
 		throw e;
 	}
 
-	public Map columnsToBean(Class beanClazz, Map map) throws SQLException {
-		clazz = beanClazz;
-		return beanPro.columnsToBean(beanClazz, map);
+	public Map columnsToBean(Class dataMappingClass, Map map)
+			throws SQLException {
+		this.setDataMappingClass(dataMappingClass);
+		return beanPro.columnsToBean(getDataMappingClass(), map);
 	}
 
-	public List columnsToBean(Class beanClazz, List list) throws SQLException {
-		clazz = beanClazz;
-		return beanPro.columnsToBean(beanClazz, list);
+	public List columnsToBean(Class dataMappingClass, List list)
+			throws SQLException {
+		this.setDataMappingClass(dataMappingClass);
+		return beanPro.columnsToBean(getDataMappingClass(), list);
 	}
 
 	/**
@@ -909,18 +917,47 @@ public class JdbcUtils {
 		return count;
 	}
 
-	public Class getClazz() {
-		return clazz;
+	/**
+	 * 返回结果集映射格式。
+	 * 
+	 * <li>{Domain}.class</li>
+	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
+	 * <li>List.class/ListArray.class</li>
+	 * <li>Integer.class 或其它基本数据类型</li>
+	 */
+	public Class getDataMappingClass() {
+		return dataMappingClass;
 	}
 
-	public void setClazz(Class clazz) {
-		this.clazz = clazz;
+	/**
+	 * 设值结果集映射格式。
+	 * 
+	 * <li>{Domain}.class</li>
+	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
+	 * <li>List.class/ListArray.class</li>
+	 * <li>Integer.class 或其它基本数据类型</li>
+	 */
+	public void setDataMappingClass(Class dataMappingClass) {
+		this.dataMappingClass = dataMappingClass;
+		this.sqlPro.setDataMappingClass(dataMappingClass);
 	}
 
+	/**
+	 * 取得数据库字段命名规则，默认为常量HUMP
+	 * 
+	 * @see JdbcUtils#HUMP
+	 * @see JdbcUtils#SEGMENTATION
+	 */
 	public String getRule() {
 		return rule;
 	}
 
+	/**
+	 * 设值数据库字段命名规则，默认为常量HUMP
+	 * 
+	 * @see JdbcUtils#HUMP
+	 * @see JdbcUtils#SEGMENTATION
+	 */
 	public void setRule(String rule) {
 		this.rule = rule;
 	}
@@ -967,20 +1004,21 @@ public class JdbcUtils {
 			if (instanceCollectionOrClass.toString().indexOf("class") == 0) {
 				checkDataUnique(rs);
 
-				if (isHashMap(clazz)) {
+				if (isHashMap(dataMappingClass)) {
 					return rs.next() ? rsPro.toUniqueObject(new HashMap(), rs)
 							: null;
-				} else if (isLinkedHashMap(clazz)) {
+				} else if (isLinkedHashMap(dataMappingClass)) {
 					return rs.next() ? rsPro.toUniqueObject(
 							new LinkedHashMap(), rs) : null;
-				} else if (isArrayList(clazz)) {
+				} else if (isArrayList(dataMappingClass)) {
 					return rs.next() ? rsPro
 							.toUniqueObject(new ArrayList(), rs) : null;
-				} else if (beanPro.isBasicType(clazz)) {
-					return rs.next() ? rsPro.toUniqueBiscType(rs, clazz) : null;
+				} else if (beanPro.isBasicType(dataMappingClass)) {
+					return rs.next() ? rsPro.toUniqueBiscType(rs,
+							dataMappingClass) : null;
 				} else {
 					return rs.next() ? rsPro.toUniqueObject(beanPro
-							.newInstance(clazz), rs) : null;
+							.newInstance(dataMappingClass), rs) : null;
 				}
 			}
 
@@ -1049,7 +1087,7 @@ public class JdbcUtils {
 			int cols = rsmd.getColumnCount();
 
 			for (int i = 1; i <= cols; i++) {
-				if (isMap(clazz)) {
+				if (isMap(dataMappingClass)) {
 					rsh.put(rsmd.getColumnName(i), rs.getObject(i));
 				} else {
 					rsh.put(sqlPro.filter(rsmd.getColumnName(i), TOTYPE[0]), rs
@@ -1075,12 +1113,12 @@ public class JdbcUtils {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 			while (rs.next()) {
-				if (isHashMap(clazz)) {
+				if (isHashMap(dataMappingClass)) {
 					rsh.add(toMap(new HashMap(), rs));
-				} else if (isLinkedHashMap(clazz)) {
+				} else if (isLinkedHashMap(dataMappingClass)) {
 					rsh.add(toMap(new LinkedHashMap(), rs));
 				} else {
-					Object instDomain = beanPro.newInstance(clazz);
+					Object instDomain = beanPro.newInstance(dataMappingClass);
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
 						PropertyDescriptor pro = beanPro
@@ -1125,7 +1163,8 @@ public class JdbcUtils {
 			String[] columns = sqlPro.getColumnsKey(sql);
 			int columnsLen = columns.length;
 
-			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(clazz);
+			PropertyDescriptor[] proDesc = beanPro
+					.propertyDescriptors(dataMappingClass);
 			int len = proDesc.length;
 
 			Object[] params = new Object[columnsLen];
@@ -1155,7 +1194,7 @@ public class JdbcUtils {
 		}
 
 		String getSimpleName() {
-			String text = clazz.getName();
+			String text = dataMappingClass.getName();
 			int index = text.lastIndexOf(".");
 			if (index >= 0) {
 				return text.substring(text.lastIndexOf(".") + 1);
@@ -1195,7 +1234,8 @@ public class JdbcUtils {
 		}
 
 		PropertyDescriptor getProDescByName(String name) throws SQLException {
-			PropertyDescriptor[] proDescs = this.propertyDescriptors(clazz);
+			PropertyDescriptor[] proDescs = this
+					.propertyDescriptors(dataMappingClass);
 			for (int i = 0; i < proDescs.length; i++) {
 				PropertyDescriptor pro = proDescs[i];
 				if (pro.getName().equals(name)) {
@@ -1203,7 +1243,8 @@ public class JdbcUtils {
 				}
 			}
 
-			throw new SQLException(clazz.toString() + " : Cannot set " + name);
+			throw new SQLException(dataMappingClass.toString()
+					+ " : Cannot set " + name);
 		}
 
 		Object callGetter(Object target, PropertyDescriptor prop) {
@@ -1279,7 +1320,7 @@ public class JdbcUtils {
 
 		String convertedDomainField(String text) throws SQLException {
 
-			PropertyDescriptor[] proDesc = propertyDescriptors(clazz);
+			PropertyDescriptor[] proDesc = propertyDescriptors(dataMappingClass);
 			for (int i = 0; i < proDesc.length; i++) {
 				PropertyDescriptor pro = proDesc[i];
 				if (isBasicType(pro.getPropertyType())
@@ -1396,10 +1437,24 @@ public class JdbcUtils {
 	 */
 	class SqlProcessor {
 
+		private Class _dataMappingClass;
+
 		private final String[] equalsparams = new String[] { "=?", "?", "<?",
 				"<=?", ")", "(", ">" };
 
 		private final String[] notequalsparams = new String[] { "(", ">" };
+
+		public SqlProcessor(Class _dataMappingClass) {
+			this._dataMappingClass = _dataMappingClass;
+		}
+
+		public Class getDataMappingClass() {
+			return _dataMappingClass;
+		}
+
+		public void setDataMappingClass(Class mappingClass) {
+			_dataMappingClass = mappingClass;
+		}
 
 		/**
 		 * 根据clazz属性构造SELECT语句
@@ -1423,7 +1478,8 @@ public class JdbcUtils {
 		public String makeSelectSql(String key) throws SQLException {
 			StringBuffer sb = new StringBuffer("SELECT ");
 
-			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(clazz);
+			PropertyDescriptor[] proDesc = beanPro
+					.propertyDescriptors(_dataMappingClass);
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
@@ -1500,7 +1556,8 @@ public class JdbcUtils {
 			sb.append("UPDATE ");
 			sb.append(filter(beanPro.getSimpleName(), TOTYPE[1]));
 			sb.append(" SET ");
-			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(clazz);
+			PropertyDescriptor[] proDesc = beanPro
+					.propertyDescriptors(_dataMappingClass);
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
@@ -1566,7 +1623,8 @@ public class JdbcUtils {
 
 			StringBuffer paramsvalue = new StringBuffer();
 
-			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(clazz);
+			PropertyDescriptor[] proDesc = beanPro
+					.propertyDescriptors(_dataMappingClass);
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
