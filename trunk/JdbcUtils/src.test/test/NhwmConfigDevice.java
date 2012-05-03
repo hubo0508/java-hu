@@ -1,5 +1,10 @@
 package test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.db.jdbcutils.JdbcUtils;
+
 
 public class NhwmConfigDevice {
 
@@ -10,7 +15,15 @@ public class NhwmConfigDevice {
 	private String deviceFactory;
 	private Integer hasData;
 	private String deviceCname;
-
+	
+	public Map filter(){
+		
+		Map filter = new HashMap();
+		filter.put(JdbcUtils.REPLACE, new String[]{"NhwmConfigDevice:ConfigDevice"});
+		
+		return filter;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
