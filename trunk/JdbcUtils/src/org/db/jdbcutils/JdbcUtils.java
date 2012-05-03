@@ -1406,6 +1406,20 @@ public class JdbcUtils {
 		public void setDataMappingClass(Class mappingClass) {
 			_dataMappingClass = mappingClass;
 		}
+		
+		/**
+		 * 取得SQL过滤条件
+		 */
+		public Map getSqlFilter() {
+			try {
+				Object obj = newInstance(getDataMappingClass());
+				return (Map) callGetter(obj, "sqlFilter");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
 
 		/**
 		 * 根据Entity取得取得Object[]值
@@ -1501,7 +1515,32 @@ public class JdbcUtils {
 					+ " : Cannot set " + name);
 		}
 
-		private Object callGetter(Object target, PropertyDescriptor prop) {
+		private Object callGetter(Object target, String methodName)
+				throws SQLException {
+			try {
+				Method readMethod = target.getClass().getMethod(methodName,
+						new Class[] {});
+				return readMethod.invoke(target, new Object[] {});
+			} catch (IllegalArgumentException e) {
+				throw new SQLException("Cannot get " + methodName + ": "
+						+ e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new SQLException("Cannot get " + methodName + ": "
+						+ e.getMessage());
+			} catch (InvocationTargetException e) {
+				throw new SQLException("Cannot get " + methodName + ": "
+						+ e.getMessage());
+			} catch (SecurityException e) {
+				throw new SQLException("Cannot get " + methodName + ": "
+						+ e.getMessage());
+			} catch (NoSuchMethodException e) {
+				throw new SQLException("Cannot get " + methodName + ": "
+						+ e.getMessage());
+			}
+		}
+
+		private Object callGetter(Object target, PropertyDescriptor prop)
+				throws SQLException {
 
 			Method getter = prop.getReadMethod();
 
@@ -1512,21 +1551,24 @@ public class JdbcUtils {
 			try {
 				return getter.invoke(target, new Object[] {});
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw new SQLException("Cannot get " + prop.getName() + ": "
+						+ e.getMessage());
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				throw new SQLException("Cannot get " + prop.getName() + ": "
+						+ e.getMessage());
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				throw new SQLException("Cannot get " + prop.getName() + ": "
+						+ e.getMessage());
 			}
-
-			return null;
 		}
-		
+
 		/**
 		 * 通过反射将值设值到目标Bean中。
 		 * 
-		 * @param target 设置值的目标Bean对象
-		 * @param prop Java Bean 通过一对存储器方法导出的一个属性。
+		 * @param target
+		 *            设置值的目标Bean对象
+		 * @param prop
+		 *            Java Bean 通过一对存储器方法导出的一个属性。
 		 * @param value
 		 * 
 		 * @throws SQLException
@@ -2300,7 +2342,8 @@ public class JdbcUtils {
 
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
-		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
+		db.beanPro.getSqlFilter();
+		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
 		// System.out.println(db.sqlPro.makeDeleteSql());
 		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
