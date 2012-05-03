@@ -37,6 +37,7 @@ public class DeviceTest {
 
 		// test.insertObjectToMySqlA();
 		// test.insertObjectToMySqlB();
+		test.insertObjectToMySqlC();
 
 		// test.insertObjectToOracleA();
 		// test.insertObjectToOracleB();
@@ -172,7 +173,8 @@ public class DeviceTest {
 		JdbcUtils db = new JdbcUtils(null, JdbcUtils.SEGMENTATION);
 
 		try {
-			int rows = db.insert(con, d, JdbcUtils.MYSQL, JdbcUtils.MYSQL_SEQ);
+			int rows = db.insert(con, sql, d, JdbcUtils.MYSQL,
+					JdbcUtils.MYSQL_SEQ);
 			System.out.println(rows);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -308,12 +310,13 @@ public class DeviceTest {
 				System.out.println(list.get(i));
 			}
 
-			System.out.println("+++++++++++++++++++++++++++++++++++++++");
-
-			List afterConver = db.columnsToBean(NhwmConfigDevice.class, list);
-			for (int i = 0; i < afterConver.size(); i++) {
-				System.out.println(afterConver.get(i));
-			}
+			// System.out.println("+++++++++++++++++++++++++++++++++++++++");
+			//
+			// List afterConver = db.columnsToBean(NhwmConfigDevice.class,
+			// list);
+			// for (int i = 0; i < afterConver.size(); i++) {
+			// System.out.println(afterConver.get(i));
+			// }
 
 		} catch (SQLException e) {
 			e.printStackTrace();
