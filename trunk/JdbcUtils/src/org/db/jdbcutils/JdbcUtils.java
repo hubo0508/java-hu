@@ -30,10 +30,11 @@ import test.NhwmConfigDevice;
 /**
  * 数据库底层工具类
  * 
- * <li>封装了常用的CURD </li>
- * <li>无泛型定义，适用于jdk1.4+以上(对于老版本项目很适用) </li>
- * <li>部分代码采用或参照apache dbutils项目，项目网址为<code>http://commons.apache.org/dbutils/</code></li>
- * <li>增加POJO映射成SQL、直接存储对象的API，操作思想与Hibernate相似</li>
+ * <li>封装了常用的增、删、查、改；</li>
+ * <li>该版本适用于jdk1.4+以上，jdk1.4以下未测试过；</li>
+ * <li>部分代码采用或参照apache dbutils项目，项目网址为<code>http://commons.apache.org/dbutils/</code>；</li>
+ * <li>操作底层可为纯SQL，适用习惯于写SQL的开发人员；</li>
+ * <li>操作底层可为对象，适用习惯用Hibernate操作的开发人员； </li>
  * <li>对于数据库列字段与POJO的字段可以互换，如userName=>user_name或user_name=>userName</li>
  * <li>可实现跨数据库分页(暂未开发)</li>
  * <li>目前版本对sqlserver的API不支持</li>
@@ -42,9 +43,28 @@ import test.NhwmConfigDevice;
  * @Date Apr 20, 2012
  * @Time 10:43:09 AM
  * 
- * @since 0.2
- * @since 0.2.1 返回结果集优化2012-05-02
- * @since 0.2.2 注释的添加
+ * <table>
+ * <tr>
+ * <td>版本号 </td>
+ * <td>修改时间 </td>
+ * <td>说明</td>
+ * </tr>
+ * <tr>
+ * <td>0.1</td>
+ * <td>2012-04-20</td>
+ * <td>创建</td>
+ * </tr>
+ * <tr>
+ * <td>0.2</td>
+ * <td>2012-05-02</td>
+ * <td>返回结果重构</td>
+ * </tr>
+ * <tr>
+ * <td>0.2.1</td>
+ * <td>2012-05-03</td>
+ * <td>注释的添加，重构</td>
+ * </tr>
+ * </table>
  * 
  */
 public class JdbcUtils {
