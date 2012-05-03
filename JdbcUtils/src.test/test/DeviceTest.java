@@ -2,7 +2,6 @@ package test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,10 @@ public class DeviceTest {
 
 		DeviceTest test = new DeviceTest();
 
-		test.queryResultToArrayList();
+		// test.queryResultToUniqueA();
+		test.queryResultToUniqueB();
+
+		// test.queryResultToArrayList();
 		// new DeviceTest().queryResultToUnique();
 		// new DeviceTest().queryResultToHashMap();
 		// System.out.println(Map.class);
@@ -45,7 +47,7 @@ public class DeviceTest {
 
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
-		
+
 		try {
 			int rows = db.insert(con, d, JdbcUtils.MYSQL, JdbcUtils.MYSQL_SEQ);
 			System.out.println(rows);
@@ -126,13 +128,51 @@ public class DeviceTest {
 			// map = db.queryResultToHashMap(sql, con, params});
 
 			// 方式2
-			map = db.queryResultToLinkedHashMap(sql, con, params);
+			map = db.queryResultToLinkedHashMap(con, sql, params);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DBPool.close(con);
 		}
 		System.out.println(map);
+	}
+
+	public void queryResultToUniqueB() {
+
+		String sql = "SELECT count(*) FROM nhwm_config_device where id > ?";
+		Object[] params = new Object[] { new Integer(10) };
+		try {
+			sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME "
+					+ " FROM nhwm_config_device where id = ?";
+			sql = "where id=?";
+			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+					JdbcUtils.SEGMENTATION);
+			NhwmConfigDevice device = (NhwmConfigDevice) db
+					.queryResultToUnique(con, sql, params);
+			
+			System.out.println(device.getDeviceIp() + "|"
+					+ device.getDeviceCname());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+	}
+
+	public void queryResultToUniqueA() {
+
+		String sql = "SELECT count(*) FROM nhwm_config_device where id > ?";
+
+		Object[] params = new Object[] { new Integer(10) };
+		try {
+			JdbcUtils db = new JdbcUtils(Long.class);
+			Long totalCount = (Long) db.queryResultToUnique(con, sql, params);
+			System.out.println(totalCount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
 	}
 
 	public void queryResultToUnique() {
@@ -149,20 +189,28 @@ public class DeviceTest {
 			// System.out.println(totalCount);
 
 			// 方式2
-			// sql = "SELECT
-			// ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME
-			// FROM nhwm_config_device where id = ?";
-			// DBUtil db = new DBUtil(Device.class, DBUtil.SEGMENTATION);
-			// Device device = (Device) db.queryResultToUnique(sql, con,
-			// params);
-			// System.out.println(device.getDeviceIp() + "|"
-			// + device.getDeviceCname());
+			// sql = "SELECT " +
+			// "ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME
+			// "+
+			// "FROM nhwm_config_device where id = ?";
+			sql = "where id=?";
+			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+					JdbcUtils.SEGMENTATION);
+			NhwmConfigDevice device = (NhwmConfigDevice) db
+					.queryResultToUnique(con, sql, params);
+			System.out.println(device.getDeviceIp() + "|"
+					+ device.getDeviceCname());
 
 			// 方式3
-			sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME FROM nhwm_config_device where id = ?";
-			JdbcUtils db = new JdbcUtils(Map.class, JdbcUtils.SEGMENTATION);
-			Map map = (HashMap) db.queryResultToUnique(sql, con, params);
-			System.out.println(db.columnsToBean(NhwmConfigDevice.class, map));
+			// sql = "SELECT
+			// ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME
+			// FROM nhwm_config_device where id = 10";
+			// sql = "where id=10";
+			// JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			// JdbcUtils.SEGMENTATION);
+			// Map map = (HashMap) db.queryResultToUnique(con, sql, params);
+			// System.out.println(db.columnsToBean(NhwmConfigDevice.class,
+			// map));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -172,34 +220,32 @@ public class DeviceTest {
 
 	public void queryResultToArrayList() {
 
-		String sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME FROM nhwm_config_device";
-
 		try {
-
 			// 方式1
-			// DBUtil db = new DBUtil(Device.class, DBUtil.SEGMENTATION,
-			// DBUtil.INVERSION_SQL);
-			// List list = db.queryResultToArrayList(sql, con);
-			//			
-			// for (int i = 0; i < list.size(); i++) {
-			// Device d = (Device) list.get(i);
-			// System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
-			// }
-
-			// 方式2
-			JdbcUtils db = new JdbcUtils(Map.class, JdbcUtils.SEGMENTATION);
-			List list = db.queryResultToArrayList(sql, con);
+			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+					JdbcUtils.SEGMENTATION);
+			List list = db.queryResultToArrayList(con);
 
 			for (int i = 0; i < list.size(); i++) {
-				System.out.println(list.get(i));
+				NhwmConfigDevice d = (NhwmConfigDevice) list.get(i);
+				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
 			}
 
-			System.out.println("+++++++++++++++++++++++++++++++++++++++");
-
-			List afterConver = db.columnsToBean(NhwmConfigDevice.class, list);
-			for (int i = 0; i < afterConver.size(); i++) {
-				System.out.println(afterConver.get(i));
-			}
+			// 方式2
+			// JdbcUtils db = new JdbcUtils(Map.class, JdbcUtils.SEGMENTATION);
+			// List list = db.queryResultToArrayList(sql, con);
+			//
+			// for (int i = 0; i < list.size(); i++) {
+			// System.out.println(list.get(i));
+			// }
+			//
+			// System.out.println("+++++++++++++++++++++++++++++++++++++++");
+			//
+			// List afterConver = db.columnsToBean(NhwmConfigDevice.class,
+			// list);
+			// for (int i = 0; i < afterConver.size(); i++) {
+			// System.out.println(afterConver.get(i));
+			// }
 
 		} catch (SQLException e) {
 			e.printStackTrace();
