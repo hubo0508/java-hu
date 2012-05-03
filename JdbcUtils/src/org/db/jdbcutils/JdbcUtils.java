@@ -479,6 +479,32 @@ public class JdbcUtils {
 		return execute(conn, sqlPro.makeInsertSql(), params);
 	}
 
+	/**
+	 * 将领域对象保存至数据库，sql根据参数<code>instanceDomain</code>中的字段自动构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * @param database
+	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 * @param sequence
+	 *            序列類型
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
+	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
+	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#ORACLE
+	 * @see JdbcUtils#MYSQL
+	 * @see JdbcUtils#SQLSERVER
+	 * @see JdbcUtils#MYSQL_SEQ
+	 */
 	public int insert(Connection conn, Object instanceDomain, String database,
 			String sequence) throws SQLException {
 		String sql = sqlPro.makeInsertSql(database, sequence);
@@ -2079,9 +2105,9 @@ public class JdbcUtils {
 
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
-		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
-		System.out.println(db.sqlPro.makeUpdateSql());
+		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
+		// System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
+		// System.out.println(db.sqlPro.makeUpdateSql());
 		System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL,
 				JdbcUtils.MYSQL_SEQ));
 
