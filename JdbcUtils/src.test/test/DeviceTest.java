@@ -158,7 +158,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBPool.close(con);
+			JdbcUtils.close(con);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBPool.close(con);
+			JdbcUtils.close(con);
 		}
 	}
 
@@ -190,7 +190,7 @@ public class DeviceTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBPool.close(con);
+			JdbcUtils.close(con);
 		}
 	}
 
