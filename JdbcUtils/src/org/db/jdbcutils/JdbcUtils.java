@@ -522,7 +522,13 @@ public class JdbcUtils {
 	 */
 	public int insert(Connection conn, String insertSql, Object instanceDomain,
 			String database, String sequence) throws SQLException {
-		Object[] params = beanPro.objectArray(instanceDomain, insertSql);
+		
+		if(getDataMappingClass() == null){
+			setDataMappingClass(instanceDomain.getClass());
+		}
+		
+		Object[] params = beanPro.objectArray(instanceDomain, insertSql,
+				database, sequence);
 		return execute(conn, insertSql, params);
 	}
 
@@ -1043,6 +1049,7 @@ public class JdbcUtils {
 	public void setDataMappingClass(Class dataMappingClass) {
 		this.dataMappingClass = dataMappingClass;
 		this.sqlPro.setDataMappingClass(dataMappingClass);
+		this.beanPro.setDataMappingClass(dataMappingClass);
 	}
 
 	/**
@@ -1098,6 +1105,7 @@ public class JdbcUtils {
 	public void setSqlMappingClass(Class sqlMappingClass) {
 		this.sqlMappingClass = sqlMappingClass;
 		this.sqlPro.setDataMappingClass(sqlMappingClass);
+		this.beanPro.setDataMappingClass(sqlMappingClass);
 	}
 
 	/**
@@ -1272,11 +1280,28 @@ public class JdbcUtils {
 	 */
 	class BeanProcessor {
 
-		// private Map getFilter() {
-		//
-		// return null;
-		// }
+		private Class _dataMappingClass;
+		
+		public BeanProcessor() {
+		}
 
+		public BeanProcessor(Class _dataMappingClass) {
+			this._dataMappingClass = _dataMappingClass;
+		}
+
+		public Class getDataMappingClass() {
+			return _dataMappingClass;
+		}
+
+		public void setDataMappingClass(Class mappingClass) {
+			_dataMappingClass = mappingClass;
+		}
+		
+		/**
+		 * 根据Entity取得取得Object[]值
+		 * 
+		 * @throws SQLException
+		 */
 		public Object[] objectArray(Object instanceDomain, String sql)
 				throws SQLException {
 			return objectArray(instanceDomain, sql, null, null);
@@ -1294,14 +1319,13 @@ public class JdbcUtils {
 			int columnsLen = columns.length;
 
 			PropertyDescriptor[] proDesc = beanPro
-					.propertyDescriptors(dataMappingClass);
+					.propertyDescriptors(getDataMappingClass());
 			int len = proDesc.length;
 
 			Object[] params = new Object[columnsLen];
 
 			for (int j = 0; j < columnsLen; j++) {
 				String domainField = sqlPro.filter(columns[j], TOTYPE[0]);
-				System.out.println(domainField);
 				for (int i = 0; i < len; i++) {
 					PropertyDescriptor prop = proDesc[i];
 					if (beanPro.isBasicType(prop.getPropertyType())
@@ -1354,7 +1378,7 @@ public class JdbcUtils {
 
 		PropertyDescriptor getProDescByName(String name) throws SQLException {
 			PropertyDescriptor[] proDescs = this
-					.propertyDescriptors(dataMappingClass);
+					.propertyDescriptors(getDataMappingClass());
 			for (int i = 0; i < proDescs.length; i++) {
 				PropertyDescriptor pro = proDescs[i];
 				if (pro.getName().equals(name)) {
@@ -1362,7 +1386,7 @@ public class JdbcUtils {
 				}
 			}
 
-			throw new SQLException(dataMappingClass.toString()
+			throw new SQLException(getDataMappingClass().toString()
 					+ " : Cannot set " + name);
 		}
 
@@ -1439,7 +1463,7 @@ public class JdbcUtils {
 
 		String convertedDomainField(String text) throws SQLException {
 
-			PropertyDescriptor[] proDesc = propertyDescriptors(dataMappingClass);
+			PropertyDescriptor[] proDesc = propertyDescriptors(getDataMappingClass());
 			for (int i = 0; i < proDesc.length; i++) {
 				PropertyDescriptor pro = proDesc[i];
 				if (isBasicType(pro.getPropertyType())
@@ -2168,9 +2192,11 @@ public class JdbcUtils {
 				JdbcUtils.SEGMENTATION);
 		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
 		// System.out.println(db.sqlPro.makeDeleteSql("where id=?"));
-		// System.out.println(db.sqlPro.makeUpdateSql());
-		System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL,
-				JdbcUtils.MYSQL_SEQ));
+		System.out.println(db.sqlPro.makeUpdateSql());
+
+		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL,
+		// JdbcUtils.MYSQL_SEQ));
+		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
 		// NhwmConfigDevice d = new NhwmConfigDevice();
 		// d.setId(new Integer(1));
@@ -2193,8 +2219,6 @@ public class JdbcUtils {
 		// System.out.println(columns[i]);
 		// }
 
-		System.out.println(new ArrayList());
-		System.out.println(List.class);
 	}
 
 }
