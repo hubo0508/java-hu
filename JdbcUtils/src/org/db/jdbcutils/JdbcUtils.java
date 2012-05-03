@@ -579,13 +579,6 @@ public class JdbcUtils {
 		return execute(conn, sqlPro.makeInsertSql(database, sequence), params);
 	}
 
-	public int insert(Connection conn, Object instanceDomain)
-			throws SQLException {
-		String sql = sqlPro.makeInsertSql();
-		Object[] params = beanPro.objectArray(instanceDomain, sql);
-		return execute(conn, sql, params);
-	}
-
 	// //////////////////////INSERT-END///////////////////////////////////////////////////////////////
 
 	// //////////////////////DELETE-BEGIN///////////////////////////////////////////////////////////////
