@@ -125,23 +125,25 @@ public class JdbcUtils {
 	/**
 	 * SQL数据映射Class。</br>
 	 * 
-	 * 在自动构造sql时，SDK默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
+	 * 在自动构造sql时，SDx默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
 	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
 	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
 	 */
 	private Class sqlMappingClass;
 
 	/**
+	 * 自动构造SQL的过滤条件
+	 */
+	private Map automaticSQLFilter;
+
+	/**
 	 * Domain主键字段，默认为id
 	 */
 	private String primaryKey = "id";
 
-	/*
-	 * 
-	 */
 	private volatile boolean pmdKnownBroken = false;
 
-	public final static String[] TOTYPE = { "bean", "database" };
+	private final static String[] TOTYPE = { "bean", "database" };
 
 	/*
 	 * SQL处理(私有)
@@ -1208,6 +1210,14 @@ public class JdbcUtils {
 		this.beanPro.setDataMappingClass(sqlMappingClass);
 	}
 
+	public Map getAutomaticSQLFilter() {
+		return automaticSQLFilter;
+	}
+
+	public void setAutomaticSQLFilter(Map automaticSQLFilter) {
+		this.automaticSQLFilter = automaticSQLFilter;
+	}
+
 	/**
 	 * 结果集处理
 	 * 
@@ -1471,12 +1481,13 @@ public class JdbcUtils {
 			return afterConver;
 		}
 
-		String makeStringName(String methodPrefix, String fieldName) {
+		private String makeStringName(String methodPrefix, String fieldName) {
 			String firstLetter = fieldName.substring(0, 1).toUpperCase();
 			return methodPrefix + firstLetter + fieldName.substring(1);
 		}
 
-		PropertyDescriptor getProDescByName(String name) throws SQLException {
+		private PropertyDescriptor getProDescByName(String name)
+				throws SQLException {
 			PropertyDescriptor[] proDescs = this
 					.propertyDescriptors(getDataMappingClass());
 			for (int i = 0; i < proDescs.length; i++) {
@@ -1490,7 +1501,7 @@ public class JdbcUtils {
 					+ " : Cannot set " + name);
 		}
 
-		Object callGetter(Object target, PropertyDescriptor prop) {
+		private Object callGetter(Object target, PropertyDescriptor prop) {
 
 			Method getter = prop.getReadMethod();
 
@@ -1510,9 +1521,18 @@ public class JdbcUtils {
 
 			return null;
 		}
-
-		void callSetter(Object target, PropertyDescriptor prop, Object value)
-				throws SQLException {
+		
+		/**
+		 * 通过反射将值设值到目标Bean中。
+		 * 
+		 * @param target 设置值的目标Bean对象
+		 * @param prop Java Bean 通过一对存储器方法导出的一个属性。
+		 * @param value
+		 * 
+		 * @throws SQLException
+		 */
+		private void callSetter(Object target, PropertyDescriptor prop,
+				Object value) throws SQLException {
 
 			Method setter = prop.getWriteMethod();
 
@@ -1561,13 +1581,17 @@ public class JdbcUtils {
 			}
 		}
 
-		String convertedDomainField(String text) throws SQLException {
+		/**
+		 * 当数据库列段命名以驼峰规则时，如查询列为USERNAME，但际上Bean中是以userName命名，这时需要根据提供的<code>JdbcUtils.BeanProcessor.getDataMappingClass()</code>字段进行
+		 * 匹配，返回以<code>JdbcUtils.BeanProcessor.getDataMappingClass()</code>中的命名规则名称。
+		 */
+		private String convertedBeanField(String column) throws SQLException {
 
 			PropertyDescriptor[] proDesc = propertyDescriptors(getDataMappingClass());
 			for (int i = 0; i < proDesc.length; i++) {
 				PropertyDescriptor pro = proDesc[i];
 				if (isBasicType(pro.getPropertyType())
-						&& pro.getName().toUpperCase().equals(text)) {
+						&& pro.getName().toUpperCase().equals(column)) {
 					return pro.getName();
 				}
 			}
@@ -1575,12 +1599,14 @@ public class JdbcUtils {
 			return null;
 		}
 
-		PropertyDescriptor[] propertyDescriptors(Class c) throws SQLException {
-			// Introspector caches BeanInfo classes for better performance
+		/**
+		 * 初始化Bean內部信息
+		 */
+		private PropertyDescriptor[] propertyDescriptors(Class c)
+				throws SQLException {
 			BeanInfo beanInfo = null;
 			try {
 				beanInfo = Introspector.getBeanInfo(c);
-
 			} catch (IntrospectionException e) {
 				throw new SQLException("Bean introspection failed: "
 						+ e.getMessage());
@@ -1589,7 +1615,10 @@ public class JdbcUtils {
 			return beanInfo.getPropertyDescriptors();
 		}
 
-		Object newInstance(Class c) throws SQLException {
+		/**
+		 * 实例化Class模板
+		 */
+		private Object newInstance(Class c) throws SQLException {
 			try {
 				return c.newInstance();
 
@@ -1603,12 +1632,18 @@ public class JdbcUtils {
 			}
 		}
 
-		boolean isBasicType(Class clazz) {
+		/**
+		 * 判断Class模块是否基础类型
+		 * 
+		 * @return true(是基础类型) || false(不是基础类型)
+		 */
+		private boolean isBasicType(Class clazz) {
 			if (clazz == String.class) {
 				return true;
 
 			} else if (clazz == int.class || clazz == Integer.class) {
 				return true;
+
 			} else if (clazz == double.class || clazz == Double.class) {
 				return true;
 
@@ -1639,37 +1674,11 @@ public class JdbcUtils {
 			}
 
 			return false;
-
 		}
 
 		private boolean isCompatibleType(Object value, Class type) {
-			if (value == null || type.isInstance(value)) {
+			if (type.isInstance(value)) {
 				return true;
-
-			} else if (Integer.class.isInstance(value)) {
-				return true;
-
-			} else if (Long.class.isInstance(value)) {
-				return true;
-
-			} else if (Double.class.isInstance(value)) {
-				return true;
-
-			} else if (Float.class.isInstance(value)) {
-				return true;
-
-			} else if (Short.class.isInstance(value)) {
-				return true;
-
-			} else if (Byte.class.isInstance(value)) {
-				return true;
-
-			} else if (Character.class.isInstance(value)) {
-				return true;
-
-			} else if (Boolean.class.isInstance(value)) {
-				return true;
-
 			}
 			return false;
 		}
@@ -1738,7 +1747,6 @@ public class JdbcUtils {
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
-
 				if (beanPro.isBasicType(pro.getPropertyType())) {
 					sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
 					if (i < (len - 1)) {
@@ -2073,7 +2081,7 @@ public class JdbcUtils {
 			if (HUMP.equals(getRule())) {
 				if (isAllCaps(text)) {
 					if (toType.equals(TOTYPE[0])) {
-						return beanPro.convertedDomainField(text);
+						return beanPro.convertedBeanField(text);
 					} else {
 
 					}
@@ -2086,7 +2094,7 @@ public class JdbcUtils {
 				if (isAllCaps(text)) {
 					if (toType.equals(TOTYPE[0])) {
 						return beanPro
-								.convertedDomainField(removeSeparator(text));
+								.convertedBeanField(removeSeparator(text));
 					} else {
 
 					}
@@ -2292,8 +2300,8 @@ public class JdbcUtils {
 
 		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
-		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		System.out.println(db.sqlPro.makeDeleteSql());
+		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
+		// System.out.println(db.sqlPro.makeDeleteSql());
 		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
