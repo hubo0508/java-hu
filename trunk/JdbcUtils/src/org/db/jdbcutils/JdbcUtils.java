@@ -1743,10 +1743,23 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * SQL处理
+	 * Java Bean自动构造SQL处理工具类。
+	 * 
+	 * @author hubo.0508@gmail.com
 	 */
 	class SqlProcessor {
 
+		/**
+		 * 数据映射模版
+		 * 
+		 * <p>
+		 * 该数据映射模版作用于Java Bean与SQL之间的转换。 SQL的查询字段或更新字段、插入字段该<code>SqlProcessor.getDataMappingClass()</code>映射模版中取得。
+		 * </p>
+		 * 
+		 * 可在Java Bean dataMappingClass中增加过滤方法，该过滤方法返回<code>Map</code>过滤规则。
+		 * 
+		 * @see JdbcUtils#getSqlFilter()
+		 */
 		private Class _dataMappingClass;
 
 		/**
@@ -1765,9 +1778,13 @@ public class JdbcUtils {
 		 */
 		public SqlProcessor() {
 		}
-		
+
 		/**
 		 * @param _dataMappingClass 
+		 *            数据映射模版。该数据映射模版作用于Java Bean与SQL之间的转换。 SQL的查询字段或更新字段、插入字段该<code>SqlProcessor.getDataMappingClass()</code>映射模版中取得。
+		 * 可在Java Bean dataMappingClass中增加过滤方法，该过滤方法返回<code>Map</code>过滤规则。
+		 * 
+		 * @see JdbcUtils#getSqlFilter()
 		 */
 		public SqlProcessor(Class _dataMappingClass) {
 			this._dataMappingClass = _dataMappingClass;
