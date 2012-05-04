@@ -136,13 +136,13 @@ public class JdbcUtils {
 	 */
 	private Class dataMappingClass;
 
-	/**
-	 * SQL数据映射Class。</br>
-	 * 
-	 * 在自动构造sql时，SDx默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
-	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
-	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
-	 */
+//	/**
+//	 * SQL数据映射Class。</br>
+//	 * 
+//	 * 在自动构造sql时，SDx默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
+//	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
+//	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
+//	 */
 	private Class sqlMappingClass;
 
 	/**
