@@ -1238,7 +1238,7 @@ public class JdbcUtils {
 	/**
 	 * 结果集处理
 	 * 
-	 * @User: HUBO
+	 * @User: hubo.0508@gmail.com
 	 * @Date Apr 27, 2012
 	 * @Time 11:01:37 PM
 	 */
@@ -1269,21 +1269,21 @@ public class JdbcUtils {
 			if (instanceCollectionOrClass.toString().indexOf("class") == 0) {
 				checkDataUnique(rs);
 
-				if (isHashMap(dataMappingClass)) {
+				if (isHashMap(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueObject(new HashMap(), rs)
 							: null;
-				} else if (isLinkedHashMap(dataMappingClass)) {
+				} else if (isLinkedHashMap(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueObject(
 							new LinkedHashMap(), rs) : null;
-				} else if (isArrayList(dataMappingClass)) {
+				} else if (isArrayList(getDataMappingClass())) {
 					return rs.next() ? rsPro
 							.toUniqueObject(new ArrayList(), rs) : null;
-				} else if (beanPro.isBasicType(dataMappingClass)) {
+				} else if (beanPro.isBasicType(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueBiscType(rs,
-							dataMappingClass) : null;
+							getDataMappingClass()) : null;
 				} else {
 					return rs.next() ? rsPro.toUniqueObject(beanPro
-							.newInstance(dataMappingClass), rs) : null;
+							.newInstance(getDataMappingClass()), rs) : null;
 				}
 			}
 
@@ -1322,37 +1322,77 @@ public class JdbcUtils {
 			return value;
 		}
 
-		private Object toUniqueObject(Object instanceObject, ResultSet rs)
-				throws SQLException {
+		/**
+		 * 将数据库结果集的数据表映射成Map/List/JavaBean。
+		 * 
+		 * <p>
+		 * 返回Map/List/JavaBean或Java基本数据类型中的具体值的映射根据<code>JdbcUtils.getDataMappingClass()</code>类型定义。
+		 * <li>类型为Map时，将数据库结果集的数据映射成Map，键为列名。</li>
+		 * <li>类型为List时，将数据库结果集的数据映射成List。</li>
+		 * <li>类型为JavaBean时，将数据库结果集的数据映射成JavaBean。</li>
+		 * </p>
+		 * 
+		 * @param instanceObjectOrBasicType
+		 *            返回数据类型(实例化后对象)
+		 * @param rs
+		 *            数据库结果集的数据表
+		 * 
+		 * @return Map数据集
+		 * 
+		 * @see ResultProcessor#getDataMappingClass()
+		 * 
+		 * @throws SQLException
+		 */
+		private Object toUniqueObject(Object instanceObjectOrBasicType,
+				ResultSet rs) throws SQLException {
 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 
 			for (int i = 0; i < cols; i++) {
 				String field = rsmd.getColumnName(i + 1);
-				if (isMap(instanceObject.getClass())) {
-					((Map) instanceObject).put(field, rs.getObject(field));
-				} else if (isList(instanceObject.getClass())) {
-					((List) instanceObject).add(rs.getObject(field));
+				if (isMap(instanceObjectOrBasicType.getClass())) {
+					((Map) instanceObjectOrBasicType).put(field, rs
+							.getObject(field));
+				} else if (isList(instanceObjectOrBasicType.getClass())) {
+					((List) instanceObjectOrBasicType).add(rs.getObject(field));
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
 							.convert(field, TOTYPE[0]));
-					beanPro
-							.callSetter(instanceObject, pro, rs
-									.getObject(field));
+					beanPro.callSetter(instanceObjectOrBasicType, pro, rs
+							.getObject(field));
 				}
 			}
 
-			return instanceObject;
+			return instanceObjectOrBasicType;
 		}
 
+		/**
+		 * 将数据库结果集的数据表映射成Map数据集。
+		 * 
+		 * <p>
+		 * 返回Map数据集中的具体值的映射根据<code>JdbcUtils.getDataMappingClass()</code>类型定义。
+		 * <li>类型为Map时，将数据库结果集的数据映射成Map，键为列名。</li>
+		 * </p>
+		 * 
+		 * @param rsh
+		 *            返回数据类型(实例化后对象)
+		 * @param rs
+		 *            数据库结果集的数据表
+		 * 
+		 * @return Map数据集
+		 * 
+		 * @see ResultProcessor#getDataMappingClass()
+		 * 
+		 * @throws SQLException
+		 */
 		private Map toMap(Map rsh, ResultSet rs) throws SQLException {
 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 
 			for (int i = 1; i <= cols; i++) {
-				if (isMap(dataMappingClass)) {
+				if (isMap(getDataMappingClass())) {
 					rsh.put(rsmd.getColumnName(i), rs.getObject(i));
 				} else {
 					rsh.put(sqlPro.convert(rsmd.getColumnName(i), TOTYPE[0]),
@@ -1364,12 +1404,22 @@ public class JdbcUtils {
 		}
 
 		/**
+		 * 将数据库结果集的数据表映射成ArrayList数据集。
+		 * 
+		 * <p>
+		 * 返回ArrayList数据集中的具体值的映射根据<code>JdbcUtils.getDataMappingClass()</code>类型定义。
+		 * <li>类型为Map时，将数据库结果集的数据映射成Map，键为列名。</li>
+		 * <li>类型为JavaBean时，将数据库结果集的数据映射到JavaBean中。</li>
+		 * </p>
+		 * 
 		 * @param rsh
-		 *            返回数据类型(实例集合对象)
+		 *            返回数据类型(实例化后对象)
 		 * @param rs
-		 *            查询结果集
+		 *            数据库结果集的数据表
 		 * 
 		 * @return ArrayList数据集
+		 * 
+		 * @see ResultProcessor#getDataMappingClass()
 		 * 
 		 * @throws SQLException
 		 */
@@ -1378,22 +1428,20 @@ public class JdbcUtils {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 			while (rs.next()) {
-				if (isHashMap(dataMappingClass)) {
+				if (isHashMap(getDataMappingClass())) {
 					rsh.add(toMap(new HashMap(), rs));
-				} else if (isLinkedHashMap(dataMappingClass)) {
+				} else if (isLinkedHashMap(getDataMappingClass())) {
 					rsh.add(toMap(new LinkedHashMap(), rs));
 				} else {
-					Object instDomain = beanPro.newInstance(dataMappingClass);
+					Object bean = beanPro.newInstance(getDataMappingClass());
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
 						PropertyDescriptor pro = beanPro
 								.getProDescByName(sqlPro.convert(field,
 										TOTYPE[0]));
-						beanPro
-								.callSetter(instDomain, pro, rs
-										.getObject(field));
+						beanPro.callSetter(bean, pro, rs.getObject(field));
 					}
-					rsh.add(instDomain);
+					rsh.add(bean);
 				}
 			}
 
