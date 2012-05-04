@@ -2072,9 +2072,24 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 判断oracle数据的insert id键是否为自动递增
+		 * 判断Oracle数据库的主键值是否自动递增。
+		 * 
+		 * @param pro
+		 *            Java Bean对象
+		 * @param database
+		 *            数据库类型
+		 * @param sequence
+		 *            序列类型
+		 * 
+		 * @return true(Oracle数据库主键值为自动递增) || false(Oracle数据库主键值为手动维护)
+		 * 
+		 * @see JdbcUtils#getPrimaryKey()
+		 * @see JdbcUtils#MYSQL
+		 * @see JdbcUtils#MYSQL_SEQ
+		 * @see JdbcUtils#ORACLE
+		 * @see JdbcUtils#SQLSERVER
 		 */
-		private boolean isOracleAutomatic(PropertyDescriptor pro,
+		protected boolean isOracleAutomatic(PropertyDescriptor pro,
 				String database, String sequence) {
 			if (pro.getName().equals(getPrimaryKey())
 					&& ORACLE.equals(database) && isNotEmpty(sequence)) {
@@ -2085,9 +2100,24 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 判断mysql数据的insert id键是否为自动递增
+		 * 判断MySql数据库的主键值是否自动递增。
+		 * 
+		 * @param pro
+		 *            Java Bean对象
+		 * @param database
+		 *            数据库类型
+		 * @param sequence
+		 *            序列类型
+		 * 
+		 * @return true(MySql数据库主键值为自动递增) || false(MySql数据库主键值为手动维护)
+		 * 
+		 * @see JdbcUtils#getPrimaryKey()
+		 * @see JdbcUtils#MYSQL
+		 * @see JdbcUtils#MYSQL_SEQ
+		 * @see JdbcUtils#ORACLE
+		 * @see JdbcUtils#SQLSERVER
 		 */
-		private boolean isMySqlAutomatic(PropertyDescriptor pro,
+		protected boolean isMySqlAutomatic(PropertyDescriptor pro,
 				String database, String sequence) {
 			if (MYSQL.equals(database) && pro.getName().equals(getPrimaryKey())
 					&& MYSQL_SEQ.equals(sequence)) {
@@ -2098,30 +2128,31 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * <p>
-		 * 对SQL文本追加用户自定义条件
-		 * </p>
+		 * 对SQL语句追加自定义条件。
 		 * 
-		 * 如<code>appendParamsId(sb, "id=?")<code>，则返回</br><b><code>select id,username from user where id=?</code></b></br>
-		 * 如<code>appendParamsId(sb, "id=? and username=?")</code>，则返回</br><b><code>select id,username from user where
-		 * id=? and username=?</code></b></br></br>
+		 * <li><code>appendParamsId(sb, "WHERE id=? and name=?")</code>，则返回<code>... WHERE id=? and name=?</code></li>
+		 * <li><code>appendParamsId(sb, null || "")</code>，则返回<code>... where id=?</code></li>
 		 * 
-		 * 当<code>appendParamsId(sb, null || "")</code>时，默认在SQL文本最后追加<code>id=?</code>
+		 * @param sb
+		 *            SQL字符存储容器
+		 * @param whereIf
+		 *            SQL查询或更新、删除条件
 		 */
 		private void appendParamsId(StringBuffer sb, String whereIf) {
 			if (isNotEmpty(whereIf)) {
 				sb.append(whereIf);
 			} else {
-				sb.append("where ");
+				sb.append("WHERE ");
 				sb.append(getPrimaryKey());
 				sb.append("=?");
 			}
 		}
 
 		/**
-		 * 对更新、插入SQL语句文本中的参数键字段进行拆分，以数组形式返回。如<code>update user set id=?,username=?
-		 * where id=?</code>，则返回<code>["id","username","id"]</code>。<code>insert into user (id,username)
-		 * values(?,?)</code>，则返回<code>["id","username"]</code>
+		 * 对更新、插入SQL语句文本中的参数键字段进行拆分，以数组形式返回。
+		 * 
+		 * <li><code>update user set id=?,username=? where id=?</code>，则返回<code>["id","username","id"]</code></li>
+		 * <li><code>insert into user (id,username) values(?,?)</code>，则返回<code>["id","username"]</code></li>
 		 * 
 		 * @param sql
 		 *            SQL语句
@@ -2143,8 +2174,9 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 对更新SQL语句文本中的参数键字段进行拆分，以数组形式返回。如<code>update user set id=?,username=?
-		 * where id=?</code>，则返回<code>["id","username","id"]</code>
+		 * 对更新SQL语句文本中的参数键字段进行拆分，以数组形式返回。
+		 * 
+		 * <li><code>update user set id=?,username=? where id=?</code>，则返回<code>["id","username","id"]</code></li>
 		 * 
 		 * @param sql
 		 *            SQL语句
@@ -2173,8 +2205,9 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 对插入SQL语句文本中的参数键字段进行拆分，以数组形式返回。如<code>insert into user (id,username)
-		 * values(?,?)</code>，则返回<code>["id","username"]</code>
+		 * 对插入SQL语句文本中的参数键字段进行拆分，以数组形式返回。
+		 * 
+		 * <li><code>insert into user (id,username) values(?,?)</code>，则返回<code>["id","username"]</code></li>
 		 * 
 		 * @param sql
 		 *            SQL语句
