@@ -37,6 +37,7 @@ import test.ConfigDevice;
  * <li>操作底层可为对象，适用习惯用Hibernate操作的开发人员，于Hiberante类似80%；</li>
  * <li>操作底层为对象时，可以指定SQL字段的命名方式，如userName或user_name；</li>
  * <li>可为不同数据之间的简单兼容进行处理；Insert的主键维护机制(sqlserver未实现)、分页构造机制(分页暂时未实现)；</li>
+ * <li>自动生成SQL语句时，增加过滤条件；</li>
  * <li>目前版本对sqlserver的API不支持；</li>
  * 
  * @User: hubo.0508@gmail.com
@@ -63,6 +64,11 @@ import test.ConfigDevice;
  * <td>0.2.1</td>
  * <td>2012-05-03</td>
  * <td>注释的添加，重构</td>
+ * </tr>
+ * <tr>
+ * <td>0.2.2</td>
+ * <td>2012-05-04</td>
+ * <td>增加过滤条件</td>
  * </tr>
  * </table>
  * 
@@ -159,6 +165,13 @@ public class JdbcUtils {
 	 * 结果集处理(私有)
 	 */
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
+	
+	/*
+	 * SQL统计处理
+	 * 
+	 * @User: 魔力猫咪(http://wlmouse.iteye.com/category/60230)
+	 */
+	private final SqlStatisticsProcessor statPro = new JdbcUtils.SqlStatisticsProcessor();
 
 	/**
 	 * 构造函数
@@ -1745,14 +1758,6 @@ public class JdbcUtils {
 			this._dataMappingClass = _dataMappingClass;
 		}
 
-		public Class getDataMappingClass() {
-			return _dataMappingClass;
-		}
-
-		public void setDataMappingClass(Class mappingClass) {
-			_dataMappingClass = mappingClass;
-		}
-
 		private String getSimpleName() {
 			String text = getDataMappingClass().getName();
 			int index = text.lastIndexOf(".");
@@ -2425,16 +2430,140 @@ public class JdbcUtils {
 			}
 			return sb.toString();
 		}
+
+		public Class getDataMappingClass() {
+			return _dataMappingClass;
+		}
+
+		public void setDataMappingClass(Class mappingClass) {
+			_dataMappingClass = mappingClass;
+		}
+	}
+	
+	/**
+	 * SQL统计处理
+	 * 
+	 * @User: 魔力猫咪(http://wlmouse.iteye.com/category/60230)
+	 */
+	class SqlStatisticsProcessor {
+		
+		/**
+		 * 数量统计正则表达式
+		 */
+		private String countRegex = "$1 count\\(*\\) $3";
+
+		/**
+		 * 不同结果正则表达式
+		 */
+		private String distinctRegex = "$1 distinct $2 $3";
+		/**
+		 * 不同结果统计正则表达式
+		 */
+		private String countDistinctRegex = "$1 count\\(distinct $2\\) $3";
+		/**
+		 * 求最大值正则表达式
+		 */
+		private String maxRegex = "$1 max\\($2\\) $3";
+		/**
+		 * 求最小值正则表达式
+		 */
+		private String minRegex = "$1 min\\($2\\) $3";
+		/**
+		 * 求和正则表达式
+		 */
+		private String sumRegex = "$1 sum\\($2\\) $3";
+		/**
+		 * 求平均数正则表达式
+		 */
+		private String avgRegex = "$1 avg\\($2\\) $3";
+
+		/**
+		 * 语句结果匹配正则表达式
+		 */
+		private Pattern regex = Pattern.compile("(SELECT)(.*)(FROM.*)",
+				Pattern.CASE_INSENSITIVE);
+
+		/**
+		 * 数量统计
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String count(String statement) {
+			return regex.matcher(statement).replaceAll(countRegex);
+		}
+
+		/**
+		 * 不同结果
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String distinct(String statement) {
+			return regex.matcher(statement).replaceAll(distinctRegex);
+		}
+
+		/**
+		 * 不同结果统计
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String countDistinct(String statement) {
+			return regex.matcher(statement).replaceAll(countDistinctRegex);
+		}
+
+		/**
+		 * 求最大值
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String max(String statement) {
+			return regex.matcher(statement).replaceAll(maxRegex);
+		}
+
+		/**
+		 * 求最小值
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String min(String statement) {
+			return regex.matcher(statement).replaceAll(minRegex);
+		}
+
+		/**
+		 * 求和
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String sum(String statement) {
+			return regex.matcher(statement).replaceAll(sumRegex);
+		}
+
+		/**
+		 * 求平均数
+		 * 
+		 * @return 语句
+		 * @since 0.3
+		 */
+		public String avg(String statement) {
+			return regex.matcher(statement).replaceAll(avgRegex);
+		}
 	}
 
 	public static void main(String[] args) throws SQLException {
 
 		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
-		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		System.out.println(db.sqlPro.makeDeleteSql());
-		System.out.println(db.sqlPro.makeUpdateSql());
-		System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
+		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
+		// System.out.println(db.sqlPro.makeDeleteSql());
+		// System.out.println(db.sqlPro.makeUpdateSql());
+		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
+		String sql = "SELECT device_ename, device_factory, device_ip, device_type, id FROM nhwm_config_device where id=111";
+		System.out.println(db.statPro.count(sql));
 	}
 
 }
