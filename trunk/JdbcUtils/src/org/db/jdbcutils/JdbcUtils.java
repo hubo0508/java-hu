@@ -1302,6 +1302,23 @@ public class JdbcUtils {
 			return rowCount;
 		}
 
+		/**
+		 * 将数据库结果集的数据表映射成Java基本数据类型。
+		 * 
+		 * @param clazz
+		 *            Java基本数据类型Class模版(Integer.class)
+		 * @param rs
+		 *            数据库结果集的数据表
+		 * 
+		 * @return Java基本数据类型数据集
+		 * 
+		 * @see ResultProcessor#getDataMappingClass()
+		 * 
+		 * @exception
+		 * 在数据库结果集数据表列超过2列时，抛出SQLException；数据库结果集数据表中数据类型与设定的类型不匹配，抛出SQLException；
+		 * 
+		 * @throws SQLException
+		 */
 		private Object toUniqueBiscType(ResultSet rs, Class clazz)
 				throws SQLException {
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -1326,45 +1343,45 @@ public class JdbcUtils {
 		 * 将数据库结果集的数据表映射成Map/List/JavaBean。
 		 * 
 		 * <p>
-		 * 返回Map/List/JavaBean或Java基本数据类型中的具体值的映射根据<code>JdbcUtils.getDataMappingClass()</code>类型定义。
+		 * 返回Map/List/JavaBean中的具体值的映射根据<code>JdbcUtils.getDataMappingClass()</code>类型定义。
 		 * <li>类型为Map时，将数据库结果集的数据映射成Map，键为列名。</li>
 		 * <li>类型为List时，将数据库结果集的数据映射成List。</li>
 		 * <li>类型为JavaBean时，将数据库结果集的数据映射成JavaBean。</li>
 		 * </p>
 		 * 
-		 * @param instanceObjectOrBasicType
+		 * @param instanceObject
 		 *            返回数据类型(实例化后对象)
 		 * @param rs
 		 *            数据库结果集的数据表
 		 * 
-		 * @return Map数据集
+		 * @return Map/List/JavaBean数据集
 		 * 
 		 * @see ResultProcessor#getDataMappingClass()
 		 * 
 		 * @throws SQLException
 		 */
-		private Object toUniqueObject(Object instanceObjectOrBasicType,
-				ResultSet rs) throws SQLException {
+		private Object toUniqueObject(Object instanceObject, ResultSet rs)
+				throws SQLException {
 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 
 			for (int i = 0; i < cols; i++) {
 				String field = rsmd.getColumnName(i + 1);
-				if (isMap(instanceObjectOrBasicType.getClass())) {
-					((Map) instanceObjectOrBasicType).put(field, rs
-							.getObject(field));
-				} else if (isList(instanceObjectOrBasicType.getClass())) {
-					((List) instanceObjectOrBasicType).add(rs.getObject(field));
+				if (isMap(instanceObject.getClass())) {
+					((Map) instanceObject).put(field, rs.getObject(field));
+				} else if (isList(instanceObject.getClass())) {
+					((List) instanceObject).add(rs.getObject(field));
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
 							.convert(field, TOTYPE[0]));
-					beanPro.callSetter(instanceObjectOrBasicType, pro, rs
-							.getObject(field));
+					beanPro
+							.callSetter(instanceObject, pro, rs
+									.getObject(field));
 				}
 			}
 
-			return instanceObjectOrBasicType;
+			return instanceObject;
 		}
 
 		/**
