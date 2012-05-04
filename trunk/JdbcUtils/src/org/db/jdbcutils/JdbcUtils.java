@@ -1749,19 +1749,36 @@ public class JdbcUtils {
 
 		private Class _dataMappingClass;
 
+		/**
+		 * 参数规则<code>{ "=?", "?", "<?", "<=?", ")", "(", ">" }</code>
+		 */
 		private final String[] equalsparams = new String[] { "=?", "?", "<?",
 				"<=?", ")", "(", ">" };
 
+		/**
+		 * 参数规则<code>{ "(", ">" }</code>
+		 */
 		private final String[] notequalsparams = new String[] { "(", ">" };
 
+		/**
+		 * 空构造函数
+		 */
 		public SqlProcessor() {
 		}
-
+		
+		/**
+		 * @param _dataMappingClass 
+		 */
 		public SqlProcessor(Class _dataMappingClass) {
 			this._dataMappingClass = _dataMappingClass;
 		}
 
-		private String getSimpleName() {
+		/**
+		 * 取得Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)类名称。
+		 * 
+		 * @return Java Bean名称
+		 */
+		public String getSimpleName() {
 			String text = getDataMappingClass().getName();
 			int index = text.lastIndexOf(".");
 			if (index >= 0) {
@@ -1771,27 +1788,41 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据clazz属性构造SELECT语句
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Select
+		 * SQL语句。</br></br> 在构造Select SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * @return <b><code>SELECT id,user_name FROM user</code></b>
+		 * <li><code>makeSelectSql()</cdoe>，构造出的SQL为<code>SELECT id,user_name FROM user</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeSelectSql() throws SQLException {
 			return makeSelectSql(null);
 		}
 
 		/**
-		 * 根据clazz属性构造SELECT语句
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Select
+		 * SQL语句。</br></br> 在构造Select SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * <p>
-		 * 当<code>makeSelectSql("where id=? and user_name=?")</code>时,返回<b><code>SELECT id,user_name FROM user WHERE id=? and user_name=?</code></b>
-		 * </p>
-		 * <p>
-		 * 当<code>makeSelectSql(null)</code>时,返回<b><code>SELECT id,user_name FROM user</code></b>
-		 * </p>
+		 * <li><code>makeSelectSql(null || "")</cdoe>，构造出的SQL为<code>SELECT id,user_name FROM user</code></li>
+		 * <li><code>makeSelectSql("where id=? and user_name=?")</cdoe>，构造出的SQL为<code>SELECT id,user_name FROM user WHERE id=? and user_name=?</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @param whereIf
+		 *            SQL自定自定义条件
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeSelectSql(String key) throws SQLException {
-			// Map sqlFilter = beanPro.getSqlFilter();
-
 			StringBuffer sb = new StringBuffer("SELECT ");
 
 			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
@@ -1814,8 +1845,7 @@ public class JdbcUtils {
 				}
 			}
 			sb.append(" FROM ");
-			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
-					TOTYPE[1]));
+			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
 			if (isNotEmpty(key)) {
 				sb.append(" ");
 				appendParamsId(sb, key);
@@ -1825,24 +1855,38 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 表名的过滤
+		 * 对文本text进行条件过滤。
+		 * 
+		 * @param text
+		 *            文本
+		 * @param sqlFilter
+		 *            过滤规则
+		 * 
+		 * @return 文本
 		 */
-		private String tableNameFilter(String tablename, Map sqlFilter) {
-
-			if (sqlFilter == null) {
-				return tablename;
+		public String textFilter(String text) {
+			if (getSqlFilter() == null) {
+				return text;
 			}
 
-			Object filter = sqlFilter.get(tablename);
+			Object filter = getSqlFilter().get(text);
 			if (String.class.isInstance(filter)) {
 				return filter.toString();
 			}
 
-			return tablename;
+			return text;
 		}
 
 		/**
-		 * 追加参数到select
+		 * 追加参数到select SQL语句
+		 * 
+		 * @param sb
+		 *            SQL容器
+		 * @param name
+		 *            Java Bean 字段
+		 * @param i
+		 * @param len
+		 * @throws SQLException
 		 */
 		private void appendSelectParams(StringBuffer sb, String name, int i,
 				int len) throws SQLException {
@@ -1853,7 +1897,13 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 将值转成Boolean
+		 * 将值转换成<code>boolean</code>值。
+		 * 
+		 * @param value
+		 *            转换值
+		 * 
+		 * @return value == null > false；value != boolean > false；value ==
+		 *         boolean > true；
 		 */
 		public boolean toBoolean(Object value) {
 			boolean returnvalue = true;
@@ -1868,31 +1918,46 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据clazz属性构造delete语句
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Delete
+		 * SQL语句。</br></br> 在构造Delete SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * @return <b><code>DELETE FROM user WHERE id=?</code></b>
+		 * <li><code>makeDeleteSql()</cdoe>，构造出的SQL为<code>DELETE FROM user WHERE id=?</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @param whereIf
+		 *            SQL自定自定义条件
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeDeleteSql() throws SQLException {
 			return makeDeleteSql(null);
 		}
 
 		/**
-		 * 根据clazz属性构造delete语句
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Delete
+		 * SQL语句。</br></br> 在构造Delete SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * <p>
-		 * 当<code>makeDeleteSql("id=? and user_name=?")</code>时,返回<b><code>DELETE FROM user WHERE id=? and user_name=?</code></b>
-		 * </p>
-		 * <p>
-		 * 当<code>makeDeleteSql(null)</code>时,返回<b><code>DELETE FROM user WHERE id=?</code></b>
-		 * </p>
+		 * <li><code>makeDeleteSql(null || "")</cdoe>，构造出的SQL为<code>DELETE FROM user WHERE id=?</code></li>
+		 * <li><code>makeDeleteSql("where id=? and name=?")</cdoe>，构造出的SQL为<code>DELETE FROM user WHERE id=? and user_name=?</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @param whereIf
+		 *            SQL自定自定义条件
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeDeleteSql(String whereIf) throws SQLException {
-			// Map sqlFilter = beanPro.getSqlFilter();
-
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
-			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
-					TOTYPE[1]));
+			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
 			if (isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
@@ -1908,7 +1973,7 @@ public class JdbcUtils {
 		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Update
 		 * SQL语句。</br></br> 在构造Update SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * <li><code>makeInsertSql()</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></li>
+		 * <li><code>makeUpdateSql()</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></li>
 		 * <li>SQLSERVER：未实现</li>
 		 * 
 		 * @param whereIf
@@ -1918,6 +1983,7 @@ public class JdbcUtils {
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeUpdateSql() throws SQLException {
 			return makeUpdateSql(null);
@@ -1927,8 +1993,8 @@ public class JdbcUtils {
 		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Update
 		 * SQL语句。</br></br> 在构造Update SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * <li><code>makeInsertSql(null || "")</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></li>
-		 * <li><code>makeInsertSql("where id=? and name=?")</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=? and name=?</code></li>
+		 * <li><code>makeUpdateSql(null || "")</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></li>
+		 * <li><code>makeUpdateSql("where id=? and name=?")</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=? and name=?</code></li>
 		 * <li>SQLSERVER：未实现</li>
 		 * 
 		 * @param whereIf
@@ -1938,12 +2004,12 @@ public class JdbcUtils {
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeUpdateSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
-			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
-					TOTYPE[1]));
+			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
 			sb.append(" SET ");
 
 			PropertyDescriptor[] proDesc = beanPro
@@ -2011,6 +2077,7 @@ public class JdbcUtils {
 		 * @see JdbcUtils#ORACLE
 		 * @see JdbcUtils#SQLSERVER
 		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeInsertSql() throws SQLException {
 			return makeInsertSql(null, null);
@@ -2042,13 +2109,13 @@ public class JdbcUtils {
 		 * @see JdbcUtils#ORACLE
 		 * @see JdbcUtils#SQLSERVER
 		 * @see JdbcUtils#setSqlFilter(Map)
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public String makeInsertSql(String database, String sequence)
 				throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
-			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
-					TOTYPE[1]));
+			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
 			sb.append(" (");
 
 			StringBuffer paramsvalue = new StringBuffer();
