@@ -49,7 +49,7 @@ public class DeviceTest {
 
 	public void updateObjectC() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setId(new Integer(5886));
 		d.setDeviceCname("中文名++++++++++++++++++++++++");
 		d.setDeviceFactory("厂家");
@@ -60,7 +60,7 @@ public class DeviceTest {
 
 		String sql = "update Nhwm_Config_Device set has_data=? where id=?";
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.update(con, sql, d);
@@ -77,7 +77,7 @@ public class DeviceTest {
 		Object[] params = new Object[] { new Integer(1), new Integer(5886) };
 		String sql = "update Nhwm_Config_Device set has_data=? where id=?";
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.update(con, sql, params);
@@ -91,7 +91,7 @@ public class DeviceTest {
 
 	public void updateObjectA() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setId(new Integer(5885));
 		d.setDeviceCname("中文名");
 		d.setDeviceFactory("厂家");
@@ -100,7 +100,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("ename");
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.update(con, d);
@@ -115,7 +115,7 @@ public class DeviceTest {
 	// 主键手动维护
 	public void insertObjectToOracleB() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setId(new Integer(24));
 		d.setDeviceCname("D-NAME");
 		d.setDeviceFactory("D-FACTORY");
@@ -124,7 +124,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("D-ENAME");
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 
 		try {
@@ -140,7 +140,7 @@ public class DeviceTest {
 	// 主键自动递增
 	public void insertObjectToOracleA() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setDeviceCname("主键自动递增insertObjectToMySql");
 		d.setDeviceFactory("厂家");
 		d.setDeviceIp("133.40.60.24");
@@ -148,7 +148,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("ename");
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 
 		try {
@@ -164,7 +164,7 @@ public class DeviceTest {
 	// 主键手动维护
 	public void insertObjectToMySqlB() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setId(new Integer(24));
 		d.setDeviceCname("D-NAME");
 		d.setDeviceFactory("D-FACTORY");
@@ -173,7 +173,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("D-ENAME");
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 
 		try {
@@ -189,7 +189,7 @@ public class DeviceTest {
 	// 主键自动维护,SQL手动维护
 	public void insertObjectToMySqlC() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setDeviceCname("D-NAME");
 		d.setDeviceFactory("D-FACTORY");
 		d.setDeviceIp("D-IP");
@@ -216,7 +216,7 @@ public class DeviceTest {
 	// 主键自动递增
 	public void insertObjectToMySqlA() {
 
-		NhwmConfigDevice d = new NhwmConfigDevice();
+		ConfigDevice d = new ConfigDevice();
 		d.setDeviceCname("主键自动递增insertObjectToMySql");
 		d.setDeviceFactory("厂家");
 		d.setDeviceIp("133.40.60.24");
@@ -224,7 +224,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("ename");
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 
 		try {
@@ -241,7 +241,7 @@ public class DeviceTest {
 
 		Object[] params = new Object[] { new Integer(6000) };
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.delete(con, "id>?", params);
@@ -261,7 +261,7 @@ public class DeviceTest {
 		Object[] params = new Object[] { new Integer(1) };
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
 			map = db.queryResultToLinkedHashMap(con, sql, params);
 		} catch (SQLException e) {
@@ -279,7 +279,7 @@ public class DeviceTest {
 
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
 			map = db.queryResultToLinkedHashMap(con, sql, params);
 		} catch (SQLException e) {
@@ -298,7 +298,7 @@ public class DeviceTest {
 		Object[] params = new Object[] { new Integer(1) };
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
 			map = db.queryResultToHashMap(con, sql, params);
 		} catch (SQLException e) {
@@ -316,7 +316,7 @@ public class DeviceTest {
 
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
 			map = db.queryResultToHashMap(con, sql, params);
 		} catch (SQLException e) {
@@ -333,7 +333,7 @@ public class DeviceTest {
 
 			JdbcUtils db = new JdbcUtils(LinkedHashMap.class,
 					JdbcUtils.SEGMENTATION);
-			db.setSqlMappingClass(NhwmConfigDevice.class);
+			db.setSqlMappingClass(ConfigDevice.class);
 			List list = db.queryResultToArrayList(con);
 
 			for (int i = 0; i < list.size(); i++) {
@@ -373,7 +373,7 @@ public class DeviceTest {
 
 			System.out.println("+++++++++++++++++++++++++++++++++++++++");
 
-			List afterConver = db.columnsToBean(NhwmConfigDevice.class, list);
+			List afterConver = db.columnsToBean(ConfigDevice.class, list);
 			for (int i = 0; i < afterConver.size(); i++) {
 				System.out.println(afterConver.get(i));
 			}
@@ -389,12 +389,12 @@ public class DeviceTest {
 	public void queryResultToArrayListA() {
 
 		try {
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
 			List list = db.queryResultToArrayList(con);
 
 			for (int i = 0; i < list.size(); i++) {
-				NhwmConfigDevice d = (NhwmConfigDevice) list.get(i);
+				ConfigDevice d = (ConfigDevice) list.get(i);
 				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
 			}
 
@@ -415,9 +415,9 @@ public class DeviceTest {
 					+ " FROM nhwm_config_device where id = ?";
 			sql = "where id=?";
 
-			JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			NhwmConfigDevice device = (NhwmConfigDevice) db
+			ConfigDevice device = (ConfigDevice) db
 					.queryResultToUnique(con, sql, params);
 
 			System.out.println(device.getDeviceIp() + "|"
@@ -453,7 +453,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(HashMap.class, JdbcUtils.SEGMENTATION);
 			Map map = (HashMap) db.queryResultToUnique(con, sql, params);
-			System.out.println(db.columnsToBean(NhwmConfigDevice.class, map));
+			System.out.println(db.columnsToBean(ConfigDevice.class, map));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

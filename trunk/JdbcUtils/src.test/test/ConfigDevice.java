@@ -3,10 +3,7 @@ package test;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.db.jdbcutils.JdbcUtils;
-
-
-public class NhwmConfigDevice {
+public class ConfigDevice {
 
 	private Integer id;
 	private String deviceIp;
@@ -17,10 +14,12 @@ public class NhwmConfigDevice {
 	private String deviceCname;
 	
 	
-	public Map filter(){
+	public Map sqlFilter(){
 		
 		Map filter = new HashMap();
-		filter.put(JdbcUtils.REPLACE, new String[]{"NhwmConfigDevice:ConfigDevice"});
+		filter.put("ConfigDevice", "NhwmConfigDevice");
+		filter.put("deviceCname", new Boolean(false));
+		filter.put("hasData", new Boolean(false));
 		
 		return filter;
 	}
