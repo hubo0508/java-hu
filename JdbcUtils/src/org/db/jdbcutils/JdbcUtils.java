@@ -1497,7 +1497,7 @@ public class JdbcUtils {
 			map = null;
 			return afterConver;
 		}
-
+		
 		public List columnsToBean(Class beanClazz, List list)
 				throws SQLException {
 
