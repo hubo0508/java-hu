@@ -1905,27 +1905,41 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据clazz属性构造update语句
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Update
+		 * SQL语句。</br></br> 在构造Update SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * @return <b><code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></b>
+		 * <li><code>makeInsertSql()</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @param whereIf
+		 *            SQL自定自定义条件
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#setSqlFilter(Map)
 		 */
 		public String makeUpdateSql() throws SQLException {
 			return makeUpdateSql(null);
 		}
 
 		/**
-		 * 根据clazz属性构造update语句
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Update
+		 * SQL语句。</br></br> 在构造Update SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * <p>
-		 * 当<code>makeUpdateSql("id=? and user_name=?")</code>时,返回<b><code>UPDATE user SET user_name, has_data=?, id=? WHERE id=? and user_name=?</code></b>
-		 * </p>
-		 * <p>
-		 * 当<code>makeUpdateSql(null)</code>时,返回<b><code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></b>
-		 * </p>
+		 * <li><code>makeInsertSql(null || "")</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=?</code></li>
+		 * <li><code>makeInsertSql("where id=? and name=?")</cdoe>，构造出的SQL为<code>UPDATE user SET user_name, has_data=?, id=? WHERE id=? and name=?</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @param whereIf
+		 *            SQL自定自定义条件
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#setSqlFilter(Map)
 		 */
 		public String makeUpdateSql(String whereIf) throws SQLException {
-			// Map sqlFilter = beanPro.getSqlFilter();
-
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
 			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
@@ -1961,11 +1975,10 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 
 		 * @param sb
 		 *            SQL存储容器
 		 * @param name
-		 *            JavaBean
+		 *            Java Bean 字段
 		 * @param i
 		 * @param len
 		 * @throws SQLException
