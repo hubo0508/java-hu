@@ -131,6 +131,7 @@ public class JdbcUtils {
 	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可重新设置<code>JdbcUtils.setSqlMappingClass(Class)</code>。
 	 * </p>
 	 * 
+	 * @see JdbcUtils#setSqlMappingClass(Class)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
 	private Class dataMappingClass;
@@ -1149,24 +1150,50 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 返回结果集映射格式。
+	 * 取得数据映射模版，与数据库结果集的数据表相对应、自动构造SQL时对应。
 	 * 
-	 * <li>{Domain}.class</li>
+	 * <p>
+	 * 该数据映射模版作用于Java
+	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段该dataMappingClass(Java
+	 * Bean)映射模版中取得。 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
+	 * 该数据映射模版类型可为：
+	 * 
+	 * <li>JavaBean.class</li>
 	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
 	 * <li>List.class/ListArray.class</li>
 	 * <li>Integer.class 或其它基本数据类型</li>
+	 * 
+	 * </br></br>当dataMappingClass类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>基本数据类型时。
+	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可重新设置<code>JdbcUtils.setSqlMappingClass(Class)</code>。
+	 * </p>
+	 * 
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public Class getDataMappingClass() {
 		return dataMappingClass;
 	}
 
 	/**
-	 * 设值结果集映射格式。
+	 * 设值数据映射模版，与数据库结果集的数据表相对应、自动构造SQL时对应。
 	 * 
-	 * <li>{Domain}.class</li>
+	 * <p>
+	 * 该数据映射模版作用于Java
+	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段该dataMappingClass(Java
+	 * Bean)映射模版中取得。 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
+	 * 该数据映射模版类型可为：
+	 * 
+	 * <li>JavaBean.class</li>
 	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
 	 * <li>List.class/ListArray.class</li>
 	 * <li>Integer.class 或其它基本数据类型</li>
+	 * 
+	 * </br></br>当dataMappingClass类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>基本数据类型时。
+	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可重新设置<code>JdbcUtils.setSqlMappingClass(Class)</code>。
+	 * </p>
+	 * 
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public void setDataMappingClass(Class dataMappingClass) {
 		this.dataMappingClass = dataMappingClass;
