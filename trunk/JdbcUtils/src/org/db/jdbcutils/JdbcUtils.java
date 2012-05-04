@@ -76,17 +76,12 @@ import test.ConfigDevice;
 public class JdbcUtils {
 
 	/**
-	 * 过滤条件常量
-	 */
-	public final static String REPLACE = "_REPLACE";
-
-	/**
-	 * POJO字段命名与数据库字段命名的方式为：驼峰命名法。如：userName;
+	 * Java Bean字段命名与数据库字段命名的方式为：驼峰命名法。如：userName;
 	 */
 	public final static String HUMP = "hump";
 
 	/**
-	 * POJO字段命名与数据库字段命名的方式为：分段名法。如：user_name;
+	 * Java Bean字段命名与数据库字段命名的方式为：分段名法。如：user_name;
 	 */
 	public final static String SEGMENTATION = "segmentation";
 
@@ -106,7 +101,7 @@ public class JdbcUtils {
 	public final static String SQLSERVER = "sqlserver";
 
 	/**
-	 * 数据库ID键值是否递增
+	 * MySQL数据库ID键值是否递增
 	 */
 	public final static String MYSQL_SEQ = "increase by degrees";
 
