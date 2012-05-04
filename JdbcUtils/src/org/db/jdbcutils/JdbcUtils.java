@@ -1516,6 +1516,14 @@ public class JdbcUtils {
 		// return methodPrefix + firstLetter + fieldName.substring(1);
 		// }
 
+		/**
+		 * 根据Java Bean字段名称取得属性存储器(PropertyDescriptor)
+		 * 
+		 * @param name
+		 *            Java Bean字段
+		 * 
+		 * @return 属性存储器(PropertyDescriptor)
+		 */
 		private PropertyDescriptor getProDescByName(String name)
 				throws SQLException {
 			PropertyDescriptor[] proDescs = this
@@ -1531,6 +1539,16 @@ public class JdbcUtils {
 					+ " : Cannot set " + name);
 		}
 
+		/**
+		 * 通过Java反射调用目标对象(Java Bean)的指定方法。
+		 * 
+		 * @param target
+		 *            目标Java Bean对象
+		 * @param methodName
+		 *            方法名
+		 * 
+		 * @throws SQLException
+		 */
 		private Object callGetter(Object target, String methodName)
 				throws SQLException {
 			try {
@@ -1555,11 +1573,22 @@ public class JdbcUtils {
 			}
 		}
 
+		/**
+		 * 通过Java反射调用目标对象(Java Bean)的指定方法。
+		 * 
+		 * @param target
+		 *            目标Java Bean对象
+		 * @param prop
+		 *            Java Bean 属性存储器
+		 * @param value
+		 *            数据库查询值
+		 * 
+		 * @throws SQLException
+		 */
 		private Object callGetter(Object target, PropertyDescriptor prop)
 				throws SQLException {
 
 			Method getter = prop.getReadMethod();
-
 			if (getter == null) {
 				return null;
 			}
@@ -1579,13 +1608,14 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 通过反射将值设值到目标Bean中。
+		 * 通过Java反射将数据库查询值设值到目标Java Bean中。
 		 * 
 		 * @param target
-		 *            设置值的目标Bean对象
+		 *            设置值的目标Java Bean对象
 		 * @param prop
-		 *            Java Bean 通过一对存储器方法导出的一个属性。
+		 *            Java Bean 属性存储器
 		 * @param value
+		 *            数据库查询值
 		 * 
 		 * @throws SQLException
 		 */
@@ -1593,7 +1623,6 @@ public class JdbcUtils {
 				Object value) throws SQLException {
 
 			Method setter = prop.getWriteMethod();
-
 			if (setter == null) {
 				return;
 			}
@@ -1618,7 +1647,7 @@ public class JdbcUtils {
 				}
 
 				// Don't call setter if the value object isn't the right type
-				if (this.isCompatibleType(value, params[0])) {
+				if (params[0].isInstance(value)) {
 					setter.invoke(target, new Object[] { value });
 				} else {
 					throw new SQLException("Cannot set " + prop.getName()
@@ -1640,8 +1669,18 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 当数据库列段命名以驼峰规则时，如查询列为USERNAME，但际上Bean中是以userName命名，这时需要根据提供的<code>JdbcUtils.BeanProcessor.getDataMappingClass()</code>字段进行
-		 * 匹配，返回以<code>JdbcUtils.BeanProcessor.getDataMappingClass()</code>中的命名规则名称。
+		 * 数据库列段命名以驼峰规则时(USERNAME)，与Java Bean
+		 * <code>BeanProcessor.getDataMappingClass()</code>中字段userName对应不上，
+		 * 在无法通过Java反射将数据库查询值设置到Java Bean。调用该方法进行转换。
+		 * 
+		 * @param column
+		 *            数据库列字段名称
+		 * 
+		 * @return 转换成Java Bean中的字段
+		 * 
+		 * @see BeanProcessor#getDataMappingClass()
+		 * 
+		 * @throws SQLException
 		 */
 		private String convertedBeanField(String column) throws SQLException {
 
@@ -1659,6 +1698,11 @@ public class JdbcUtils {
 
 		/**
 		 * 初始化Bean內部信息
+		 * 
+		 * @param c
+		 *            Java Bean class模版
+		 * 
+		 * @throws SQLException
 		 */
 		private PropertyDescriptor[] propertyDescriptors(Class c)
 				throws SQLException {
@@ -1675,6 +1719,13 @@ public class JdbcUtils {
 
 		/**
 		 * 实例化Class模板
+		 * 
+		 * @param c
+		 *            Class模版
+		 * 
+		 * @return 实例化对象
+		 * 
+		 * @throws SQLException
 		 */
 		private Object newInstance(Class c) throws SQLException {
 			try {
@@ -1691,7 +1742,10 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 判断Class模块是否基础类型
+		 * 判断Class模版是否基础类型
+		 * 
+		 * @param clazz
+		 *            Class模版
 		 * 
 		 * @return true(是基础类型) || false(不是基础类型)
 		 */
@@ -1728,16 +1782,8 @@ public class JdbcUtils {
 
 			} else if (clazz == Timestamp.class) {
 				return true;
-
 			}
 
-			return false;
-		}
-
-		private boolean isCompatibleType(Object value, Class type) {
-			if (type.isInstance(value)) {
-				return true;
-			}
 			return false;
 		}
 	}
@@ -1782,7 +1828,7 @@ public class JdbcUtils {
 		/**
 		 * @param _dataMappingClass 
 		 *            数据映射模版。该数据映射模版作用于Java Bean与SQL之间的转换。 SQL的查询字段或更新字段、插入字段该<code>SqlProcessor.getDataMappingClass()</code>映射模版中取得。
-		 * 可在Java Bean dataMappingClass中增加过滤方法，该过滤方法返回<code>Map</code>过滤规则。
+		 *            可在Java Bean dataMappingClass中增加过滤方法，该过滤方法返回<code>Map</code>过滤规则。
 		 * 
 		 * @see JdbcUtils#getSqlFilter()
 		 */
@@ -2029,8 +2075,8 @@ public class JdbcUtils {
 			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
 			sb.append(" SET ");
 
-			PropertyDescriptor[] proDesc = beanPro
-					.propertyDescriptors(_dataMappingClass);
+			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
+					.getDataMappingClass());
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
@@ -2654,6 +2700,12 @@ public class JdbcUtils {
 
 		/**
 		 * 取得数据映射模版
+		 * 
+		 * <p>
+		 * 该数据映射模版作用于Java Bean与SQL之间的转换。
+		 * SQL的查询字段或更新字段、插入字段该dataMappingClass(Java Bean)映射模版中取得。
+		 * 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
+		 * </p>
 		 */
 		public Class getDataMappingClass() {
 			return _dataMappingClass;
