@@ -152,7 +152,7 @@ public class JdbcUtils {
 	private final static String[] TOTYPE = { "bean", "database" };
 
 	/*
-	 * SQL处理(私有)
+	 * Bean转换成SQL语句处理(私有)
 	 */
 	private final SqlProcessor sqlPro = new JdbcUtils.SqlProcessor();
 
@@ -167,7 +167,7 @@ public class JdbcUtils {
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
 	
 	/*
-	 * SQL统计处理
+	 * SQL转换成统计语句处理(私有)
 	 * 
 	 * @User: 魔力猫咪(http://wlmouse.iteye.com/category/60230)
 	 */
