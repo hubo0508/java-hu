@@ -106,7 +106,7 @@ public class JdbcUtils {
 	public final static String MYSQL_SEQ = "increase by degrees";
 
 	/**
-	 * 数据库字段命名规则，默认为常量HUMP
+	 * 数据库字段与Java Bean字段的命名规则，默认为常量HUMP
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
@@ -1203,7 +1203,7 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 取得数据库字段命名规则，默认为常量HUMP
+	 * 取得数据库字段与Java Bean字段的命名规则，默认为常量HUMP
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
@@ -1213,7 +1213,7 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 设值数据库字段命名规则，默认为常量HUMP
+	 * 设置数据库字段与Java Bean字段的命名规则，默认为常量HUMP
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
