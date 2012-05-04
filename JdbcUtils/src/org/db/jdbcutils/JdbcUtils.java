@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import test.NhwmConfigDevice;
+import test.ConfigDevice;
 
 /**
  * 数据库底层工具类
@@ -134,7 +134,7 @@ public class JdbcUtils {
 	/**
 	 * 自动构造SQL的过滤条件
 	 */
-	private Map automaticSQLFilter;
+	private Map sqlFilter;
 
 	/**
 	 * Domain主键字段，默认为id
@@ -1152,6 +1152,8 @@ public class JdbcUtils {
 		this.dataMappingClass = dataMappingClass;
 		this.sqlPro.setDataMappingClass(dataMappingClass);
 		this.beanPro.setDataMappingClass(dataMappingClass);
+		
+		this.setSqlFilter(this.beanPro.getSqlFilter());
 	}
 
 	/**
@@ -1210,12 +1212,12 @@ public class JdbcUtils {
 		this.beanPro.setDataMappingClass(sqlMappingClass);
 	}
 
-	public Map getAutomaticSQLFilter() {
-		return automaticSQLFilter;
+	public Map getSqlFilter() {
+		return sqlFilter;
 	}
 
-	public void setAutomaticSQLFilter(Map automaticSQLFilter) {
-		this.automaticSQLFilter = automaticSQLFilter;
+	public void setSqlFilter(Map sqlFilter) {
+		this.sqlFilter = sqlFilter;
 	}
 
 	/**
@@ -1406,7 +1408,7 @@ public class JdbcUtils {
 		public void setDataMappingClass(Class mappingClass) {
 			_dataMappingClass = mappingClass;
 		}
-		
+
 		/**
 		 * 取得SQL过滤条件
 		 */
@@ -1415,9 +1417,7 @@ public class JdbcUtils {
 				Object obj = newInstance(getDataMappingClass());
 				return (Map) callGetter(obj, "sqlFilter");
 			} catch (SQLException e) {
-				e.printStackTrace();
 			}
-
 			return null;
 		}
 
@@ -1782,28 +1782,81 @@ public class JdbcUtils {
 		 * </p>
 		 */
 		public String makeSelectSql(String key) throws SQLException {
+			//Map sqlFilter = beanPro.getSqlFilter();
+			
 			StringBuffer sb = new StringBuffer("SELECT ");
 
-			PropertyDescriptor[] proDesc = beanPro
-					.propertyDescriptors(_dataMappingClass);
+			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
+					.getDataMappingClass());
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
 				if (beanPro.isBasicType(pro.getPropertyType())) {
-					sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
-					if (i < (len - 1)) {
-						sb.append(", ");
+					if (sqlFilter == null) {
+						appendSelectParams(sb, pro.getName(), i, len);
+					} else {
+						Object filter = sqlFilter.get(pro.getName());
+						if (String.class.isInstance(filter)
+								&& filter.toString().equals(pro.getName())) {
+							appendSelectParams(sb, filter.toString(), i, len);
+						} else if (filter == null || toBoolean(filter)) {
+							appendSelectParams(sb, pro.getName(), i, len);
+						}
 					}
 				}
 			}
 			sb.append(" FROM ");
-			sb.append(filter(getSimpleName(), TOTYPE[1]));
+			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
+					TOTYPE[1]));
 			if (isNotEmpty(key)) {
 				sb.append(" ");
 				appendParamsId(sb, key);
 			}
 
 			return sb.toString();
+		}
+
+		/**
+		 * 表名的过滤
+		 */
+		private String tableNameFilter(String tablename, Map sqlFilter) {
+
+			if (sqlFilter == null) {
+				return tablename;
+			}
+
+			Object filter = sqlFilter.get(tablename);
+			if (String.class.isInstance(filter)) {
+				return filter.toString();
+			}
+
+			return tablename;
+		}
+
+		/**
+		 * 追加参数到select
+		 */
+		private void appendSelectParams(StringBuffer sb, String name, int i,
+				int len) throws SQLException {
+			sb.append(sqlPro.filter(name, TOTYPE[1]));
+			if (i < (len - 1)) {
+				sb.append(", ");
+			}
+		}
+
+		/**
+		 * 将值转成Boolean
+		 */
+		public boolean toBoolean(Object value) {
+			boolean returnvalue = true;
+			try {
+				returnvalue = Boolean.valueOf(value.toString()).booleanValue();
+			} catch (RuntimeException e) {
+				if(value != null){
+					returnvalue = false;
+				}
+			}
+			return returnvalue;
 		}
 
 		/**
@@ -1826,9 +1879,12 @@ public class JdbcUtils {
 		 * </p>
 		 */
 		public String makeDeleteSql(String whereIf) throws SQLException {
+			//Map sqlFilter = beanPro.getSqlFilter();
+
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
-			sb.append(filter(getSimpleName(), TOTYPE[1]));
+			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
+					TOTYPE[1]));
 			if (isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
@@ -1860,21 +1916,30 @@ public class JdbcUtils {
 		 * </p>
 		 */
 		public String makeUpdateSql(String whereIf) throws SQLException {
+			//Map sqlFilter = beanPro.getSqlFilter();
+
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
-			sb.append(filter(getSimpleName(), TOTYPE[1]));
+			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
+					TOTYPE[1]));
 			sb.append(" SET ");
+
 			PropertyDescriptor[] proDesc = beanPro
 					.propertyDescriptors(_dataMappingClass);
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
 				if (beanPro.isBasicType(pro.getPropertyType())) {
-					sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
-					if (i < len - 1) {
-						sb.append("=?, ");
+					if (sqlFilter == null) {
+						appendSelectParams(sb, pro.getName(), i, len);
 					} else {
-						sb.append("=? ");
+						Object filter = sqlFilter.get(pro.getName());
+						if (String.class.isInstance(filter)
+								&& filter.toString().equals(pro.getName())) {
+							appendUpdateParams(sb, filter.toString(), i, len);
+						} else if (filter == null || toBoolean(filter)) {
+							appendUpdateParams(sb, pro.getName(), i, len);
+						}
 					}
 				}
 			}
@@ -1885,6 +1950,16 @@ public class JdbcUtils {
 			}
 
 			return sb.toString();
+		}
+
+		private void appendUpdateParams(StringBuffer sb, String name, int i,
+				int len) throws SQLException {
+			sb.append(sqlPro.filter(name, TOTYPE[1]));
+			if (i < len - 1) {
+				sb.append("=?, ");
+			} else {
+				sb.append("=? ");
+			}
 		}
 
 		/**
@@ -1926,25 +2001,41 @@ public class JdbcUtils {
 		 */
 		public String makeInsertSql(String database, String sequence)
 				throws SQLException {
+			//Map sqlFilter = beanPro.getSqlFilter();
+
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
-			sb.append(filter(getSimpleName(), TOTYPE[1]));
+			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
+					TOTYPE[1]));
 			sb.append(" (");
 
 			StringBuffer paramsvalue = new StringBuffer();
 
-			PropertyDescriptor[] proDesc = beanPro
-					.propertyDescriptors(_dataMappingClass);
+			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
+					.getDataMappingClass());
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
 				if (beanPro.isBasicType(pro.getPropertyType())) {
+
+					if (sqlFilter != null
+							&& toBoolean(sqlFilter.get(pro.getName())) == false) {
+						continue;
+					}
+
 					if (isMySqlAutomatic(pro, database, sequence)) {
 						sb.deleteCharAt(sb.length() - 2);
 						paramsvalue.deleteCharAt(paramsvalue.length() - 2);
 						continue;
 					} else {
-						sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
+						Object filter = sqlFilter.get(pro.getName());
+						if (String.class.isInstance(filter)
+								&& filter.toString().equals(pro.getName())) {
+							sb.append(sqlPro.filter(filter.toString(),
+									TOTYPE[1]));
+						} else {
+							sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
+						}
 					}
 
 					if (i < len - 1) {
@@ -2340,13 +2431,12 @@ public class JdbcUtils {
 		// new DbTools(DeviceTest.class, DbTools.SEGMENTATION).sqlPro
 		// .makeSelectSql("id=?");
 
-		JdbcUtils db = new JdbcUtils(NhwmConfigDevice.class,
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 				JdbcUtils.SEGMENTATION);
-		db.beanPro.getSqlFilter();
-		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		// System.out.println(db.sqlPro.makeDeleteSql());
-		// System.out.println(db.sqlPro.makeUpdateSql());
-		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
+		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
+		System.out.println(db.sqlPro.makeDeleteSql());
+		System.out.println(db.sqlPro.makeUpdateSql());
+		System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
 	}
 
