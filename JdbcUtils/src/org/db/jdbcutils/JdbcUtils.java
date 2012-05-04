@@ -1404,28 +1404,67 @@ public class JdbcUtils {
 
 	/**
 	 * 实体处理
+	 * 
+	 * @author hubo.0508@gmail.com
 	 */
 	class BeanProcessor {
 
+		/**
+		 * 数据映射模版
+		 * 
+		 * <p>
+		 * 该数据映射模版作用于Java Bean业务描述。可在Java Bean dataMappingClass中增加过滤规则，该过滤方法返回<code>Map</code>过滤规则。
+		 * </p>
+		 * 
+		 * @see JdbcUtils#getSqlFilter()
+		 */
 		private Class _dataMappingClass;
 
+		/**
+		 * 空构造函数
+		 */
 		public BeanProcessor() {
 		}
 
+		/**
+		 * @param _dataMappingClass 
+		 *            数据映射模版。该数据映射模版作用于Java Bean业务描述。可在Java Bean
+		 *            dataMappingClass中增加过滤规则，该过滤方法返回<code>Map</code>过滤规则。
+		 * 
+		 * @see JdbcUtils#getSqlFilter()
+		 */
 		public BeanProcessor(Class _dataMappingClass) {
 			this._dataMappingClass = _dataMappingClass;
 		}
 
+		/**
+		 * 取得数据映射模版
+		 * 
+		 * 该数据映射模版作用于Java Bean业务描述。可在Java Bean dataMappingClass中增加过滤规则，该过滤方法返回<code>Map</code>过滤规则。
+		 * 
+		 * @see JdbcUtils#getSqlFilter()
+		 */
 		public Class getDataMappingClass() {
 			return _dataMappingClass;
 		}
 
+		/**
+		 * 设置数据映射模版
+		 * 
+		 * @param _dataMappingClass 
+		 *            该数据映射模版作用于Java Bean业务描述。可在Java Bean
+		 *            dataMappingClass中增加过滤规则，该过滤方法返回<code>Map</code>过滤规则。
+		 * 
+		 * @see JdbcUtils#getSqlFilter()
+		 */
 		public void setDataMappingClass(Class mappingClass) {
 			_dataMappingClass = mappingClass;
 		}
 
 		/**
-		 * 取得SQL过滤条件
+		 * 取得Java Bean(<code>BeanProcessor.getDataMappingClass()</code>)的过滤规则
+		 * 
+		 * @see BeanProcessor#getDataMappingClass()
 		 */
 		public Map getSqlFilter() {
 			try {
@@ -1437,9 +1476,18 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据Entity取得取得Object[]值
+		 * 对SQL语句中的参数键在Java Bean中取得对应的值，组装成<code>Object[]</code>数组。
+		 * 
+		 * @param instanceBean
+		 *            存储参数值的Java Bean
+		 * @param sql
+		 *            SQL语句(Insert/Update/Delete/Select)
+		 * 
+		 * @return Object[] 参数数组
 		 * 
 		 * @throws SQLException
+		 * 
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
 		public Object[] objectArray(Object instanceDomain, String sql)
 				throws SQLException {
@@ -1447,11 +1495,39 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据Entity取得取得Object[]值
+		 * 对SQL语句中的参数键在Java Bean中取得对应的值，组装成<code>Object[]</code>数组。
+		 * 
+		 * <p>
+		 * 当参数database与sequence不为空或空字符串时，SQL语句为Insert SQL时，从Java
+		 * Bean中取得对应值也会有相应的变化，规根于不同数据库对Insert SQL的主键值的维护不一样。
+		 * </p>
+		 * 
+		 * <li><code>database=JdbcUtils.ORACLE,sequence="seq"</code>,SQL为<code>INSERT INTO user (username, id) VALUES (?, seq.nextval)</code>返回<code>["admin"]</code></li>
+		 * <li><code>database=JdbcUtils.ORACLE,sequence="" || null</code>,SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code>返回<code>["admin",1]</code></li>
+		 * <li><code>database=JdbcUtils.MYSQL,sequence=Jdbcutils.MYSQL_SEQ</code>,SQL为<code>INSERT INTO user (username) VALUES (?)</code>返回<code>["admin"]</code></li>
+		 * <li><code>database=JdbcUtils.MYSQL,sequence="" || null</code>,SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code>返回<code>["admin",1]</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @param instanceBean
+		 *            存储参数值的Java Bean
+		 * @param sql
+		 *            SQL语句(Insert/Update/Delete/Select)
+		 * @param database
+		 *            数据类型
+		 * @param sequence
+		 *            序列类型
+		 * 
+		 * @return Object[] 参数数组
 		 * 
 		 * @throws SQLException
+		 * 
+		 * @see JdbcUtils#MYSQL
+		 * @see JdbcUtils#MYSQL_SEQ
+		 * @see JdbcUtils#ORACLE
+		 * @see JdbcUtils#SQLSERVER
+		 * @see SqlProcessor#getDataMappingClass()
 		 */
-		public Object[] objectArray(Object instanceDomain, String sql,
+		public Object[] objectArray(Object instanceBean, String sql,
 				String database, String sequence) throws SQLException {
 
 			String[] columns = sqlPro.getColumnsKey(sql);
@@ -1473,8 +1549,7 @@ public class JdbcUtils {
 						} else if (sqlPro.isMySqlAutomatic(prop, database,
 								sequence)) {
 						} else {
-							params[j] = beanPro
-									.callGetter(instanceDomain, prop);
+							params[j] = beanPro.callGetter(instanceBean, prop);
 						}
 						break;
 					}
@@ -1484,6 +1559,23 @@ public class JdbcUtils {
 			return cleanEmpty(params);
 		}
 
+		/**
+		 * 数据库列字段转换成Java Bean字段。
+		 * 
+		 * <p>
+		 * Map map = new HashMap();</br> map.put("USERNAME","admin");</br>
+		 * <p>
+		 * 将map中的键KEY转换成所对应的Java Bean字段
+		 * 
+		 * @param beanClazz
+		 *            Java Bean
+		 * @param map
+		 *            转换对象
+		 * 
+		 * @return 转换后的Map对象
+		 * 
+		 * @throws SQLException
+		 */
 		public Map columnsToBean(Class beanClazz, Map map) throws SQLException {
 
 			Map afterConver = new HashMap();
@@ -1502,9 +1594,10 @@ public class JdbcUtils {
 		 * 数据库列字段转换成Java Bean字段。
 		 * 
 		 * <p>
-		 * 	List columns = ...(数据库查询数据)
-		 * 
+		 * List columns = new ArrayList();</br> Map map = new HashMap();</br>
+		 * map.put("USERNAME","admin");</br>columns.add(map);</br>
 		 * <p>
+		 * 将columns中的Map中的键KEY转换成所对应的Java Bean字段
 		 * 
 		 * @param beanClazz
 		 *            Java Bean
