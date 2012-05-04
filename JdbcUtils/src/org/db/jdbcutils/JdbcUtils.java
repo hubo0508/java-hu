@@ -899,7 +899,7 @@ public class JdbcUtils {
 	public List columnsToBean(Class dataMappingClass, List list)
 			throws SQLException {
 		this.setDataMappingClass(dataMappingClass);
-		return beanPro.columnsToBean(getDataMappingClass(), list);
+		return beanPro.mapColumnsToBean(getDataMappingClass(), list);
 	}
 
 	/**
@@ -1336,7 +1336,7 @@ public class JdbcUtils {
 					((List) instanceObject).add(rs.getObject(field));
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
-							.filter(field, TOTYPE[0]));
+							.convert(field, TOTYPE[0]));
 					beanPro
 							.callSetter(instanceObject, pro, rs
 									.getObject(field));
@@ -1355,8 +1355,8 @@ public class JdbcUtils {
 				if (isMap(dataMappingClass)) {
 					rsh.put(rsmd.getColumnName(i), rs.getObject(i));
 				} else {
-					rsh.put(sqlPro.filter(rsmd.getColumnName(i), TOTYPE[0]), rs
-							.getObject(i));
+					rsh.put(sqlPro.convert(rsmd.getColumnName(i), TOTYPE[0]),
+							rs.getObject(i));
 				}
 			}
 
@@ -1387,7 +1387,7 @@ public class JdbcUtils {
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
 						PropertyDescriptor pro = beanPro
-								.getProDescByName(sqlPro.filter(field,
+								.getProDescByName(sqlPro.convert(field,
 										TOTYPE[0]));
 						beanPro
 								.callSetter(instDomain, pro, rs
@@ -1464,7 +1464,7 @@ public class JdbcUtils {
 			Object[] params = new Object[columnsLen];
 
 			for (int j = 0; j < columnsLen; j++) {
-				String domainField = sqlPro.filter(columns[j], TOTYPE[0]);
+				String domainField = sqlPro.convert(columns[j], TOTYPE[0]);
 				for (int i = 0; i < len; i++) {
 					PropertyDescriptor prop = proDesc[i];
 					if (beanPro.isBasicType(prop.getPropertyType())
@@ -1491,14 +1491,31 @@ public class JdbcUtils {
 			while (iter.hasNext()) {
 				Map.Entry entry = (Map.Entry) iter.next();
 				String key = (String) entry.getKey();
-				afterConver
-						.put(sqlPro.filter(key, TOTYPE[0]), entry.getValue());
+				afterConver.put(sqlPro.convert(key, TOTYPE[0]), entry
+						.getValue());
 			}
 			map = null;
 			return afterConver;
 		}
-		
-		public List columnsToBean(Class beanClazz, List list)
+
+		/**
+		 * 数据库列字段转换成Java Bean字段。
+		 * 
+		 * <p>
+		 * 	List columns = ...(数据库查询数据)
+		 * 
+		 * <p>
+		 * 
+		 * @param beanClazz
+		 *            Java Bean
+		 * @param list
+		 *            转换对象
+		 * 
+		 * @return 转换后的List对象
+		 * 
+		 * @throws SQLException
+		 */
+		public List mapColumnsToBean(Class beanClazz, List list)
 				throws SQLException {
 
 			List afterConver = new ArrayList();
@@ -1908,7 +1925,7 @@ public class JdbcUtils {
 				}
 			}
 			sb.append(" FROM ");
-			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
+			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
 			if (isNotEmpty(key)) {
 				sb.append(" ");
 				appendParamsId(sb, key);
@@ -1953,7 +1970,7 @@ public class JdbcUtils {
 		 */
 		private void appendSelectParams(StringBuffer sb, String name, int i,
 				int len) throws SQLException {
-			sb.append(sqlPro.filter(name, TOTYPE[1]));
+			sb.append(sqlPro.convert(name, TOTYPE[1]));
 			if (i < (len - 1)) {
 				sb.append(", ");
 			}
@@ -2020,7 +2037,7 @@ public class JdbcUtils {
 		public String makeDeleteSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
-			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
+			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
 			if (isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
@@ -2072,7 +2089,7 @@ public class JdbcUtils {
 		public String makeUpdateSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
-			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
+			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
 			sb.append(" SET ");
 
 			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
@@ -2114,7 +2131,7 @@ public class JdbcUtils {
 		 */
 		private void appendUpdateParams(StringBuffer sb, String name, int i,
 				int len) throws SQLException {
-			sb.append(sqlPro.filter(name, TOTYPE[1]));
+			sb.append(sqlPro.convert(name, TOTYPE[1]));
 			if (i < len - 1) {
 				sb.append("=?, ");
 			} else {
@@ -2178,7 +2195,7 @@ public class JdbcUtils {
 				throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
-			sb.append(filter(textFilter(getSimpleName()), TOTYPE[1]));
+			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
 			sb.append(" (");
 
 			StringBuffer paramsvalue = new StringBuffer();
@@ -2203,10 +2220,10 @@ public class JdbcUtils {
 						Object filter = sqlFilter.get(pro.getName());
 						if (String.class.isInstance(filter)
 								&& filter.toString().equals(pro.getName())) {
-							sb.append(sqlPro.filter(filter.toString(),
+							sb.append(sqlPro.convert(filter.toString(),
 									TOTYPE[1]));
 						} else {
-							sb.append(sqlPro.filter(pro.getName(), TOTYPE[1]));
+							sb.append(sqlPro.convert(pro.getName(), TOTYPE[1]));
 						}
 					}
 
@@ -2441,7 +2458,7 @@ public class JdbcUtils {
 		 * @see JdbcUtils#getRule()
 		 * @see JdbcUtils#TOTYPE
 		 */
-		public String filter(String text, String toType) throws SQLException {
+		public String convert(String text, String toType) throws SQLException {
 			if (HUMP.equals(getRule())) {
 				if (isAllCaps(text)) {
 					if (toType.equals(TOTYPE[0])) {
