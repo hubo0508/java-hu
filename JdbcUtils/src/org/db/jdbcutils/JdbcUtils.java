@@ -1291,7 +1291,14 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 取得结果集ResultSet总记录数
+		 * 取得数据库结果集数据表总记录数
+		 * 
+		 * @param rs
+		 *            数据库结果集数据表
+		 * 
+		 * @return 总记录数
+		 * 
+		 * @throws SQLException
 		 */
 		private long resultSize(ResultSet rs) throws SQLException {
 
