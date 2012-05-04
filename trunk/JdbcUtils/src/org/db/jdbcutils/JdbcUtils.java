@@ -68,7 +68,7 @@ import test.ConfigDevice;
  * <tr>
  * <td>0.2.2</td>
  * <td>2012-05-04</td>
- * <td>增加过滤条件</td>
+ * <td>增加过滤条件；增加SQL统计处理</td>
  * </tr>
  * </table>
  * 
@@ -165,7 +165,7 @@ public class JdbcUtils {
 	 * 结果集处理(私有)
 	 */
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
-	
+
 	/*
 	 * SQL转换成统计语句处理(私有)
 	 * 
@@ -2418,7 +2418,7 @@ public class JdbcUtils {
 		/**
 		 * 将SQL文本中出现两次及以上的空格转换成一个空格
 		 * 
-		 * @return SQL
+		 * @return sql语句 
 		 */
 		private String removeSpaces(String sql) {
 			StringBuffer sb = new StringBuffer();
@@ -2431,22 +2431,32 @@ public class JdbcUtils {
 			return sb.toString();
 		}
 
+		/**
+		 * 取得数据映射模版
+		 */
 		public Class getDataMappingClass() {
 			return _dataMappingClass;
 		}
 
-		public void setDataMappingClass(Class mappingClass) {
-			_dataMappingClass = mappingClass;
+		/**
+		 * 设置数据映射模版
+		 * 
+		 * @param dataMappingClass 该数据映射模版作用于Java Bean与SQL之间的转换。
+		 * SQL的查询字段或更新字段、插入字段该dataMappingClass(Java Bean)映射模版中取得。
+		 * 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
+		 */
+		public void setDataMappingClass(Class dataMappingClass) {
+			_dataMappingClass = dataMappingClass;
 		}
 	}
-	
+
 	/**
 	 * SQL统计处理
 	 * 
-	 * @User: 魔力猫咪(http://wlmouse.iteye.com/category/60230)
+	 * @User: 魔力猫咪<code>(http://wlmouse.iteye.com/category/60230)</code>
 	 */
 	class SqlStatisticsProcessor {
-		
+
 		/**
 		 * 数量统计正则表达式
 		 */
@@ -2456,27 +2466,27 @@ public class JdbcUtils {
 		 * 不同结果正则表达式
 		 */
 		private String distinctRegex = "$1 distinct $2 $3";
-		
+
 		/**
 		 * 不同结果统计正则表达式
 		 */
 		private String countDistinctRegex = "$1 count\\(distinct $2\\) $3";
-		
+
 		/**
 		 * 求最大值正则表达式
 		 */
 		private String maxRegex = "$1 max\\($2\\) $3";
-		
+
 		/**
 		 * 求最小值正则表达式
 		 */
 		private String minRegex = "$1 min\\($2\\) $3";
-		
+
 		/**
 		 * 求和正则表达式
 		 */
 		private String sumRegex = "$1 sum\\($2\\) $3";
-		
+
 		/**
 		 * 求平均数正则表达式
 		 */
