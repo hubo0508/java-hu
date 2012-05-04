@@ -1960,6 +1960,16 @@ public class JdbcUtils {
 			return sb.toString();
 		}
 
+		/**
+		 * 
+		 * @param sb
+		 *            SQL存储容器
+		 * @param name
+		 *            JavaBean
+		 * @param i
+		 * @param len
+		 * @throws SQLException
+		 */
 		private void appendUpdateParams(StringBuffer sb, String name, int i,
 				int len) throws SQLException {
 			sb.append(sqlPro.filter(name, TOTYPE[1]));
@@ -1971,46 +1981,57 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * <P>
-		 * 根据clazz属性构造insert语句，返回<b><code>INSERT INTO user (username,id) VALUES (?, ?)</code></b>
-		 * </P>
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Insert
+		 * SQL语句。主键值通过手动维护，对于不同的数据库构造出的Insert SQL语句都是一样的，无差别。</br></br>
+		 * 在构造Insert SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
+		 * 
+		 * <li>ORACLE：<code>makeInsertSql(DbTools.ORACLE, null || "")</cdoe>，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code></li>
+		 * <li>MYSQL：<code>makeInsertSql(DbTools.MYSQL, null || "")，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code></li>
+		 * <li>SQLSERVER：未实现</li>
+		 * 
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 * 
+		 * @see JdbcUtils#MYSQL
+		 * @see JdbcUtils#MYSQL_SEQ
+		 * @see JdbcUtils#ORACLE
+		 * @see JdbcUtils#SQLSERVER
+		 * @see JdbcUtils#setSqlFilter(Map)
 		 */
 		public String makeInsertSql() throws SQLException {
 			return makeInsertSql(null, null);
 		}
 
 		/**
-		 * <P>
-		 * 根据clazz属性构造insert语句
-		 * </P>
+		 * 根据Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)构造Insert
+		 * SQL语句。对于Insert
+		 * SQL语句根据数据库的不同所构造出的SQL也会有差异。在Oracle主键值的增长可通过序列自主维护，而MySql数据库不需要序列。</br></br>
+		 * 在构造Insert SQL语句时，如果Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)中定义了<code>public Map sqlFilter(){}</code>方法，或手动设置<code>JdbcUtils.setSqlFilter(Map)</code>过滤条件，则在构造SQL时，会根据规则进行过滤。
 		 * 
-		 * <P>
-		 * 构造insert语句时，根据Oracle,mysql,sqlserver三种数据库所构造出的insert也有不同的变化。
-		 * </P>
-		 * 
-		 * <ul>
-		 * <li>
-		 * <P>
-		 * 当<code>makeInsertSql(DbTools.ORACLE, "seq")</cdoe>时，构造出的SQL为 </br><b><code>
-		 * INSERT INTO user (username, id) VALUES (?, seq.NEXTVAL)</code></b>。</p>
-		 * </li>
-		 * <li>
-		 * <P>当<code>makeInsertSql(DbTools.MYSQL, DbTools.MYSQL_SEQ)</cdoe>时，构造出的SQL为 </br><b><code>
-		 * INSERT INTO user (username) VALUES (?)</code></b></br>当<code>makeInsertSql(DbTools.MYSQL, null)</cdoe>时，构造出的SQL为 </br><b><code>
-		 * INSERT INTO user (username,id) VALUES (?, ?)</b></p>
-		 * </li>
-		 * <li><p>sqlserver未实现</p></li>
-		 * </ul>
+		 * <li>ORACLE：<code>makeInsertSql(DbTools.ORACLE, "seq")</cdoe>，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, seq.NEXTVAL)</code></li>
+		 * <li>ORACLE：<code>makeInsertSql(DbTools.ORACLE, null || "")</cdoe>，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code></li>
+		 * <li>MYSQL：<code>makeInsertSql(DbTools.MYSQL, DbTools.MYSQL_SEQ)，构造出的SQL为<code>INSERT INTO user (username) VALUES (?)</code></li>
+		 * <li>MYSQL：<code>makeInsertSql(DbTools.MYSQL, null || "")，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code></li>
+		 * <li>SQLSERVER：未实现</li>
 		 * 
 		 * @param database
 		 *            数据库类型
 		 * @param sequence
-		 *            是否序列
+		 *            序列名称
+		 *            
+		 * @return SQL语句
+		 *            
+		 * @throws SQLException
+		 *            
+		 * @see JdbcUtils#MYSQL
+		 * @see JdbcUtils#MYSQL_SEQ
+		 * @see JdbcUtils#ORACLE
+		 * @see JdbcUtils#SQLSERVER
+		 * @see JdbcUtils#setSqlFilter(Map)
 		 */
 		public String makeInsertSql(String database, String sequence)
 				throws SQLException {
-			// Map sqlFilter = beanPro.getSqlFilter();
-
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
 			sb.append(filter(tableNameFilter(getSimpleName(), sqlFilter),
