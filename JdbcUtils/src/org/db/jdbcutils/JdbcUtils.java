@@ -2456,22 +2456,27 @@ public class JdbcUtils {
 		 * 不同结果正则表达式
 		 */
 		private String distinctRegex = "$1 distinct $2 $3";
+		
 		/**
 		 * 不同结果统计正则表达式
 		 */
 		private String countDistinctRegex = "$1 count\\(distinct $2\\) $3";
+		
 		/**
 		 * 求最大值正则表达式
 		 */
 		private String maxRegex = "$1 max\\($2\\) $3";
+		
 		/**
 		 * 求最小值正则表达式
 		 */
 		private String minRegex = "$1 min\\($2\\) $3";
+		
 		/**
 		 * 求和正则表达式
 		 */
 		private String sumRegex = "$1 sum\\($2\\) $3";
+		
 		/**
 		 * 求平均数正则表达式
 		 */
@@ -2487,7 +2492,6 @@ public class JdbcUtils {
 		 * 数量统计
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String count(String statement) {
 			return regex.matcher(statement).replaceAll(countRegex);
@@ -2497,7 +2501,6 @@ public class JdbcUtils {
 		 * 不同结果
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String distinct(String statement) {
 			return regex.matcher(statement).replaceAll(distinctRegex);
@@ -2507,7 +2510,6 @@ public class JdbcUtils {
 		 * 不同结果统计
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String countDistinct(String statement) {
 			return regex.matcher(statement).replaceAll(countDistinctRegex);
@@ -2517,7 +2519,6 @@ public class JdbcUtils {
 		 * 求最大值
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String max(String statement) {
 			return regex.matcher(statement).replaceAll(maxRegex);
@@ -2527,7 +2528,6 @@ public class JdbcUtils {
 		 * 求最小值
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String min(String statement) {
 			return regex.matcher(statement).replaceAll(minRegex);
@@ -2537,7 +2537,6 @@ public class JdbcUtils {
 		 * 求和
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String sum(String statement) {
 			return regex.matcher(statement).replaceAll(sumRegex);
@@ -2547,7 +2546,6 @@ public class JdbcUtils {
 		 * 求平均数
 		 * 
 		 * @return 语句
-		 * @since 0.3
 		 */
 		public String avg(String statement) {
 			return regex.matcher(statement).replaceAll(avgRegex);
