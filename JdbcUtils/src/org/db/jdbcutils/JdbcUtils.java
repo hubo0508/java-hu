@@ -1152,7 +1152,6 @@ public class JdbcUtils {
 		this.dataMappingClass = dataMappingClass;
 		this.sqlPro.setDataMappingClass(dataMappingClass);
 		this.beanPro.setDataMappingClass(dataMappingClass);
-		
 		this.setSqlFilter(this.beanPro.getSqlFilter());
 	}
 
@@ -1495,10 +1494,11 @@ public class JdbcUtils {
 			return afterConver;
 		}
 
-		private String makeStringName(String methodPrefix, String fieldName) {
-			String firstLetter = fieldName.substring(0, 1).toUpperCase();
-			return methodPrefix + firstLetter + fieldName.substring(1);
-		}
+		// private String makeStringName(String methodPrefix, String fieldName)
+		// {
+		// String firstLetter = fieldName.substring(0, 1).toUpperCase();
+		// return methodPrefix + firstLetter + fieldName.substring(1);
+		// }
 
 		private PropertyDescriptor getProDescByName(String name)
 				throws SQLException {
@@ -1782,8 +1782,8 @@ public class JdbcUtils {
 		 * </p>
 		 */
 		public String makeSelectSql(String key) throws SQLException {
-			//Map sqlFilter = beanPro.getSqlFilter();
-			
+			// Map sqlFilter = beanPro.getSqlFilter();
+
 			StringBuffer sb = new StringBuffer("SELECT ");
 
 			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
@@ -1852,7 +1852,7 @@ public class JdbcUtils {
 			try {
 				returnvalue = Boolean.valueOf(value.toString()).booleanValue();
 			} catch (RuntimeException e) {
-				if(value != null){
+				if (value != null) {
 					returnvalue = false;
 				}
 			}
@@ -1879,7 +1879,7 @@ public class JdbcUtils {
 		 * </p>
 		 */
 		public String makeDeleteSql(String whereIf) throws SQLException {
-			//Map sqlFilter = beanPro.getSqlFilter();
+			// Map sqlFilter = beanPro.getSqlFilter();
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
@@ -1916,7 +1916,7 @@ public class JdbcUtils {
 		 * </p>
 		 */
 		public String makeUpdateSql(String whereIf) throws SQLException {
-			//Map sqlFilter = beanPro.getSqlFilter();
+			// Map sqlFilter = beanPro.getSqlFilter();
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
@@ -2001,7 +2001,7 @@ public class JdbcUtils {
 		 */
 		public String makeInsertSql(String database, String sequence)
 				throws SQLException {
-			//Map sqlFilter = beanPro.getSqlFilter();
+			// Map sqlFilter = beanPro.getSqlFilter();
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
@@ -2428,11 +2428,8 @@ public class JdbcUtils {
 	}
 
 	public static void main(String[] args) throws SQLException {
-		// new DbTools(DeviceTest.class, DbTools.SEGMENTATION).sqlPro
-		// .makeSelectSql("id=?");
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 		System.out.println(db.sqlPro.makeSelectSql("where id=111"));
 		System.out.println(db.sqlPro.makeDeleteSql());
 		System.out.println(db.sqlPro.makeUpdateSql());
