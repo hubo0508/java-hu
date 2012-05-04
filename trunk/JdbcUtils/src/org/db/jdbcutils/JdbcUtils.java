@@ -119,7 +119,10 @@ public class JdbcUtils {
 	private String rule = HUMP;
 
 	/**
-	 * 返回结果集映射格式。
+	 * 数据映射模版
+	 * 
+	 * 该数据映射模版作用于Java Bean与SQL之间的转换。 SQL的查询字段或更新字段、插入字段该dataMappingClass(Java
+	 * Bean)映射模版中取得。 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
 	 * 
 	 * <li>{Domain}.class</li>
 	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
@@ -2116,9 +2119,14 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据SQL中参数(如key=?)位置，取得相应的键字段。
+		 * 对更新、插入SQL语句文本中的参数键字段进行拆分，以数组形式返回。如<code>update user set id=?,username=?
+		 * where id=?</code>，则返回<code>["id","username","id"]</code>。<code>insert into user (id,username)
+		 * values(?,?)</code>，则返回<code>["id","username"]</code>
 		 * 
-		 * @return 未解析到有键字段，则返回null
+		 * @param sql
+		 *            SQL语句
+		 * 
+		 * @return SQL语句参数键数组。未解析到有键字段，则返回null。
 		 */
 		public String[] getColumnsKey(String sql) {
 
@@ -2135,8 +2143,13 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 解析Update SQL文本中的update键字段，以数组形式返回。如</br><b><code>update user set id=?,username=?
-		 * where id=?</code></b>，则返回<code>["id","username","id"]</code>
+		 * 对更新SQL语句文本中的参数键字段进行拆分，以数组形式返回。如<code>update user set id=?,username=?
+		 * where id=?</code>，则返回<code>["id","username","id"]</code>
+		 * 
+		 * @param sql
+		 *            SQL语句
+		 * 
+		 * @return SQL语句参数键数组
 		 */
 		private String[] columnsKeyOfUpdate(String sql) {
 			int len = countCharacter(sql, "?");
@@ -2160,18 +2173,27 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 解析insert SQL文本中的insert键字段，以数组形式返回。如insert into user (id,username)
-		 * values(?,?)，则返回["id",username]
+		 * 对插入SQL语句文本中的参数键字段进行拆分，以数组形式返回。如<code>insert into user (id,username)
+		 * values(?,?)</code>，则返回<code>["id","username"]</code>
+		 * 
+		 * @param sql
+		 *            SQL语句
+		 * 
+		 * @return SQL语句参数键数组
 		 */
 		private String[] columnsKeyOfInsert(String sql) {
 			String columns = sql.substring(sql.indexOf("(") + 1, sql
 					.indexOf(")"));
-
 			return columns.replaceAll(" ", "").split(",");
 		}
 
 		/**
-		 * 取得文本中的查询列键字段。如user_name=?，则返回user_name
+		 * 对SQL文本进行键值拆分。如user_name=?，则返回user_name。
+		 * 
+		 * @param text
+		 *            SQL文本
+		 * 
+		 * @return SQL语句参数键
 		 */
 		private String getColumnKey(String text, int endindex) {
 			int index = text.lastIndexOf(" ");
@@ -2194,28 +2216,35 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 根据属性rule判断数据库列字段或POJO字段的命名规则。</br></br>
+		 * 对文本字段进行转换。从Java
+		 * Bean字段转换成数据库列字段格式(userName转换成user_name)，或者从数据库列字段转换成Java
+		 * Bean字段格式(user_name/username转换成userName)。转换的规则根据属性值<code>JdbcUtils.getRule()</code>定义。
 		 * 
-		 * <p>
-		 * 将userName按分段命名法转换成user_name类型，定义如下
-		 * <li>定义全局属性rule的命名规则为：segmentation</li>
-		 * <li>toType应传入值为：database</li>
-		 * </p>
+		 * </br></br> 将Java Bean字段转换成数据库列字段(userName转换成user_name)，定义如下：
+		 * <li>设置命名规则为分段命名规则，可通过构造参数传递。如<code>JdbcUtils.setRule(JdbcUtils.SEGMENTATION)</code></li>
+		 * <li>设置转换的目的地为数据库，如<code>SqlProcessor.filter(text,'database')</code></li>
 		 * 
-		 * <p>
-		 * 将的user_name按分段命名法转换成userName类型，定义如下
-		 * <li>定义全局属性rule的命名规则为：hump</li>
-		 * <li>toType应传入值为：bean</li>
-		 * </p>
+		 * </br></br> 将数据库列字段转换成Java
+		 * Bean字段(user_name/username转换成userName)，定义如下：
+		 * <li>设置命名规则为分段命名规则，可通过构造参数传递。如<code>JdbcUtils.setRule(JdbcUtils.HUMP)</code></li>
+		 * <li>设置转换的目的地为Java Bean，如<code>SqlProcessor.filter(text,'bean')</code></li>
 		 * 
 		 * @param text
 		 *            文本字段
 		 * @param toType
 		 *            转换类型(bean || database)
+		 * 
+		 * @return 转换后的文本字段
+		 * 
 		 * @throws SQLException
+		 * 
+		 * @see JdbcUtils#HUMP
+		 * @see JdbcUtils#SEGMENTATION
+		 * @see JdbcUtils#setRule(String)
+		 * @see JdbcUtils#getRule()
+		 * @see JdbcUtils#TOTYPE
 		 */
 		public String filter(String text, String toType) throws SQLException {
-
 			if (HUMP.equals(getRule())) {
 				if (isAllCaps(text)) {
 					if (toType.equals(TOTYPE[0])) {
@@ -2249,6 +2278,11 @@ public class JdbcUtils {
 
 		/**
 		 * 判断文本是否全部大写
+		 * 
+		 * @param text
+		 *            文本
+		 * 
+		 * @return true(文本全为大写) || false(文本不全为大写)
 		 */
 		public boolean isAllCaps(String text) {
 			if (text.equals(text.toUpperCase())) {
@@ -2258,9 +2292,15 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 将文本转换成驼峰命名规则。</br></br>
+		 * 将文本转换成驼峰命名规则。如：user_name => userName
 		 * 
-		 * 如：user_name => userName
+		 * @param text
+		 *            文本字段
+		 * 
+		 * @return 无分隔线，按照驼峰命名法的文本字段，如userName
+		 * 
+		 * @see JdbcUtils#HUMP
+		 * @see JdbcUtils#SEGMENTATION
 		 */
 		public String convertedIntoHump(String text) {
 
@@ -2286,9 +2326,15 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 将文本转换成分段命名规则。</br></br>
+		 * 将文本转换成分段命名规则。如：userName => user_name
 		 * 
-		 * 如：userName => user_name
+		 * @param text
+		 *            文本字段
+		 * 
+		 * @return 有分隔线的文本字段，如user_name
+		 * 
+		 * @see JdbcUtils#HUMP
+		 * @see JdbcUtils#SEGMENTATION
 		 */
 		public String convertedIntoSegmentation(String text) {
 
@@ -2314,12 +2360,15 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 删除列字段的分隔线。如user_name => username
+		 * 删除文本字段的分隔线。如user_name => username
 		 * 
-		 * @return 无分隔线的列字段
+		 * @param text
+		 *            文本字段
+		 * 
+		 * @return 无分隔线的文本字段，如userName
 		 */
-		private String removeSeparator(String column) {
-			StringTokenizer st = new StringTokenizer(column, "_");
+		private String removeSeparator(String text) {
+			StringTokenizer st = new StringTokenizer(text, "_");
 			int len = st.countTokens();
 			StringBuffer buff = new StringBuffer();
 			for (int i = 0; i < len; i++) {
@@ -2330,11 +2379,14 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 对SQL进行标准格式化。</br></br>
+		 * 对SQL进行标准格式化。在JdbcUtils中所能解析的SQL规则称之为标准规则。
+		 * 
+		 * @param sql
+		 *            SQL语句
 		 * 
 		 * @return 标准格式化后SQL
 		 */
-		private String standardFormatting(String sql) {
+		public String standardFormatting(String sql) {
 
 			sql = removeSpaces(sql);
 			StringBuffer sb = new StringBuffer();
@@ -2370,13 +2422,18 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 判断列字段与下一个列字段不等于指定某规则
+		 * 判断数据库列字段与下一个数据库列字段不等于指定某规则。规则为<code>SqlProcessor.notequalsparams</code>
+		 * 
+		 * @param columnName
+		 *            数据库列名称
 		 * 
 		 * @return true(不等于指定某规则),false(等于指定某规则)
+		 * 
+		 * @see SqlProcessor#notequalsparams
 		 */
-		private boolean notEqualsParams(String nextColumn) {
+		public boolean notEqualsParams(String columnName) {
 			for (int i = 0; i < notequalsparams.length; i++) {
-				if (notequalsparams[i].equalsIgnoreCase(nextColumn)) {
+				if (notequalsparams[i].equalsIgnoreCase(columnName)) {
 					return false;
 				}
 			}
@@ -2384,17 +2441,24 @@ public class JdbcUtils {
 		}
 
 		/**
-		 * 判断列字段与下一个列字段是否与相等于某则
+		 * 判断数据库列字段与下一个数据库列字段是否与相等于某规则。规则为<code>SqlProcessor.equalsparams</code>
 		 * 
-		 * @return true(等于指定某规则),false(不相等不等于指定某规则)
+		 * @param columnName
+		 *            数据库列名称
+		 * @param nextColumnName
+		 *            数据库列名称(下一个)
+		 * 
+		 * @return true(等于指定某规则),false(不等于指定某规则)
+		 * 
+		 * @see SqlProcessor#equalsparams
 		 */
-		private boolean equalsParams(String column, String nextColumn) {
+		public boolean equalsParams(String columnName, String nextColumnName) {
 			for (int i = 0; i < equalsparams.length; i++) {
-				if (equalsparams[i].equalsIgnoreCase(nextColumn)) {
+				if (equalsparams[i].equalsIgnoreCase(nextColumnName)) {
 					return true;
 				}
 			}
-			if ((column.length() - 1) == column.indexOf("=")) {
+			if ((columnName.length() - 1) == columnName.indexOf("=")) {
 				return true;
 			}
 			return false;
@@ -2403,7 +2467,10 @@ public class JdbcUtils {
 		/**
 		 * 对SQL文本按一个空格进行拆分
 		 * 
-		 * @return 拆分后的SQL Array
+		 * @param sql
+		 *            SQL语句
+		 * 
+		 * @return sql数组
 		 */
 		private String[] splitSql(String sql) {
 			StringTokenizer stk = new StringTokenizer(sql, " ");
@@ -2418,9 +2485,12 @@ public class JdbcUtils {
 		/**
 		 * 将SQL文本中出现两次及以上的空格转换成一个空格
 		 * 
-		 * @return sql语句 
+		 * @param sql
+		 *            SQL语句
+		 * 
+		 * @return SQL语句
 		 */
-		private String removeSpaces(String sql) {
+		public String removeSpaces(String sql) {
 			StringBuffer sb = new StringBuffer();
 			StringTokenizer sk = new StringTokenizer(sql, " ");
 			int count = sk.countTokens();
@@ -2441,9 +2511,10 @@ public class JdbcUtils {
 		/**
 		 * 设置数据映射模版
 		 * 
-		 * @param dataMappingClass 该数据映射模版作用于Java Bean与SQL之间的转换。
-		 * SQL的查询字段或更新字段、插入字段该dataMappingClass(Java Bean)映射模版中取得。
-		 * 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
+		 * @param dataMappingClass
+		 *            该数据映射模版作用于Java Bean与SQL之间的转换。
+		 *            SQL的查询字段或更新字段、插入字段该dataMappingClass(Java Bean)映射模版中取得。
+		 *            可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
 		 */
 		public void setDataMappingClass(Class dataMappingClass) {
 			_dataMappingClass = dataMappingClass;
