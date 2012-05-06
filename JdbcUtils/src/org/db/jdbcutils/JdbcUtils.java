@@ -141,6 +141,7 @@ public class JdbcUtils {
 	 * 
 	 * @see JdbcUtils#setSqlMappingClass(Class)
 	 * @see JdbcUtils#getSqlFilter()
+	 * @see JdbcUtils#setSqlFilter(Map)
 	 */
 	private Class dataMappingClass;
 
@@ -163,7 +164,53 @@ public class JdbcUtils {
 	private Class sqlMappingClass;
 
 	/**
-	 * 自动构造SQL的过滤条件
+	 * 自动构造SQL语句的过滤规则
+	 * 
+	 * <p>
+	 * 在对数据执行增、删、改、查时，使用对象Java Bean自动构造SQL API时，改变量可以影响自动构造出的SQL结果。 在Java
+	 * Bean中定义了<code>JdbcUtils.setSqlFilter(Map)</code>方法，会影响到所有执行增、删、改、查动作时，根据映射模版<code>JdbcUtils.setDataMappingClass(Class)</code>或<code>JdbcUtils.setSqlMappingClass(Class)</code>自动构造的SQL语句。
+	 * 当在执行增、删、改、查动作时，每个SDK API临时调用<code>JdbcUtils.setSqlFilter(Map)</code>只会作用于当前动作。
+	 * </p>
+	 * 
+	 * <p>
+	 * <blockquote>
+	 * 
+	 * <pre>
+	 * public class User{
+	 *   private Integer id;
+	 *   private String userName;
+	 *   private String password;
+	 *   private Integer hasData;
+	 *   
+	 *   public Map sqlFilter(){
+	 *     Map filter = new HashMap();
+	 *     filter.put(&quot;User&quot;, &quot;SimpleUser&quot;);
+	 *     filter.put(&quot;hasData&quot;, new Boolean(false));
+	 *     return filter;
+	 *   }
+	 *   .....
+	 * }
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * </p>
+	 * 
+	 * 如上Java Bean User.java所示，在类中定义了全局方法<code>public Map sqlFilter(){}</code>，该方法返回一个Map集合。
+	 * 下面我们通过实际的例子讲解：当正情况下未定义全局<code>public Map sqlFilter(){}</code>方法时，产生的查询SQL为：
+	 * <code>SELECT id, user_name, password, has_data FROM USER</code>。此时我们将全局<code>public Map sqlFilter(){}</code>方法加上，再次自动构造的SQL为：
+	 * <code>SELECT id, user_name, password FROM simple_user</code>。两条SQL语句对比可发现，SQL表名user转换成了simple_user，而has_data字段在第二个SQL语句中查询。
+	 * 也就是说定义的全局<code>public Map sqlFilter(){}</code>方法影响到了最终自动构造成的SQL。
+	 * 
+	 * <p>
+	 * 现有规则如下(现SDK只实现了以下规则)：
+	 * <li><code>filter.put("User", "SimpleUser");</code>。当键Key的值为Java
+	 * Bean类名或字段名称时，Value设置一个有效字符串，SDK在解析时会认为这是一个字符的替换规则；</li>
+	 * <li><code>filter.put("hasData", new Boolean(false或true));</code>。当键Key的值为Java
+	 * Bean字段名称时，Value设置一个有效的<code>Boolean</code>布尔值，SDK在解析时会认为这是一个字符显示与不显示规则；</li>
+	 * </p>
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#setSqlMappingClass(Class)
 	 */
 	private Map sqlFilter;
 
@@ -1291,10 +1338,108 @@ public class JdbcUtils {
 		this.beanPro.setDataMappingClass(sqlMappingClass);
 	}
 
+	/**
+	 * 取得自动构造SQL语句的过滤规则
+	 * 
+	 * <p>
+	 * 在对数据执行增、删、改、查时，使用对象Java Bean自动构造SQL API时，改变量可以影响自动构造出的SQL结果。 在Java
+	 * Bean中定义了<code>JdbcUtils.setSqlFilter(Map)</code>方法，会影响到所有执行增、删、改、查动作时，根据映射模版<code>JdbcUtils.setDataMappingClass(Class)</code>或<code>JdbcUtils.setSqlMappingClass(Class)</code>自动构造的SQL语句。
+	 * 当在执行增、删、改、查动作时，每个SDK API临时调用<code>JdbcUtils.setSqlFilter(Map)</code>只会作用于当前动作。
+	 * </p>
+	 * 
+	 * <p>
+	 * <blockquote>
+	 * 
+	 * <pre>
+	 * public class User{
+	 *   private Integer id;
+	 *   private String userName;
+	 *   private String password;
+	 *   private Integer hasData;
+	 *   
+	 *   public Map sqlFilter(){
+	 *     Map filter = new HashMap();
+	 *     filter.put(&quot;User&quot;, &quot;SimpleUser&quot;);
+	 *     filter.put(&quot;hasData&quot;, new Boolean(false));
+	 *     return filter;
+	 *   }
+	 *   .....
+	 * }
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * </p>
+	 * 
+	 * 如上Java Bean User.java所示，在类中定义了全局方法<code>public Map sqlFilter(){}</code>，该方法返回一个Map集合。
+	 * 下面我们通过实际的例子讲解：当正情况下未定义全局<code>public Map sqlFilter(){}</code>方法时，产生的查询SQL为：
+	 * <code>SELECT id, user_name, password, has_data FROM USER</code>。此时我们将全局<code>public Map sqlFilter(){}</code>方法加上，再次自动构造的SQL为：
+	 * <code>SELECT id, user_name, password FROM simple_user</code>。两条SQL语句对比可发现，SQL表名user转换成了simple_user，而has_data字段在第二个SQL语句中查询。
+	 * 也就是说定义的全局<code>public Map sqlFilter(){}</code>方法影响到了最终自动构造成的SQL。
+	 * 
+	 * <p>
+	 * 现有规则如下(现SDK只实现了以下规则)：
+	 * <li><code>filter.put("User", "SimpleUser");</code>。当键Key的值为Java
+	 * Bean类名或字段名称时，Value设置一个有效字符串，SDK在解析时会认为这是一个字符的替换规则；</li>
+	 * <li><code>filter.put("hasData", new Boolean(false或true));</code>。当键Key的值为Java
+	 * Bean字段名称时，Value设置一个有效的<code>Boolean</code>布尔值，SDK在解析时会认为这是一个字符显示与不显示规则；</li>
+	 * </p>
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 */
 	public Map getSqlFilter() {
 		return sqlFilter;
 	}
-
+	
+	/**
+	 * 设置自动构造SQL语句的过滤规则
+	 * 
+	 * <p>
+	 * 在对数据执行增、删、改、查时，使用对象Java Bean自动构造SQL API时，改变量可以影响自动构造出的SQL结果。 在Java
+	 * Bean中定义了<code>JdbcUtils.setSqlFilter(Map)</code>方法，会影响到所有执行增、删、改、查动作时，根据映射模版<code>JdbcUtils.setDataMappingClass(Class)</code>或<code>JdbcUtils.setSqlMappingClass(Class)</code>自动构造的SQL语句。
+	 * 当在执行增、删、改、查动作时，每个SDK API临时调用<code>JdbcUtils.setSqlFilter(Map)</code>只会作用于当前动作。
+	 * </p>
+	 * 
+	 * <p>
+	 * <blockquote>
+	 * 
+	 * <pre>
+	 * public class User{
+	 *   private Integer id;
+	 *   private String userName;
+	 *   private String password;
+	 *   private Integer hasData;
+	 *   
+	 *   public Map sqlFilter(){
+	 *     Map filter = new HashMap();
+	 *     filter.put(&quot;User&quot;, &quot;SimpleUser&quot;);
+	 *     filter.put(&quot;hasData&quot;, new Boolean(false));
+	 *     return filter;
+	 *   }
+	 *   .....
+	 * }
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * </p>
+	 * 
+	 * 如上Java Bean User.java所示，在类中定义了全局方法<code>public Map sqlFilter(){}</code>，该方法返回一个Map集合。
+	 * 下面我们通过实际的例子讲解：当正情况下未定义全局<code>public Map sqlFilter(){}</code>方法时，产生的查询SQL为：
+	 * <code>SELECT id, user_name, password, has_data FROM USER</code>。此时我们将全局<code>public Map sqlFilter(){}</code>方法加上，再次自动构造的SQL为：
+	 * <code>SELECT id, user_name, password FROM simple_user</code>。两条SQL语句对比可发现，SQL表名user转换成了simple_user，而has_data字段在第二个SQL语句中查询。
+	 * 也就是说定义的全局<code>public Map sqlFilter(){}</code>方法影响到了最终自动构造成的SQL。
+	 * 
+	 * <p>
+	 * 现有规则如下(现SDK只实现了以下规则)：
+	 * <li><code>filter.put("User", "SimpleUser");</code>。当键Key的值为Java
+	 * Bean类名或字段名称时，Value设置一个有效字符串，SDK在解析时会认为这是一个字符的替换规则；</li>
+	 * <li><code>filter.put("hasData", new Boolean(false或true));</code>。当键Key的值为Java
+	 * Bean字段名称时，Value设置一个有效的<code>Boolean</code>布尔值，SDK在解析时会认为这是一个字符显示与不显示规则；</li>
+	 * </p>
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 */
 	public void setSqlFilter(Map sqlFilter) {
 		this.sqlFilter = sqlFilter;
 	}
