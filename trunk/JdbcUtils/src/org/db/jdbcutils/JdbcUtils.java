@@ -76,12 +76,12 @@ import test.ConfigDevice;
 public class JdbcUtils {
 
 	/**
-	 * Java Bean字段命名与数据库字段命名的方式为：驼峰命名法。如：userName;
+	 * Java Bean 字段命名与数据库字段命名的方式为：驼峰命名法。如：userName;
 	 */
 	public final static String HUMP = "hump";
 
 	/**
-	 * Java Bean字段命名与数据库字段命名的方式为：分段名法。如：user_name;
+	 * Java Bean 字段命名与数据库字段命名的方式为：分段名法。如：user_name;
 	 */
 	public final static String SEGMENTATION = "segmentation";
 
@@ -114,7 +114,7 @@ public class JdbcUtils {
 	private String rule = HUMP;
 
 	/**
-	 * 数据映射模版，与数据库结果集的数据表相对应、自动构造SQL时对应。
+	 * Java Bean 与 SQL 映射模版，与返回数据的映射模版、数据库结果集的数据表相对应、自动构造SQL时对应
 	 * 
 	 * <p>
 	 * 该数据映射模版作用于Java
@@ -136,13 +136,22 @@ public class JdbcUtils {
 	 */
 	private Class dataMappingClass;
 
-//	/**
-//	 * SQL数据映射Class。</br>
-//	 * 
-//	 * 在自动构造sql时，SDx默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
-//	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
-//	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
-//	 */
+	/**
+	 * Java Bean 与 SQL 映射模版
+	 * 
+	 * <p>
+	 * 当<code>JdbcUtils.getDataMappingClass()</code>的映射类型不为Java
+	 * Bean模版时，可对该变量设置数据映射模版，新设置的数据映射模版只会作用于与SQL、返回数据之间的关系。
+	 * </p>
+	 * 
+	 * <p>
+	 * 在通过<code>JdbcUtils.setSqlMappingClass(Class)</code>设置新数据映射模版时，该值中也可以定义<code>public Map sqlFilter(){}</code>方法来设置与SQL之间的规则关系(Java
+	 * Bean自动构造成SQL时的条件规则)。也可以通过<code>JdbcUtils.setSqlFilter(Map)</code>方法设置数据映射模版。
+	 * </p>
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 */
 	private Class sqlMappingClass;
 
 	/**
@@ -1231,26 +1240,40 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 取得SQL数据映射Class。</br>
+	 * 取得Java Bean 与 SQL 映射模版
 	 * 
-	 * 在自动构造sql时，SDK默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
-	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
-	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
+	 * <p>
+	 * 当<code>JdbcUtils.getDataMappingClass()</code>的映射类型不为Java
+	 * Bean模版时，可对该变量设置数据映射模版，新设置的数据映射模版只会作用于与SQL、返回数据之间的关系。
+	 * </p>
 	 * 
-	 * @see JdbcUtils#dataMappingClass
+	 * <p>
+	 * 在通过<code>JdbcUtils.setSqlMappingClass(Class)</code>设置新数据映射模版时，该值中也可以定义<code>public Map sqlFilter(){}</code>方法来设置与SQL之间的规则关系(Java
+	 * Bean自动构造成SQL时的条件规则)。也可以通过<code>JdbcUtils.setSqlFilter(Map)</code>方法设置数据映射模版。
+	 * </p>
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
 	 */
 	public Class getSqlMappingClass() {
 		return sqlMappingClass;
 	}
 
 	/**
-	 * 设置SQL数据映射Class。</br>
+	 * 设置Java Bean 与 SQL 映射模版
 	 * 
-	 * 在自动构造sql时，SDK默认从<code>JdbcUtils#dataMappingClass</code>中取得相应字段构造sql。
-	 * 当<code>JdbcUtils#dataMappingClass</code>类型为List或Map、Java基本数据类型时，在自动构造sql时，无法取得相应字段，
-	 * 可通过设值<code>JdbcUtils#sqlMappingClass</code>使用构造sql语句生效。
+	 * <p>
+	 * 当<code>JdbcUtils.getDataMappingClass()</code>的映射类型不为Java
+	 * Bean模版时，可对该变量设置数据映射模版，新设置的数据映射模版只会作用于与SQL、返回数据之间的关系。
+	 * </p>
 	 * 
-	 * @see JdbcUtils#dataMappingClass
+	 * <p>
+	 * 在通过<code>JdbcUtils.setSqlMappingClass(Class)</code>设置新数据映射模版时，该值中也可以定义<code>public Map sqlFilter(){}</code>方法来设置与SQL之间的规则关系(Java
+	 * Bean自动构造成SQL时的条件规则)。也可以通过<code>JdbcUtils.setSqlFilter(Map)</code>方法设置数据映射模版。
+	 * </p>
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
 	 */
 	public void setSqlMappingClass(Class sqlMappingClass) {
 		this.sqlMappingClass = sqlMappingClass;
