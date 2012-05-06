@@ -76,12 +76,18 @@ import test.ConfigDevice;
 public class JdbcUtils {
 
 	/**
-	 * Java Bean 字段命名与数据库字段命名的方式为：驼峰命名法。如：userName;
+	 * Java Bean 字段命名与数据库字段命名的方式为：驼峰命名法。如：userName；可通过 API
+	 * <code>JdbcUtils.setRule(String)</code>设置工具(JdbcUtils)类的命名规则，工具(JdbcUtils)类默认的规则为<code>JdbcUtils.HUMP</code>
+	 * 
+	 * @see JdbcUtils#setRule(String)
 	 */
 	public final static String HUMP = "hump";
 
 	/**
-	 * Java Bean 字段命名与数据库字段命名的方式为：分段名法。如：user_name;
+	 * Java Bean 字段命名与数据库字段命名的方式为：分段名法。如：user_name；可通过 API
+	 * <code>JdbcUtils.setRule(String)</code>设置工具(JdbcUtils)类的命名规则，工具(JdbcUtils)类默认的规则为<code>JdbcUtils.HUMP</code>
+	 * 
+	 * @see JdbcUtils#setRule(String)
 	 */
 	public final static String SEGMENTATION = "segmentation";
 
@@ -106,7 +112,7 @@ public class JdbcUtils {
 	public final static String MYSQL_SEQ = "increase by degrees";
 
 	/**
-	 * 数据库字段与Java Bean字段的命名规则，默认为常量HUMP
+	 * 数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
@@ -1212,7 +1218,7 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 取得数据库字段与Java Bean字段的命名规则，默认为常量HUMP
+	 * 取得数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
@@ -1222,7 +1228,7 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 设置数据库字段与Java Bean字段的命名规则，默认为常量HUMP
+	 * 设置数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
