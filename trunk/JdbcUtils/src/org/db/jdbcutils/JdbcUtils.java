@@ -202,11 +202,10 @@ public class JdbcUtils {
 	 * 构造函数
 	 * 
 	 * @param dataMappingClass
-	 *            返回结果集映射格式。
-	 *            <li>{Domain}.class</li>
-	 *            <li>Map.class/HashMap.class/LinkedHashMap.class</li>
-	 *            <li>List.class/ListArray.class</li>
-	 *            <li>Integer.class 或其它基本数据类型</li>
+	 *            Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
+	 *            Bean或其它Java类型），同查询数据库结果集的数据表相对应
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
 	 */
 	public JdbcUtils(Class dataMappingClass) {
 		this.setDataMappingClass(dataMappingClass);
@@ -216,20 +215,19 @@ public class JdbcUtils {
 	 * 构造函数
 	 * 
 	 * @param dataMappingClass
-	 *            返回结果集映射格式。
-	 *            <li>{Domain}.class</li>
-	 *            <li>Map.class/HashMap.class/LinkedHashMap.class</li>
-	 *            <li>List.class/ListArray.class</li>
-	 *            <li>Integer.class 或其它基本数据类型</li>
+	 *            Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
+	 *            Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * @param rule
-	 *            数据库字段命名规则，默认为常量HUMP。
+	 *            数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
 	 * 
+	 * @see JdbcUtils#getRule()
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
+	 * @see JdbcUtils#getDataMappingClass()
 	 */
 	public JdbcUtils(Class dataMappingClass, String rule) {
 		this.setDataMappingClass(dataMappingClass);
-		this.rule = rule;
+		this.setRule(rule);
 	}
 
 	/**
