@@ -68,7 +68,7 @@ import test.ConfigDevice;
  * <tr>
  * <td>0.2.2</td>
  * <td>2012-05-04</td>
- * <td>增加过滤条件；增加SQL统计处理</td>
+ * <td>增加过滤条件；增加SQL统计处理；详细注释添加</td>
  * </tr>
  * </table>
  * 
@@ -120,21 +120,23 @@ public class JdbcUtils {
 	private String rule = HUMP;
 
 	/**
-	 * Java Bean 与 SQL 映射模版，与返回数据的映射模版、数据库结果集的数据表相对应、自动构造SQL时对应
+	 * Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
+	 * Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * 
 	 * <p>
 	 * 该数据映射模版作用于Java
-	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段该dataMappingClass(Java
-	 * Bean)映射模版中取得。 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
-	 * 该数据映射模版类型可为：
+	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段从方法<code>JdbcUtils.getDataMappingClass()</code>中取得映射模版。
+	 * 当<code>JdbcUtils.dataMappingClass</code>的类型为Java
+	 * Bean时，可在类中增加过滤方法，该过滤方法直接作用于SQL的自动构造。方法定义为<code>public Map sqlFilter(){}</code>，也可以通过<code>JdbcUtils.setSqlFilter(Map)</code>方法设置数据映射模版。
+	 * 该数据映射模版<code>JdbcUtils.dataMappingClass</code>类型可为（目前API只实现了对这些类型的支持）：
 	 * 
-	 * <li>JavaBean.class</li>
+	 * <li>{JavaBean}.class</li>
 	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
 	 * <li>List.class/ListArray.class</li>
 	 * <li>Integer.class 或其它基本数据类型</li>
 	 * 
-	 * </br></br>当dataMappingClass类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>基本数据类型时。
-	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可重新设置<code>JdbcUtils.setSqlMappingClass(Class)</code>。
+	 * </br></br>当<code>JdbcUtils.dataMappingClass</code>类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>（目前API只实现了对这些类型的支持）基本数据类型时。
+	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可调用SDK<code>JdbcUtils.setSqlMappingClass(Class)</code>来实现自动的SQL与返回数据映谢。
 	 * </p>
 	 * 
 	 * @see JdbcUtils#setSqlMappingClass(Class)
@@ -1165,21 +1167,23 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 取得数据映射模版，与数据库结果集的数据表相对应、自动构造SQL时对应。
+	 * 取得Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
+	 * Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * 
 	 * <p>
 	 * 该数据映射模版作用于Java
-	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段该dataMappingClass(Java
-	 * Bean)映射模版中取得。 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
-	 * 该数据映射模版类型可为：
+	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段从方法<code>JdbcUtils.getDataMappingClass()</code>中取得映射模版。
+	 * 当<code>JdbcUtils.dataMappingClass</code>的类型为Java
+	 * Bean时，可在类中增加过滤方法，该过滤方法直接作用于SQL的自动构造。方法定义为<code>public Map sqlFilter(){}</code>，也可以通过<code>JdbcUtils.setSqlFilter(Map)</code>方法设置数据映射模版。
+	 * 该数据映射模版<code>JdbcUtils.dataMappingClass</code>类型可为（目前API只实现了对这些类型的支持）：
 	 * 
-	 * <li>JavaBean.class</li>
+	 * <li>{JavaBean}.class</li>
 	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
 	 * <li>List.class/ListArray.class</li>
 	 * <li>Integer.class 或其它基本数据类型</li>
 	 * 
-	 * </br></br>当dataMappingClass类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>基本数据类型时。
-	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可重新设置<code>JdbcUtils.setSqlMappingClass(Class)</code>。
+	 * </br></br>当<code>JdbcUtils.dataMappingClass</code>类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>（目前API只实现了对这些类型的支持）基本数据类型时。
+	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可调用SDK<code>JdbcUtils.setSqlMappingClass(Class)</code>来实现自动的SQL与返回数据映谢。
 	 * </p>
 	 * 
 	 * @see JdbcUtils#setSqlMappingClass(Class)
@@ -1190,21 +1194,23 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 设值数据映射模版，与数据库结果集的数据表相对应、自动构造SQL时对应。
+	 * 设置Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
+	 * Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * 
 	 * <p>
 	 * 该数据映射模版作用于Java
-	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段该dataMappingClass(Java
-	 * Bean)映射模版中取得。 可在dataMappingClass(Java Bean)中增加过滤方法，该过滤方法返回<code>Map</code>类型数据。
-	 * 该数据映射模版类型可为：
+	 * Bean与SQL之间的转换、数据库结果集的数据表与该数据映射模版之间值的设置。SQL的查询字段或更新字段、插入字段从方法<code>JdbcUtils.getDataMappingClass()</code>中取得映射模版。
+	 * 当<code>JdbcUtils.dataMappingClass</code>的类型为Java
+	 * Bean时，可在类中增加过滤方法，该过滤方法直接作用于SQL的自动构造。方法定义为<code>public Map sqlFilter(){}</code>，也可以通过<code>JdbcUtils.setSqlFilter(Map)</code>方法设置数据映射模版。
+	 * 该数据映射模版<code>JdbcUtils.dataMappingClass</code>类型可为（目前API只实现了对这些类型的支持）：
 	 * 
-	 * <li>JavaBean.class</li>
+	 * <li>{JavaBean}.class</li>
 	 * <li>Map.class/HashMap.class/LinkedHashMap.class</li>
 	 * <li>List.class/ListArray.class</li>
 	 * <li>Integer.class 或其它基本数据类型</li>
 	 * 
-	 * </br></br>当dataMappingClass类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>基本数据类型时。
-	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可重新设置<code>JdbcUtils.setSqlMappingClass(Class)</code>。
+	 * </br></br>当<code>JdbcUtils.dataMappingClass</code>类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>（目前API只实现了对这些类型的支持）基本数据类型时。
+	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可调用SDK<code>JdbcUtils.setSqlMappingClass(Class)</code>来实现自动的SQL与返回数据映谢。
 	 * </p>
 	 * 
 	 * @see JdbcUtils#setSqlMappingClass(Class)
