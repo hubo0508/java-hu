@@ -528,16 +528,27 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询唯一数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user where id=1</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where id=1</code>”时，在SDK API构造的SQL语句后增加条件，<code>select id,user_name,password from user where id=1</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
-	 * @return 唯一值对象
+	 *            SQL查询语句或查询条件
+	 * @return Object
+	 * @exception 当查询结果集中超过两条数据将会抛出
+	 *                <code>SQLException</code>异常。
 	 * 
-	 * @throws SQLException
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public Object queryResultToUnique(Connection con, String sqlOrWhereIf)
 			throws SQLException {
@@ -545,40 +556,65 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 有参数查询唯一数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user where id=?</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where id=?</code>”时，在SDK API构造的SQL语句后增加条件，<code>select id,user_name,password from user where id=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
-	 * @param 查询参数
+	 *            SQL查询语句或查询条件
+	 * @param params
+	 *            查询参数
+	 * @return Object
+	 * @exception 当查询结果集中超过两条数据将会抛出
+	 *                <code>SQLException</code>异常。
 	 * 
-	 * @return 唯一值对象
-	 * 
-	 * @throws SQLException
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public Object queryResultToUnique(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
 		if (!isSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return this.query(con, sqlOrWhereIf, params, dataMappingClass);
+		return this.query(con, sqlOrWhereIf, params, getDataMappingClass());
 	}
 
 	/**
+	 * 查询数据
+	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param sql
-	 *            查询SQL
+	 *            查询SQL语句
 	 * @param params
 	 *            查询参数
 	 * @param instanceCollectionOrClass
+	 *            查询结果返回数据类型。可传<code>new ArrayList()、new HashMap()、new LinkedHashMap()</code>或Java基本类型如<code>Long.class</code>或Java
+	 *            Bean<code>{JavaBean.class}</code>
+	 * @return Object
+	 * @exception
+	 *         <li>当参数 <code>instanceCollectionOrClass</code>类型为Java基本类型如<code>Long.class</code>或Java
+	 *         Bean<code>{JavaBean.class}</code>时，查询结果集不唯一的情况将会抛出SQLException异常；</li>
+	 *         <li><code>Connection conn==null</code>，抛出SQLException异常；</li>
+	 *         <li><code>String sql==null</code>，抛出SQLException异常；</li>
+	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常；</li>
+	 *         <li><code>getDataMappingClass() == null</code>，抛出SQLException异常；</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
-	 * @return
-	 * 
-	 * @throws SQLException
-	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public Object query(Connection conn, String sql, Object[] params,
 			Object instanceCollectionOrClass) throws SQLException {
@@ -595,7 +631,7 @@ public class JdbcUtils {
 			throw new SQLException("Null result set");
 		}
 
-		if (dataMappingClass == null) {
+		if (getDataMappingClass() == null) {
 			throw new SQLException("Null dataMappingClass");
 		}
 
@@ -1609,7 +1645,7 @@ public class JdbcUtils {
 		 * 
 		 * @return Java基本数据类型数据集
 		 * @exception
-		 * 在数据库结果集数据表列超过2列时，抛出SQLException；数据库结果集数据表中数据类型与设定的类型不匹配，抛出SQLException；
+		 *         在数据库结果集数据表列超过2列时，抛出SQLException；数据库结果集数据表中数据类型与设定的类型不匹配，抛出SQLException；
 		 * @throws SQLException
 		 * 
 		 * @see ResultProcessor#getDataMappingClass()
@@ -1817,6 +1853,7 @@ public class JdbcUtils {
 
 		/**
 		 * 取得Java Bean(<code>BeanProcessor.getDataMappingClass()</code>)的过滤规则
+		 * 
 		 * @see BeanProcessor#getDataMappingClass()
 		 */
 		public Map getSqlFilter() {
@@ -2283,6 +2320,7 @@ public class JdbcUtils {
 
 		/**
 		 * 取得Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)类名称。
+		 * 
 		 * @return Java Bean名称
 		 */
 		public String getSimpleName() {
@@ -3203,6 +3241,7 @@ public class JdbcUtils {
 
 		/**
 		 * 不同结果统计
+		 * 
 		 * @return 语句
 		 */
 		public String countDistinct(String statement) {
@@ -3211,6 +3250,7 @@ public class JdbcUtils {
 
 		/**
 		 * 求最大值
+		 * 
 		 * @return 语句
 		 */
 		public String max(String statement) {
@@ -3219,6 +3259,7 @@ public class JdbcUtils {
 
 		/**
 		 * 求最小值
+		 * 
 		 * @return 语句
 		 */
 		public String min(String statement) {
@@ -3227,6 +3268,7 @@ public class JdbcUtils {
 
 		/**
 		 * 求和
+		 * 
 		 * @return 语句
 		 */
 		public String sum(String statement) {
@@ -3235,6 +3277,7 @@ public class JdbcUtils {
 
 		/**
 		 * 求平均数
+		 * 
 		 * @return 语句
 		 */
 		public String avg(String statement) {
