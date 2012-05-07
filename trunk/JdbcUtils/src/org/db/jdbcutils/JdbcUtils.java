@@ -643,7 +643,7 @@ public class JdbcUtils {
 	// //////////////////////INSERT-BEGIN///////////////////////////////////////////////////////////////
 
 	/**
-	 * 以对象(Java Bean)形式在数据库插入一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils.getSqlMappingClass()</code>自动产生SQL语句。
+	 * 以对象(Java Bean)形式在数据库插入一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句。
 	 * 可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
 	 * <li><code>database=JdbcUtils.ORACLE,sequence="seq"</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(seq.NEXTVAL, ?, ?)</code>；</li>
@@ -674,11 +674,11 @@ public class JdbcUtils {
 	 */
 	public int insert(Connection conn, Object instanceDomain, String database,
 			String sequence) throws SQLException {
-		
+
 		if (getDataMappingClass() == null) {
 			setDataMappingClass(instanceDomain.getClass());
 		}
-		
+
 		String sql = sqlPro.makeInsertSql(database, sequence);
 		Object[] params = beanPro.objectArray(instanceDomain, sql, database,
 				sequence);
@@ -785,23 +785,58 @@ public class JdbcUtils {
 	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
 
 	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 以对象(Java Bean)形式在数据库更新一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Update
+	 * Sql中自动增加<code>where id=?</code>。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的Java Bean对象
+	 * @return 影响的行数
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
+	 */
+	public int update(Connection conn, Object instanceDomain)
+			throws SQLException {
+		return update(conn, null, instanceDomain);
+	}
+
+	/**
+	 * 1、当参数sqlOrWhereIf为where条件时(<code>where id=? and name=?</code>)，会以对象(Java
+	 * Bean)形式在数据库更新一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Update
+	 * Sql后追加自定义更新Sql条件<code>where id=? and name=?</code>。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
+	 * 
+	 * </br></br>
+	 * 2、当参数sqlOrWhereIf为整个Update Sql语句时(<code>update user set id=?,username=? where id=?</code>)，SDK API不作任何业务处理(SQL)，参数值由instanceDomain(Java Bean)自动映射。
+	 * 
 	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param instanceDomain
 	 *            设置有值的领域对象
-	 * 
+	 * @param sqlOrWhereIf
+	 *            SQL更新语句(<cdoe>update user set id=?,username=? where id=?</code>)或查询条件(<code>where
+	 *            id=?</code>)
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
-	/**
-	 * 更新数据
-	 */
-	public int update(Connection conn, Object instanceDomain)
-			throws SQLException {
-		return update(conn, null, instanceDomain);
+	public int update(Connection conn, String sqlOrWhereIf,
+			Object instanceDomain) throws SQLException {
+		if (!isUpate(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
+		}
+		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
+
+		return execute(conn, sqlOrWhereIf, params);
 	}
 
 	public int update(Connection conn, String sql) throws SQLException {
@@ -841,31 +876,6 @@ public class JdbcUtils {
 	 */
 	public int update(Connection conn, Object[] params) throws SQLException {
 		return execute(conn, sqlPro.makeUpdateSql(), params);
-	}
-
-	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造，或手动构造。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param instanceDomain
-	 *            设置有值的领域对象
-	 * @param sqlOrWhereIf
-	 *            SQL更新语句(<cdoe>update user set id=?,username=? where id=?</code>)或查询条件(<code>where
-	 *            id=?</code>)
-	 * 
-	 * @return 影响的行数
-	 * 
-	 * @throws SQLException
-	 */
-	public int update(Connection conn, String sqlOrWhereIf,
-			Object instanceDomain) throws SQLException {
-		if (!isUpate(sqlOrWhereIf)) {
-			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
-		}
-		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
-
-		return execute(conn, sqlOrWhereIf, params);
 	}
 
 	// //////////////////////UPDATE-END///////////////////////////////////////////////////////////////
