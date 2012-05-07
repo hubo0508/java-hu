@@ -894,23 +894,52 @@ public class JdbcUtils {
 
 	// //////////////////////DELETE-BEGIN///////////////////////////////////////////////////////////////
 
+	/**
+	 * 以对象(Java Bean)形式在数据库删除一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Update
+	 * Sql中自动增加<code>where id=?</code>。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的Java Bean对象
+	 * @return 影响的行数
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 */
 	public int delete(Connection conn, Object instanceDomain)
 			throws SQLException {
 		return delete(conn, sqlPro.makeDeleteSql(), instanceDomain);
 	}
 
+	/**
+	 * 以对象(Java Bean)形式在数据库删除一条数据，参数值由外部传入，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Update
+	 * Sql中自动增加<code>where id=?</code>。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param params
+	 *            删除参数
+	 * @return 影响的行数
+	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 */
 	public int delete(Connection conn, Object[] params) throws SQLException {
 		return execute(conn, sqlPro.makeDeleteSql(), params);
 	}
 
 	/**
-	 * @param conn
-	 *            数据库连库
-	 * @param sql
-	 *            sql语句
-	 * @return 影响行数
+	 * 以Delete Sql语句形式在数据库删除一条或多数据，无参数。
 	 * 
-	 * @throws SQLException
+	 * @param conn
+	 *            数据库连接对象
+	 * @param params
+	 *            删除参数
+	 * @return 影响的行数
+	 * @exception 当SQL语句不是Delete语句时，抛出SQLException。
 	 */
 	public int delete(Connection conn, String sql) throws SQLException {
 		if (!isDelete(sql)) {
@@ -920,15 +949,26 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * @param conn
-	 *            数据库连库
-	 * @param params
-	 *            参数
-	 * @param whereIfOrSql
-	 *            自定义追加SQL或SQL
-	 * @return 影响行数
+	 * 1、当参数sqlOrWhereIf为where条件时(<code>where id=? and name=?</code>)，会以对象(Java
+	 * Bean)形式在数据库删除一条数据，参数值由外部传入，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Delete
+	 * Sql后追加自定义更新Sql条件<code>where id=? and name=?</code>。
 	 * 
+	 * </br></br> 2、当参数sqlOrWhereIf为整个Delete Sql语句时(<code>DELETE FROM user WHERE id=?</code>)，SDK
+	 * API不作任何业务处理(SQL)，参数值由外部传入。
+	 * 
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * @param sqlOrWhereIf
+	 *            SQL更新语句(<cdoe>DELETE FROM user WHERE id=?</code>)或查询条件(<code>WHERE
+	 *            id=?</code>)
+	 * @return 影响的行数
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
 	 */
 	public int delete(Connection conn, String sqlOrWhereIf, Object[] params)
 			throws SQLException {
@@ -939,15 +979,26 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * @param conn
-	 *            数据库连库
-	 * @param instanceDomain
-	 *            实例化POJO对象
-	 * @param sqlOrWhereIf
-	 *            自定义追加SQL
-	 * @return 影响行数
+	 * 1、当参数sqlOrWhereIf为where条件时(<code>where id=? and name=?</code>)，会以对象(Java
+	 * Bean)形式在数据库删除一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Delete
+	 * Sql后追加自定义更新Sql条件<code>where id=? and name=?</code>。
 	 * 
+	 * </br></br> 2、当参数sqlOrWhereIf为整个Delete Sql语句时(<code>DELETE FROM user WHERE id=?</code>)，SDK
+	 * API不作任何业务处理(SQL)，参数值由instanceDomain(Java Bean)自动映射。
+	 * 
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * @param sqlOrWhereIf
+	 *            SQL更新语句(<cdoe>DELETE FROM user WHERE id=?</code>)或查询条件(<code>WHERE
+	 *            id=?</code>)
+	 * @return 影响的行数
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
 	 */
 	public int delete(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
@@ -3298,12 +3349,13 @@ public class JdbcUtils {
 
 		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		// System.out.println(db.sqlPro.makeDeleteSql());
+		System.out.println(db.sqlPro.makeDeleteSql());
 		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
 		String sql = "SELECT device_ename, device_factory, device_ip, device_type, id FROM nhwm_config_device where id=111";
 		System.out.println(db.statPro.count(sql));
+		System.out.println(new Object[] {});
 	}
 
 }
