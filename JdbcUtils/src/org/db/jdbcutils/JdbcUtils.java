@@ -656,93 +656,6 @@ public class JdbcUtils {
 		return result;
 	}
 
-	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
-
-	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param instanceDomain
-	 *            设置有值的领域对象
-	 * 
-	 * @return 影响的行数
-	 * 
-	 * @throws SQLException
-	 */
-	public int update(Connection conn, Object instanceDomain)
-			throws SQLException {
-		return update(conn, null, instanceDomain);
-	}
-	
-	public int update(Connection conn, String sql) throws SQLException {
-		return this.execute(conn, sql, null);
-	}
-
-	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param sql
-	 *            sql语句
-	 * @param params
-	 *            sql参数
-	 * 
-	 * @return 影响的行数
-	 * 
-	 * @throws SQLException
-	 */
-	public int update(Connection conn, String sql, Object[] params)
-			throws SQLException {
-		return this.execute(conn, sql, params);
-	}
-
-	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param params
-	 *            sql参数
-	 * 
-	 * @return 影响的行数
-	 * 
-	 * @throws SQLException
-	 */
-	public int update(Connection conn, Object[] params) throws SQLException {
-		return execute(conn, sqlPro.makeUpdateSql(), params);
-	}
-
-	
-
-	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造，或手动构造。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param instanceDomain
-	 *            设置有值的领域对象
-	 * @param sqlOrWhereIf
-	 *            SQL更新语句(<cdoe>update user set id=?,username=? where id=?</code>)或查询条件(<code>where
-	 *            id=?</code>)
-	 * 
-	 * @return 影响的行数
-	 * 
-	 * @throws SQLException
-	 */
-	public int update(Connection conn, String sqlOrWhereIf,
-			Object instanceDomain) throws SQLException {
-		if (!isUpate(sqlOrWhereIf)) {
-			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
-		}
-		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
-
-		return execute(conn, sqlOrWhereIf, params);
-	}
-
-	// //////////////////////UPDATE-END///////////////////////////////////////////////////////////////
-
 	// //////////////////////INSERT-BEGIN///////////////////////////////////////////////////////////////
 
 	/**
@@ -884,6 +797,98 @@ public class JdbcUtils {
 	}
 
 	// //////////////////////INSERT-END///////////////////////////////////////////////////////////////
+	
+	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
+
+	/**
+	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 */
+	/**
+	 * 更新数据
+	 */
+	public int update(Connection conn, Object instanceDomain)
+			throws SQLException {
+		return update(conn, null, instanceDomain);
+	}
+	
+	public int update(Connection conn, String sql) throws SQLException {
+		return this.execute(conn, sql, null);
+	}
+
+	/**
+	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param sql
+	 *            sql语句
+	 * @param params
+	 *            sql参数
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 */
+	public int update(Connection conn, String sql, Object[] params)
+			throws SQLException {
+		return this.execute(conn, sql, params);
+	}
+
+	/**
+	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param params
+	 *            sql参数
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 */
+	public int update(Connection conn, Object[] params) throws SQLException {
+		return execute(conn, sqlPro.makeUpdateSql(), params);
+	}
+
+	
+
+	/**
+	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造，或手动构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * @param sqlOrWhereIf
+	 *            SQL更新语句(<cdoe>update user set id=?,username=? where id=?</code>)或查询条件(<code>where
+	 *            id=?</code>)
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 */
+	public int update(Connection conn, String sqlOrWhereIf,
+			Object instanceDomain) throws SQLException {
+		if (!isUpate(sqlOrWhereIf)) {
+			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
+		}
+		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
+
+		return execute(conn, sqlOrWhereIf, params);
+	}
+
+	// //////////////////////UPDATE-END///////////////////////////////////////////////////////////////
+
+	
 
 	// //////////////////////DELETE-BEGIN///////////////////////////////////////////////////////////////
 
