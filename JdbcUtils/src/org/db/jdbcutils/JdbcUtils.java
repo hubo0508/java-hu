@@ -53,34 +53,6 @@ import test.ConfigDevice;
  * @Time 10:43:09 AM
  * @since 0.2.2
  * 
- * <table>
- * <tr>
- * <td>版本号 </td>
- * <td>修改时间 </td>
- * <td>说明</td>
- * </tr>
- * <tr>
- * <td>0.1</td>
- * <td>2012-04-20</td>
- * <td>创建</td>
- * </tr>
- * <tr>
- * <td>0.2</td>
- * <td>2012-05-02</td>
- * <td>返回结果重构</td>
- * </tr>
- * <tr>
- * <td>0.2.1</td>
- * <td>2012-05-03</td>
- * <td>注释的添加，重构</td>
- * </tr>
- * <tr>
- * <td>0.2.2</td>
- * <td>2012-05-04</td>
- * <td>增加过滤条件；增加SQL统计处理；详细注释添加</td>
- * </tr>
- * </table>
- * 
  */
 public class JdbcUtils {
 
