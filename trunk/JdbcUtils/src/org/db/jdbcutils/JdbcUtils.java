@@ -43,10 +43,12 @@ import test.ConfigDevice;
  * </br></br>
  * 
  * 异常代码说明：
- * <li>RESULT_SIZE_ERROR ： 查询结果集中超过两条数据</li>
- * <li>SQL_TYPES_ERROR ： 查询SQL语句不是标准Sql</li>
- * <li>CONNECTION_NULL ： Connection连接数据对象为NULL</li>
- * <li>SQL_NULL ：SQL查询语句为NULL </li>
+ * <li>RESULT_SIZE_ERROR : 查询结果集中超过两条数据；</li>
+ * <li>SQL_TYPES_ERROR : 查询SQL语句不是标准Sql；</li>
+ * <li>CONNECTION_NULL_ERROR : Connection连接数据对象为NULL；</li>
+ * <li>SQL_NULL_ERROR :SQL查询语句为NULL；</li>
+ * <li>RESULT_SET_TYPE_NULL_ERROR : 查询结果返回数据类型为NULL；</li>
+ * <li>DATA_MAPPING_CLASS_NULL_ERROR : 数据映射模版为NULL；</li>
  * 
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
@@ -578,11 +580,11 @@ public class JdbcUtils {
 	 * @return Object
 	 * @exception
 	 *         <li>当参数 <code>instanceCollectionOrClass</code>类型为Java基本类型如<code>Long.class</code>或Java
-	 *         Bean<code>{JavaBean.class}</code>时，查询结果集不唯一的情况将会抛出SQLException异常；</li>
-	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL)；</li>
-	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_NULL)；</li>
-	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常；</li>
-	 *         <li><code>getDataMappingClass() == null</code>，抛出SQLException异常；</li>
+	 *         Bean<code>{JavaBean.class}</code>时，查询结果集不唯一的情况将会抛出SQLException异常(RESULT_SET_TYPE_NULL_ERROR)；</li>
+	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL_ERROR)；</li>
+	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_NULL_ERROR)；</li>
+	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_SET_TYPE_NULL_ERROR)；</li>
+	 *         <li><code>getDataMappingClass() == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_NULL_ERROR)；</li>
 	 *         <li>当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL types
 	 *         do not match！)；</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
@@ -597,19 +599,19 @@ public class JdbcUtils {
 			Object instanceCollectionOrClass) throws SQLException {
 
 		if (conn == null) {
-			throw new SQLException("CONNECTION_NULL：Null connection");
+			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
 		}
 
 		if (sql == null) {
-			throw new SQLException("SQL_NULL：Null SQL statement");
+			throw new SQLException("SQL_NULL_ERROR:Null SQL statement");
 		}
 
 		if (instanceCollectionOrClass == null) {
-			throw new SQLException("Null result set");
+			throw new SQLException("RESULT_SET_TYPE_NULL_ERROR:Null result set");
 		}
 
 		if (getDataMappingClass() == null) {
-			throw new SQLException("Null dataMappingClass");
+			throw new SQLException("DATA_MAPPING_CLASS_NULL_ERROR:Null dataMappingClass");
 		}
 
 		if (!isSelect(sql)) {
