@@ -220,11 +220,11 @@ public class JdbcUtils {
 	 */
 	private String primaryKey = "id";
 
-	/*
+	/**
 	 * SQL语句中包含有查询参数"?"号，执行增、删、改、查动作时是否检查参数个数与参数值相等。
 	 */
 	private volatile boolean pmdKnownBroken = false;
-	
+
 	private final static String[] TOTYPE = { "bean", "database" };
 
 	/*
@@ -282,87 +282,126 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，无条件查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询数据，SQL自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * @param conn
 	 *            数据库连接对象
-	 * 
 	 * @return ArrayList
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public ArrayList queryResultToArrayList(Connection con) throws SQLException {
-		return (ArrayList) query(con, sqlPro.makeSelectSql(), null,
+	public ArrayList queryResultToArrayList(Connection conn)
+			throws SQLException {
+		return (ArrayList) query(conn, sqlPro.makeSelectSql(), null,
 				new ArrayList());
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
+	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
-	 * 
+	 *            SQL查询语句或查询条件
 	 * @return ArrayList
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public ArrayList queryResultToArrayList(Connection con, String sqlOrWhereIf)
+	public ArrayList queryResultToArrayList(Connection conn, String sqlOrWhereIf)
 			throws SQLException {
-		return queryResultToArrayList(con, sqlOrWhereIf, null);
+		return queryResultToArrayList(conn, sqlOrWhereIf, null);
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
+	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
+	 *            SQL查询语句或查询条件
 	 * @param params
 	 *            查询参数
-	 * 
 	 * @return ArrayList
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public ArrayList queryResultToArrayList(Connection con,
+	public ArrayList queryResultToArrayList(Connection conn,
 			String sqlOrWhereIf, Object[] params) throws SQLException {
 		if (!isSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return (ArrayList) query(con, sqlOrWhereIf, params, new ArrayList());
+		return (ArrayList) query(conn, sqlOrWhereIf, params, new ArrayList());
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询数据，SQL自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * @param conn
 	 *            数据库连接对象
-	 * 
 	 * @return HashMap
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public HashMap queryResultToHashMap(Connection con) throws SQLException {
 		return (HashMap) query(con, sqlPro.makeSelectSql(), null, new HashMap());
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
+	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
-	 * 
+	 *            SQL查询语句或查询条件
 	 * @return HashMap
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf)
 			throws SQLException {
@@ -370,19 +409,29 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
+	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
+	 *            SQL查询语句或查询条件
 	 * @param params
 	 *            查询参数
-	 * 
 	 * @return HashMap
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
@@ -394,14 +443,18 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询数据，SQL自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * @param conn
 	 *            数据库连接对象
-	 * 
 	 * @return LinkedHashMap
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public LinkedHashMap queryResultToLinkedHashMap(Connection con)
 			throws SQLException {
@@ -410,17 +463,27 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
+	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
-	 * 
+	 *            SQL查询语句或查询条件
 	 * @return LinkedHashMap
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
 			String sqlOrWhereIf) throws SQLException {
@@ -431,19 +494,29 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 自动构造SQL语言，查询数据。根据构造函数参数clazz构造出查询SQL。
+	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * @param con
+	 * <p>
+	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
+	 * API不作什么解析与附加过滤条件；</li>
+	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
+	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
+	 * </p>
+	 * 
+	 * @param conn
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
-	 *            SQL查询语句(<cdoe>select * from dual</code>)或查询条件(<code>where
-	 *            id=1</code>)
+	 *            SQL查询语句或查询条件
 	 * @param params
 	 *            查询参数
-	 * 
 	 * @return LinkedHashMap
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#getSqlMappingClass()
+	 * @see JdbcUtils#setSqlMappingClass(Class)
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
 			String sqlOrWhereIf, Object[] params) throws SQLException {
@@ -1400,7 +1473,7 @@ public class JdbcUtils {
 	public Map getSqlFilter() {
 		return sqlFilter;
 	}
-	
+
 	/**
 	 * 设置自动构造SQL语句的过滤规则
 	 * 
@@ -1514,9 +1587,7 @@ public class JdbcUtils {
 		 * 
 		 * @param rs
 		 *            数据库结果集数据表
-		 * 
 		 * @return 总记录数
-		 * 
 		 * @throws SQLException
 		 */
 		private long resultSize(ResultSet rs) throws SQLException {
@@ -1537,13 +1608,11 @@ public class JdbcUtils {
 		 *            数据库结果集的数据表
 		 * 
 		 * @return Java基本数据类型数据集
-		 * 
-		 * @see ResultProcessor#getDataMappingClass()
-		 * 
 		 * @exception
 		 * 在数据库结果集数据表列超过2列时，抛出SQLException；数据库结果集数据表中数据类型与设定的类型不匹配，抛出SQLException；
-		 * 
 		 * @throws SQLException
+		 * 
+		 * @see ResultProcessor#getDataMappingClass()
 		 */
 		private Object toUniqueBiscType(ResultSet rs, Class clazz)
 				throws SQLException {
@@ -1579,12 +1648,10 @@ public class JdbcUtils {
 		 *            返回数据类型(实例化后对象)
 		 * @param rs
 		 *            数据库结果集的数据表
-		 * 
 		 * @return Map/List/JavaBean数据集
+		 * @throws SQLException
 		 * 
 		 * @see ResultProcessor#getDataMappingClass()
-		 * 
-		 * @throws SQLException
 		 */
 		private Object toUniqueObject(Object instanceObject, ResultSet rs)
 				throws SQLException {
@@ -1622,12 +1689,10 @@ public class JdbcUtils {
 		 *            返回数据类型(实例化后对象)
 		 * @param rs
 		 *            数据库结果集的数据表
-		 * 
 		 * @return Map数据集
+		 * @throws SQLException
 		 * 
 		 * @see ResultProcessor#getDataMappingClass()
-		 * 
-		 * @throws SQLException
 		 */
 		private Map toMap(Map rsh, ResultSet rs) throws SQLException {
 
@@ -1659,12 +1724,10 @@ public class JdbcUtils {
 		 *            返回数据类型(实例化后对象)
 		 * @param rs
 		 *            数据库结果集的数据表
-		 * 
 		 * @return ArrayList数据集
+		 * @throws SQLException
 		 * 
 		 * @see ResultProcessor#getDataMappingClass()
-		 * 
-		 * @throws SQLException
 		 */
 		private List toArrayList(ArrayList rsh, ResultSet rs)
 				throws SQLException {
@@ -1754,7 +1817,6 @@ public class JdbcUtils {
 
 		/**
 		 * 取得Java Bean(<code>BeanProcessor.getDataMappingClass()</code>)的过滤规则
-		 * 
 		 * @see BeanProcessor#getDataMappingClass()
 		 */
 		public Map getSqlFilter() {
@@ -1773,9 +1835,7 @@ public class JdbcUtils {
 		 *            存储参数值的Java Bean
 		 * @param sql
 		 *            SQL语句(Insert/Update/Delete/Select)
-		 * 
 		 * @return Object[] 参数数组
-		 * 
 		 * @throws SQLException
 		 * 
 		 * @see SqlProcessor#getDataMappingClass()
@@ -1807,9 +1867,7 @@ public class JdbcUtils {
 		 *            数据类型
 		 * @param sequence
 		 *            序列类型
-		 * 
 		 * @return Object[] 参数数组
-		 * 
 		 * @throws SQLException
 		 * 
 		 * @see JdbcUtils#MYSQL
@@ -1862,9 +1920,7 @@ public class JdbcUtils {
 		 *            Java Bean
 		 * @param map
 		 *            转换对象
-		 * 
 		 * @return 转换后的Map对象
-		 * 
 		 * @throws SQLException
 		 */
 		public Map columnsToBean(Class beanClazz, Map map) throws SQLException {
@@ -1894,9 +1950,7 @@ public class JdbcUtils {
 		 *            Java Bean
 		 * @param list
 		 *            转换对象
-		 * 
 		 * @return 转换后的List对象
-		 * 
 		 * @throws SQLException
 		 */
 		public List mapColumnsToBean(Class beanClazz, List list)
@@ -1922,7 +1976,6 @@ public class JdbcUtils {
 		 * 
 		 * @param name
 		 *            Java Bean字段
-		 * 
 		 * @return 属性存储器(PropertyDescriptor)
 		 */
 		private PropertyDescriptor getProDescByName(String name)
@@ -1947,7 +2000,6 @@ public class JdbcUtils {
 		 *            目标Java Bean对象
 		 * @param methodName
 		 *            方法名
-		 * 
 		 * @throws SQLException
 		 */
 		private Object callGetter(Object target, String methodName)
@@ -1983,7 +2035,6 @@ public class JdbcUtils {
 		 *            Java Bean 属性存储器
 		 * @param value
 		 *            数据库查询值
-		 * 
 		 * @throws SQLException
 		 */
 		private Object callGetter(Object target, PropertyDescriptor prop)
@@ -2017,7 +2068,6 @@ public class JdbcUtils {
 		 *            Java Bean 属性存储器
 		 * @param value
 		 *            数据库查询值
-		 * 
 		 * @throws SQLException
 		 */
 		private void callSetter(Object target, PropertyDescriptor prop,
@@ -2076,12 +2126,10 @@ public class JdbcUtils {
 		 * 
 		 * @param column
 		 *            数据库列字段名称
-		 * 
 		 * @return 转换成Java Bean中的字段
+		 * @throws SQLException
 		 * 
 		 * @see BeanProcessor#getDataMappingClass()
-		 * 
-		 * @throws SQLException
 		 */
 		private String convertedBeanField(String column) throws SQLException {
 
@@ -2102,7 +2150,6 @@ public class JdbcUtils {
 		 * 
 		 * @param c
 		 *            Java Bean class模版
-		 * 
 		 * @throws SQLException
 		 */
 		private PropertyDescriptor[] propertyDescriptors(Class c)
@@ -2123,9 +2170,7 @@ public class JdbcUtils {
 		 * 
 		 * @param c
 		 *            Class模版
-		 * 
 		 * @return 实例化对象
-		 * 
 		 * @throws SQLException
 		 */
 		private Object newInstance(Class c) throws SQLException {
@@ -2147,7 +2192,6 @@ public class JdbcUtils {
 		 * 
 		 * @param clazz
 		 *            Class模版
-		 * 
 		 * @return true(是基础类型) || false(不是基础类型)
 		 */
 		private boolean isBasicType(Class clazz) {
@@ -2202,7 +2246,6 @@ public class JdbcUtils {
 		 * <p>
 		 * 该数据映射模版作用于Java Bean与SQL之间的转换。 SQL的查询字段或更新字段、插入字段该<code>SqlProcessor.getDataMappingClass()</code>映射模版中取得。
 		 * </p>
-		 * 
 		 * 可在Java Bean dataMappingClass中增加过滤方法，该过滤方法返回<code>Map</code>过滤规则。
 		 * 
 		 * @see JdbcUtils#getSqlFilter()
@@ -2240,7 +2283,6 @@ public class JdbcUtils {
 
 		/**
 		 * 取得Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)类名称。
-		 * 
 		 * @return Java Bean名称
 		 */
 		public String getSimpleName() {
@@ -2260,7 +2302,6 @@ public class JdbcUtils {
 		 * <li>SQLSERVER：未实现</li>
 		 * 
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
@@ -2281,7 +2322,6 @@ public class JdbcUtils {
 		 * @param whereIf
 		 *            SQL自定自定义条件
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
@@ -2326,7 +2366,6 @@ public class JdbcUtils {
 		 *            文本
 		 * @param sqlFilter
 		 *            过滤规则
-		 * 
 		 * @return 文本
 		 */
 		public String textFilter(String text) {
@@ -2366,7 +2405,6 @@ public class JdbcUtils {
 		 * 
 		 * @param value
 		 *            转换值
-		 * 
 		 * @return value == null > false；value != boolean > false；value ==
 		 *         boolean > true；
 		 */
@@ -2392,7 +2430,6 @@ public class JdbcUtils {
 		 * @param whereIf
 		 *            SQL自定自定义条件
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
@@ -2413,7 +2450,6 @@ public class JdbcUtils {
 		 * @param whereIf
 		 *            SQL自定自定义条件
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
@@ -2444,7 +2480,6 @@ public class JdbcUtils {
 		 * @param whereIf
 		 *            SQL自定自定义条件
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
@@ -2465,7 +2500,6 @@ public class JdbcUtils {
 		 * @param whereIf
 		 *            SQL自定自定义条件
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#setSqlFilter(Map)
@@ -2532,9 +2566,7 @@ public class JdbcUtils {
 		 * <li>ORACLE：<code>makeInsertSql(DbTools.ORACLE, null || "")</cdoe>，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code></li>
 		 * <li>MYSQL：<code>makeInsertSql(DbTools.MYSQL, null || "")，构造出的SQL为<code>INSERT INTO user (username, id) VALUES (?, ?)</code></li>
 		 * <li>SQLSERVER：未实现</li>
-		 * 
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 * 
 		 * @see JdbcUtils#MYSQL
@@ -2564,9 +2596,7 @@ public class JdbcUtils {
 		 *            数据库类型
 		 * @param sequence
 		 *            序列名称
-		 *            
 		 * @return SQL语句
-		 *            
 		 * @throws SQLException
 		 *            
 		 * @see JdbcUtils#MYSQL
@@ -2646,7 +2676,6 @@ public class JdbcUtils {
 		 *            数据库类型
 		 * @param sequence
 		 *            序列类型
-		 * 
 		 * @return true(Oracle数据库主键值为自动递增) || false(Oracle数据库主键值为手动维护)
 		 * 
 		 * @see JdbcUtils#getPrimaryKey()
@@ -2674,7 +2703,6 @@ public class JdbcUtils {
 		 *            数据库类型
 		 * @param sequence
 		 *            序列类型
-		 * 
 		 * @return true(MySql数据库主键值为自动递增) || false(MySql数据库主键值为手动维护)
 		 * 
 		 * @see JdbcUtils#getPrimaryKey()
@@ -2722,7 +2750,6 @@ public class JdbcUtils {
 		 * 
 		 * @param sql
 		 *            SQL语句
-		 * 
 		 * @return SQL语句参数键数组。未解析到有键字段，则返回null。
 		 */
 		public String[] getColumnsKey(String sql) {
@@ -2746,7 +2773,6 @@ public class JdbcUtils {
 		 * 
 		 * @param sql
 		 *            SQL语句
-		 * 
 		 * @return SQL语句参数键数组
 		 */
 		private String[] columnsKeyOfUpdate(String sql) {
@@ -2777,7 +2803,6 @@ public class JdbcUtils {
 		 * 
 		 * @param sql
 		 *            SQL语句
-		 * 
 		 * @return SQL语句参数键数组
 		 */
 		private String[] columnsKeyOfInsert(String sql) {
@@ -2791,7 +2816,6 @@ public class JdbcUtils {
 		 * 
 		 * @param text
 		 *            SQL文本
-		 * 
 		 * @return SQL语句参数键
 		 */
 		private String getColumnKey(String text, int endindex) {
@@ -2832,9 +2856,7 @@ public class JdbcUtils {
 		 *            文本字段
 		 * @param toType
 		 *            转换类型(bean || database)
-		 * 
 		 * @return 转换后的文本字段
-		 * 
 		 * @throws SQLException
 		 * 
 		 * @see JdbcUtils#HUMP
@@ -2880,7 +2902,6 @@ public class JdbcUtils {
 		 * 
 		 * @param text
 		 *            文本
-		 * 
 		 * @return true(文本全为大写) || false(文本不全为大写)
 		 */
 		public boolean isAllCaps(String text) {
@@ -2895,9 +2916,7 @@ public class JdbcUtils {
 		 * 
 		 * @param text
 		 *            文本字段
-		 * 
 		 * @return 无分隔线，按照驼峰命名法的文本字段，如userName
-		 * 
 		 * @see JdbcUtils#HUMP
 		 * @see JdbcUtils#SEGMENTATION
 		 */
@@ -2929,9 +2948,7 @@ public class JdbcUtils {
 		 * 
 		 * @param text
 		 *            文本字段
-		 * 
 		 * @return 有分隔线的文本字段，如user_name
-		 * 
 		 * @see JdbcUtils#HUMP
 		 * @see JdbcUtils#SEGMENTATION
 		 */
@@ -2963,7 +2980,6 @@ public class JdbcUtils {
 		 * 
 		 * @param text
 		 *            文本字段
-		 * 
 		 * @return 无分隔线的文本字段，如userName
 		 */
 		private String removeSeparator(String text) {
@@ -2982,7 +2998,6 @@ public class JdbcUtils {
 		 * 
 		 * @param sql
 		 *            SQL语句
-		 * 
 		 * @return 标准格式化后SQL
 		 */
 		public String standardFormatting(String sql) {
@@ -3025,9 +3040,7 @@ public class JdbcUtils {
 		 * 
 		 * @param columnName
 		 *            数据库列名称
-		 * 
 		 * @return true(不等于指定某规则),false(等于指定某规则)
-		 * 
 		 * @see SqlProcessor#notequalsparams
 		 */
 		public boolean notEqualsParams(String columnName) {
@@ -3046,9 +3059,7 @@ public class JdbcUtils {
 		 *            数据库列名称
 		 * @param nextColumnName
 		 *            数据库列名称(下一个)
-		 * 
 		 * @return true(等于指定某规则),false(不等于指定某规则)
-		 * 
 		 * @see SqlProcessor#equalsparams
 		 */
 		public boolean equalsParams(String columnName, String nextColumnName) {
@@ -3068,7 +3079,6 @@ public class JdbcUtils {
 		 * 
 		 * @param sql
 		 *            SQL语句
-		 * 
 		 * @return sql数组
 		 */
 		private String[] splitSql(String sql) {
@@ -3086,7 +3096,6 @@ public class JdbcUtils {
 		 * 
 		 * @param sql
 		 *            SQL语句
-		 * 
 		 * @return SQL语句
 		 */
 		public String removeSpaces(String sql) {
@@ -3194,7 +3203,6 @@ public class JdbcUtils {
 
 		/**
 		 * 不同结果统计
-		 * 
 		 * @return 语句
 		 */
 		public String countDistinct(String statement) {
@@ -3203,7 +3211,6 @@ public class JdbcUtils {
 
 		/**
 		 * 求最大值
-		 * 
 		 * @return 语句
 		 */
 		public String max(String statement) {
@@ -3212,7 +3219,6 @@ public class JdbcUtils {
 
 		/**
 		 * 求最小值
-		 * 
 		 * @return 语句
 		 */
 		public String min(String statement) {
@@ -3221,7 +3227,6 @@ public class JdbcUtils {
 
 		/**
 		 * 求和
-		 * 
 		 * @return 语句
 		 */
 		public String sum(String statement) {
@@ -3230,7 +3235,6 @@ public class JdbcUtils {
 
 		/**
 		 * 求平均数
-		 * 
 		 * @return 语句
 		 */
 		public String avg(String statement) {
