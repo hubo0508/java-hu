@@ -304,12 +304,10 @@ public class JdbcUtils {
 	/**
 	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
 	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -332,12 +330,10 @@ public class JdbcUtils {
 	/**
 	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
 	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -383,12 +379,10 @@ public class JdbcUtils {
 	/**
 	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
 	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -411,12 +405,10 @@ public class JdbcUtils {
 	/**
 	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
 	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -465,12 +457,10 @@ public class JdbcUtils {
 	/**
 	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
 	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -496,12 +486,10 @@ public class JdbcUtils {
 	/**
 	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
 	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -530,11 +518,9 @@ public class JdbcUtils {
 	/**
 	 * 无参数查询唯一数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user where id=1</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where id=1</code>”时，在SDK API构造的SQL语句后增加条件，<code>select id,user_name,password from user where id=1</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -556,13 +542,11 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 有参数查询唯一数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
+	 * 有参数查询唯一数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils.getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * <p>
 	 * <li>sqlOrWhereIf=“<code>select * from user where id=?</code>”时，SDK
 	 * API不作什么解析与附加过滤条件；</li>
 	 * <li>sqlOrWhereIf=“<code>where id=?</code>”时，在SDK API构造的SQL语句后增加条件，<code>select id,user_name,password from user where id=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * </p>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
@@ -659,33 +643,42 @@ public class JdbcUtils {
 	// //////////////////////INSERT-BEGIN///////////////////////////////////////////////////////////////
 
 	/**
-	 * 将领域对象保存至数据库，sql根据<code>JdbcUtils.dataMappingClass</code>中的字段自动构造。
+	 * 以对象(Java Bean)形式在数据库插入一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils.getSqlMappingClass()</code>自动产生SQL语句。
+	 * 可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
+	 * 
+	 * <li><code>database=JdbcUtils.ORACLE,sequence="seq"</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(seq.NEXTVAL, ?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.ORACLE,sequence=null</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(?, ?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.MYSQL,sequence=JdbcUtils.MYSQL_SEQ</code>时，产生的SQL为：<code>INSERT INTO user(user_name,password) VALUES(?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.MYSQL,sequence=null</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(?, ?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.SQLSERVER</code>，未增加API。</li>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param instanceDomain
-	 *            设置有值的领域对象
+	 *            设置有值的Java Bean对象
 	 * @param database
-	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 *            数据库类型(<code>JdbcUtils.ORACLE、JdbcUtils.MYSQL、JdbcUtils.SQLSERVER</code>)
 	 * @param sequence
 	 *            序列類型
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
-	 * 
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
 	 * 
 	 * @see JdbcUtils#ORACLE
 	 * @see JdbcUtils#MYSQL
 	 * @see JdbcUtils#SQLSERVER
 	 * @see JdbcUtils#MYSQL_SEQ
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public int insert(Connection conn, Object instanceDomain, String database,
 			String sequence) throws SQLException {
+		
+		if (getDataMappingClass() == null) {
+			setDataMappingClass(instanceDomain.getClass());
+		}
+		
 		String sql = sqlPro.makeInsertSql(database, sequence);
 		Object[] params = beanPro.objectArray(instanceDomain, sql, database,
 				sequence);
@@ -693,32 +686,37 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 保存数据，sql手动维护，参数根据<code>instanceDomain</code>中的值自动构造
+	 * 以Insert Sql语句形式在数据库插入一条数据，参数值由instanceDomain(Java Bean)自动映射，SQL语句通过外部传入。
+	 * 
+	 * <li><code>database=JdbcUtils.ORACLE,sequence="seq"</code>，SQL为<code>INSERT INTO user(id,user_name,password) VALUES(seq.NEXTVAL, ?, ?)</code>，Java
+	 * Bean转化后的Object[]参数为：["张三","123"]</li>
+	 * <li><code>database=JdbcUtils.ORACLE,sequence=null</code>，SQL为<code>INSERT INTO user(id,user_name,password) VALUES(?, ?, ?)</code>，Java
+	 * Bean转化后的Object[]参数为：[1,"张三","123"]</li>
+	 * <li><code>database=JdbcUtils.MYSQL,sequence=JdbcUtils.MYSQL_SEQ</code>，SQL为<code>INSERT INTO user(user_name,password) VALUES(?, ?)</code>，Java
+	 * Bean转化后的Object[]参数为：["张三","123"]</li>
+	 * <li><code>database=JdbcUtils.MYSQL,sequence=null</code>，SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(?, ?, ?)</code>，Java
+	 * Bean转化后的Object[]参数为：[1,"张三","123"]</li>
+	 * <li><code>database=JdbcUtils.SQLSERVER</code>，未增加API。</li>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param insertSql
-	 *            新增sql语句
+	 *            Insert Sql语句
 	 * @param instanceDomain
-	 *            设置有值的领域对象
+	 *            设置有值的Java Bean对象
 	 * @param database
-	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 *            数据库类型(<code>JdbcUtils.ORACLE、JdbcUtils.MYSQL、JdbcUtils.SQLSERVER</code>)
 	 * @param sequence
 	 *            序列類型
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
-	 * 
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
 	 * 
 	 * @see JdbcUtils#ORACLE
 	 * @see JdbcUtils#MYSQL
 	 * @see JdbcUtils#SQLSERVER
 	 * @see JdbcUtils#MYSQL_SEQ
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
 	 */
 	public int insert(Connection conn, String insertSql, Object instanceDomain,
 			String database, String sequence) throws SQLException {
@@ -733,32 +731,14 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 保存数据，sql手动维护，参数手动维护。
+	 * 以Insert Sql语句形式在数据库插入一条数据，参数值外部传入，SQL语句通过外部传入。
 	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param insertSql
-	 *            新增sql语句
-	 * @param params
-	 *            参数值
-	 * @param database
-	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
-	 * @param sequence
-	 *            序列類型
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
-	 * 
+	 *            Insert Sql语句
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
-	 * 
-	 * @see JdbcUtils#ORACLE
-	 * @see JdbcUtils#MYSQL
-	 * @see JdbcUtils#SQLSERVER
-	 * @see JdbcUtils#MYSQL_SEQ
 	 */
 	public int insert(Connection conn, String insertSql, Object[] params)
 			throws SQLException {
@@ -766,30 +746,34 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 保存数据，sql根据<code>JdbcUtils.dataMappingClass</code>中的字段自动构造。
+	 * 以对象(Java Bean)形式在数据库插入一条数据，参数值由外部提供，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句。
+	 * 可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
+	 * 
+	 * <li><code>database=JdbcUtils.ORACLE,sequence="seq"</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(seq.NEXTVAL, ?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.ORACLE,sequence=null</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(?, ?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.MYSQL,sequence=JdbcUtils.MYSQL_SEQ</code>时，产生的SQL为：<code>INSERT INTO user(user_name,password) VALUES(?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.MYSQL,sequence=null</code>时，产生的SQL为：<code>INSERT INTO user(id,user_name,password) VALUES(?, ?, ?)</code>；</li>
+	 * <li><code>database=JdbcUtils.SQLSERVER</code>，未增加API。</li>
 	 * 
 	 * @param conn
 	 *            数据库连接对象
-	 * @param params
-	 *            参数值
+	 * @param instanceDomain
+	 *            设置有值的Java Bean对象
 	 * @param database
-	 *            数据库类型(<code>JdbcUtils#ORACLE、JdbcUtils#MYSQL、JdbcUtils#SQLSERVER</code>)
+	 *            数据库类型(<code>JdbcUtils.ORACLE、JdbcUtils.MYSQL、JdbcUtils.SQLSERVER</code>)
 	 * @param sequence
 	 *            序列類型
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=任意值</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#ORACLE,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=MYSQL_SEQ</code>时，自动构造的sql的主键自动维护</li>
-	 *            <li><code>database=JdbcUtils#MYSQL,sequence=null</code>时，自动构造的sql的主键手动维护</li>
-	 *            <li><code>database=JdbcUtils#SQLSERVER,sequence=null</code>时，未增加API</li>
-	 * 
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
 	 * 
 	 * @see JdbcUtils#ORACLE
 	 * @see JdbcUtils#MYSQL
 	 * @see JdbcUtils#SQLSERVER
 	 * @see JdbcUtils#MYSQL_SEQ
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public int insert(Connection conn, Object[] params, String database,
 			String sequence) throws SQLException {
@@ -797,7 +781,7 @@ public class JdbcUtils {
 	}
 
 	// //////////////////////INSERT-END///////////////////////////////////////////////////////////////
-	
+
 	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
 
 	/**
@@ -819,7 +803,7 @@ public class JdbcUtils {
 			throws SQLException {
 		return update(conn, null, instanceDomain);
 	}
-	
+
 	public int update(Connection conn, String sql) throws SQLException {
 		return this.execute(conn, sql, null);
 	}
@@ -859,8 +843,6 @@ public class JdbcUtils {
 		return execute(conn, sqlPro.makeUpdateSql(), params);
 	}
 
-	
-
 	/**
 	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造，或手动构造。
 	 * 
@@ -887,8 +869,6 @@ public class JdbcUtils {
 	}
 
 	// //////////////////////UPDATE-END///////////////////////////////////////////////////////////////
-
-	
 
 	// //////////////////////DELETE-BEGIN///////////////////////////////////////////////////////////////
 
