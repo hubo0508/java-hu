@@ -1013,6 +1013,17 @@ public class JdbcUtils {
 
 	// //////////////////////DELETE-END///////////////////////////////////////////////////////////////
 
+	/**
+	 * 数据的增、删、改操作。
+	 * 
+	 * @param conn
+	 *            数据连接对象
+	 * @param sql
+	 *            执行SQL语句
+	 * @param params
+	 *            执行参数值
+	 * @throws SQLException
+	 */
 	public int execute(Connection conn, String sql, Object[] params)
 			throws SQLException {
 
