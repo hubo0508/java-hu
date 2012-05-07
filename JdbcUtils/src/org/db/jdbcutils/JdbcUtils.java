@@ -43,6 +43,7 @@ import test.ConfigDevice;
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
  * @Time 10:43:09 AM
+ * @since 0.2.2
  * 
  * <table>
  * <tr>
@@ -215,12 +216,15 @@ public class JdbcUtils {
 	private Map sqlFilter;
 
 	/**
-	 * Domain主键字段，默认为id
+	 * Java Bean主键字符，默认为“id”。
 	 */
 	private String primaryKey = "id";
 
+	/*
+	 * SQL语句中包含有查询参数"?"号，执行增、删、改、查动作时是否检查参数个数与参数值相等。
+	 */
 	private volatile boolean pmdKnownBroken = false;
-
+	
 	private final static String[] TOTYPE = { "bean", "database" };
 
 	/*
@@ -1288,10 +1292,16 @@ public class JdbcUtils {
 		this.rule = rule;
 	}
 
+	/**
+	 * 取得Java Bean主键字符，默认为“id”。
+	 */
 	public String getPrimaryKey() {
 		return primaryKey;
 	}
 
+	/**
+	 * 设置Java Bean主键字符，默认为“id”。
+	 */
 	public void setPrimaryKey(String primaryKey) {
 		this.primaryKey = primaryKey;
 	}
