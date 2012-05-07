@@ -810,8 +810,8 @@ public class JdbcUtils {
 	 * Bean)形式在数据库更新一条数据，参数值由instanceDomain(Java Bean)自动映射，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Update
 	 * Sql后追加自定义更新Sql条件<code>where id=? and name=?</code>。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
-	 * </br></br>
-	 * 2、当参数sqlOrWhereIf为整个Update Sql语句时(<code>update user set id=?,username=? where id=?</code>)，SDK API不作任何业务处理(SQL)，参数值由instanceDomain(Java Bean)自动映射。
+	 * </br></br> 2、当参数sqlOrWhereIf为整个Update Sql语句时(<code>update user set id=?,username=? where id=?</code>)，SDK
+	 * API不作任何业务处理(SQL)，参数值由instanceDomain(Java Bean)自动映射。
 	 * 
 	 * 
 	 * @param conn
@@ -839,22 +839,30 @@ public class JdbcUtils {
 		return execute(conn, sqlOrWhereIf, params);
 	}
 
+	/**
+	 * 以Update Sql语句形式在数据库中更新一条或多条数据，无参数映射。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param sql
+	 *            SQL更新语句
+	 * @return 影响的行数
+	 * @throws SQLException
+	 */
 	public int update(Connection conn, String sql) throws SQLException {
 		return this.execute(conn, sql, null);
 	}
 
 	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 以Update Sql语句形式在数据库中更新一条或多条数据，参数值通过外部传入。
 	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param sql
-	 *            sql语句
+	 *            SQL更新语句
 	 * @param params
-	 *            sql参数
-	 * 
+	 *            更新参数
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
 	 */
 	public int update(Connection conn, String sql, Object[] params)
@@ -863,16 +871,20 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 以对象(Java Bean)形式在数据库更新一条数据，参数值由外部传入，根据映射模版<code>JdbcUtils.getDataMappingClass()</code>自动产生SQL语句，在产生的Update
+	 * Sql中自动增加<code>where id=?</code>。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
 	 * 
 	 * @param conn
 	 *            数据库连接对象
 	 * @param params
-	 *            sql参数
-	 * 
+	 *            更新参数
 	 * @return 影响的行数
-	 * 
 	 * @throws SQLException
+	 * 
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#getDataMappingClass()
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 * @see JdbcUtils#getSqlFilter()
 	 */
 	public int update(Connection conn, Object[] params) throws SQLException {
 		return execute(conn, sqlPro.makeUpdateSql(), params);
