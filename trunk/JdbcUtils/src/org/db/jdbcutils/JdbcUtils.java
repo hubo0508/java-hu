@@ -658,6 +658,23 @@ public class JdbcUtils {
 
 	// //////////////////////UPDATE-BEGIN///////////////////////////////////////////////////////////////
 
+	/**
+	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
+	 * 
+	 * @param conn
+	 *            数据库连接对象
+	 * @param instanceDomain
+	 *            设置有值的领域对象
+	 * 
+	 * @return 影响的行数
+	 * 
+	 * @throws SQLException
+	 */
+	public int update(Connection conn, Object instanceDomain)
+			throws SQLException {
+		return update(conn, null, instanceDomain);
+	}
+	
 	public int update(Connection conn, String sql) throws SQLException {
 		return this.execute(conn, sql, null);
 	}
@@ -697,22 +714,7 @@ public class JdbcUtils {
 		return execute(conn, sqlPro.makeUpdateSql(), params);
 	}
 
-	/**
-	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param instanceDomain
-	 *            设置有值的领域对象
-	 * 
-	 * @return 影响的行数
-	 * 
-	 * @throws SQLException
-	 */
-	public int update(Connection conn, Object instanceDomain)
-			throws SQLException {
-		return update(conn, null, instanceDomain);
-	}
+	
 
 	/**
 	 * 更新数据。sql自动根据<code>JdbcUtils.dataMappingClass</code>构造，或手动构造。
