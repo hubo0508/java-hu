@@ -335,7 +335,7 @@ public class JdbcUtils {
 	 */
 	public ArrayList queryResultToArrayList(Connection conn,
 			String sqlOrWhereIf, Object[] params) throws SQLException {
-		if (!isSelect(sqlOrWhereIf)) {
+		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return (ArrayList) query(conn, sqlOrWhereIf, params, new ArrayList());
@@ -414,7 +414,7 @@ public class JdbcUtils {
 	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
 
-		if (!isSelect(sqlOrWhereIf)) {
+		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return (HashMap) query(con, sqlOrWhereIf, params, new HashMap());
@@ -465,7 +465,7 @@ public class JdbcUtils {
 	 */
 	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
 			String sqlOrWhereIf) throws SQLException {
-		if (!isSelect(sqlOrWhereIf)) {
+		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return queryResultToLinkedHashMap(con, sqlOrWhereIf, null);
@@ -497,7 +497,7 @@ public class JdbcUtils {
 	 */
 	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
 			String sqlOrWhereIf, Object[] params) throws SQLException {
-		if (!isSelect(sqlOrWhereIf)) {
+		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return (LinkedHashMap) query(con, sqlOrWhereIf, params,
@@ -560,7 +560,7 @@ public class JdbcUtils {
 	 */
 	public Object queryResultToUnique(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
-		if (!isSelect(sqlOrWhereIf)) {
+		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return this.query(con, sqlOrWhereIf, params, getDataMappingClass());
@@ -616,7 +616,7 @@ public class JdbcUtils {
 					"DATA_MAPPING_CLASS_NULL_ERROR:Null dataMappingClass");
 		}
 
-		if (!isSelect(sql)) {
+		if (!isSelectStatement(sql)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 
@@ -832,7 +832,7 @@ public class JdbcUtils {
 	 */
 	public int update(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
-		if (!isUpate(sqlOrWhereIf)) {
+		if (!isUpateStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
 		}
 		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
@@ -944,7 +944,7 @@ public class JdbcUtils {
 	 *                types do not match！)。
 	 */
 	public int delete(Connection conn, String sql) throws SQLException {
-		if (!isDelete(sql)) {
+		if (!isDeleteStatement(sql)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 		return execute(conn, sql, null);
@@ -974,7 +974,7 @@ public class JdbcUtils {
 	 */
 	public int delete(Connection conn, String sqlOrWhereIf, Object[] params)
 			throws SQLException {
-		if (!isDelete(sqlOrWhereIf)) {
+		if (!isDeleteStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
 		return execute(conn, sqlPro.makeDeleteSql(sqlOrWhereIf), params);
@@ -1005,7 +1005,7 @@ public class JdbcUtils {
 	public int delete(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
 
-		if (!isDelete(sqlOrWhereIf)) {
+		if (!isDeleteStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
 
@@ -1240,37 +1240,34 @@ public class JdbcUtils {
 	/** ******************************************************************************************** */
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************** */
-
-	public boolean isSelect(String sql) {
-		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("SELECT") == 0) {
-			return true;
+	
+	
+	public boolean isSelectStatement(String sql) {
+		if(sql == null){
+			return false;
 		}
-
-		return false;
+		return sql.toUpperCase().startsWith("SELECT");
 	}
 
-	public boolean isUpate(String sql) {
-		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("UPDATE") == 0) {
-			return true;
+	public boolean isUpateStatement(String sql) {
+		if(sql == null){
+			return false;
 		}
-
-		return false;
+		return sql.toUpperCase().startsWith("UPDATE");
 	}
 
-	public boolean isDelete(String sql) {
-		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("DELETE") == 0) {
-			return true;
+	public boolean isDeleteStatement(String sql) {
+		if(sql == null){
+			return false;
 		}
-
-		return false;
+		return sql.toUpperCase().startsWith("DELETE");
 	}
 
-	public boolean isInsert(String sql) {
-		if (isNotEmpty(sql) && sql.toUpperCase().indexOf("INSERT") == 0) {
-			return true;
+	public boolean isInsertStatement(String sql) {
+		if(sql == null){
+			return false;
 		}
-
-		return false;
+		return sql.toUpperCase().startsWith("INSERT");
 	}
 
 	/**
@@ -2873,10 +2870,10 @@ public class JdbcUtils {
 
 			sql = standardFormatting(sql);
 
-			if (isInsert(sql)) {
+			if (isInsertStatement(sql)) {
 				return columnsKeyOfInsert(sql);
 			}
-			if (isUpate(sql) || isDelete(sql)) {
+			if (isUpateStatement(sql) || isDeleteStatement(sql)) {
 				return columnsKeyOfUpdate(sql);
 			}
 
@@ -3373,7 +3370,7 @@ public class JdbcUtils {
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
 		String sql = "SELECT device_ename, device_factory, device_ip, device_type, id FROM nhwm_config_device where id=111";
-		System.out.println(db.statPro.count(sql));
+		System.out.println(sql.startsWith("SELECT"));
 		System.out.println(new Object[] {});
 	}
 
