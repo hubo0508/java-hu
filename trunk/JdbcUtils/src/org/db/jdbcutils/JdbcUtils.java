@@ -227,14 +227,17 @@ public class JdbcUtils {
 	 * 
 	 * @User: 魔力猫咪(http://wlmouse.iteye.com/category/60230)
 	 */
-	private final SqlStatisticsProcessor statPro = new JdbcUtils.SqlStatisticsProcessor();
-
+	// private final SqlStatisticsProcessor statPro = new
+	// JdbcUtils.SqlStatisticsProcessor();
 	/**
 	 * 构造函数
 	 * 
 	 * @param dataMappingClass
 	 *            Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
 	 *            Bean或其它Java类型），同查询数据库结果集的数据表相对应
+	 * 
+	 * @exception
+	 * <li><code>Class dataMappingClass == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 */
@@ -250,6 +253,8 @@ public class JdbcUtils {
 	 *            Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * @param rule
 	 *            数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
+	 * @exception
+	 *            <li><code>Class dataMappingClass == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
 	 * 
 	 * @see JdbcUtils#getRule()
 	 * @see JdbcUtils#HUMP
@@ -267,8 +272,10 @@ public class JdbcUtils {
 	 * @param conn
 	 *            数据库连接对象
 	 * @return ArrayList
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
+	 * 
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -295,8 +302,11 @@ public class JdbcUtils {
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句或查询条件
 	 * @return ArrayList
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li><code>String sqlOrWhereIf</code>语句开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
+	 *         types do not match！)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -324,8 +334,10 @@ public class JdbcUtils {
 	 * @param params
 	 *            查询参数
 	 * @return ArrayList
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li><code>String sqlOrWhereIf</code>语句开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -347,8 +359,9 @@ public class JdbcUtils {
 	 * @param conn
 	 *            数据库连接对象
 	 * @return HashMap
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -373,8 +386,10 @@ public class JdbcUtils {
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句或查询条件
 	 * @return HashMap
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -402,8 +417,10 @@ public class JdbcUtils {
 	 * @param params
 	 *            查询参数
 	 * @return HashMap
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -426,8 +443,9 @@ public class JdbcUtils {
 	 * @param conn
 	 *            数据库连接对象
 	 * @return LinkedHashMap
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -454,8 +472,10 @@ public class JdbcUtils {
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句或查询条件
 	 * @return LinkedHashMap
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -486,8 +506,10 @@ public class JdbcUtils {
 	 * @param params
 	 *            查询参数
 	 * @return LinkedHashMap
-	 * @exception 当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)；
+	 * @exception
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -516,10 +538,11 @@ public class JdbcUtils {
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句或查询条件
 	 * @return Object
-	 * @exception 查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result
-	 *                set is not
-	 *                unique!)。查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)。
+	 * @exception
+	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -547,10 +570,10 @@ public class JdbcUtils {
 	 *            查询参数
 	 * @return Object
 	 * @exception
-	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result set
-	 *         is not unique!)</li>
-	 *         <li>查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL types
-	 *         do not match！)</li>
+	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -580,17 +603,12 @@ public class JdbcUtils {
 	 *            Bean<code>{JavaBean.class}</code>
 	 * @return Object
 	 * @exception
-	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result set
-	 *         is not unique!)</li>
-	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_ERROR:Null
-	 *         connection)；</li>
-	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_ERROR:Null
-	 *         SQL statement)；</li>
-	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_SET_TYPE_ERROR:Null
-	 *         result set)；</li>
-	 *         <li><code>getDataMappingClass() == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_NULL_ERROR)；</li>
-	 *         <li>当查询SQL语句不是标准Sql时，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR:Null
-	 *         dataMappingClass)；</li>
+	 *         <li>参数<code>Object instanceCollectionOrClass</code>值为Java
+	 *         Bean或Java 基础类型时，查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
+	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_ERROR)；</li>
+	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_ERROR)；</li>
+	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_SET_TYPE_ERROR)；</li>
+	 *         <li>当查询SQL语句不是标准Sql时，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
