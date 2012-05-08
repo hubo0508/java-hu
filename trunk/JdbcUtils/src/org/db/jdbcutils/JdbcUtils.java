@@ -580,14 +580,17 @@ public class JdbcUtils {
 	 *            Bean<code>{JavaBean.class}</code>
 	 * @return Object
 	 * @exception
-	 *         <li>当参数 <code>instanceCollectionOrClass</code>类型为Java基本类型如<code>Long.class</code>或Java
-	 *         Bean<code>{JavaBean.class}</code>时，查询结果集不唯一的情况将会抛出SQLException异常(RESULT_SET_TYPE_NULL_ERROR)；</li>
-	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL_ERROR)；</li>
-	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_NULL_ERROR)；</li>
-	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_SET_TYPE_NULL_ERROR)；</li>
+	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result set
+	 *         is not unique!)</li>
+	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_ERROR:Null
+	 *         connection)；</li>
+	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_ERROR:Null
+	 *         SQL statement)；</li>
+	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_SET_TYPE_ERROR:Null
+	 *         result set)；</li>
 	 *         <li><code>getDataMappingClass() == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_NULL_ERROR)；</li>
-	 *         <li>当查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL types
-	 *         do not match！)；</li>
+	 *         <li>当查询SQL语句不是标准Sql时，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR:Null
+	 *         dataMappingClass)；</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
@@ -600,20 +603,20 @@ public class JdbcUtils {
 			Object instanceCollectionOrClass) throws SQLException {
 
 		if (conn == null) {
-			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
+			throw new SQLException("CONNECTION_ERROR:Null connection");
 		}
 
 		if (sql == null) {
-			throw new SQLException("SQL_NULL_ERROR:Null SQL statement");
+			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
 		}
 
 		if (instanceCollectionOrClass == null) {
-			throw new SQLException("RESULT_SET_TYPE_NULL_ERROR:Null result set");
+			throw new SQLException("RESULT_SET_TYPE_ERROR:Null result set");
 		}
 
 		if (getDataMappingClass() == null) {
 			throw new SQLException(
-					"DATA_MAPPING_CLASS_NULL_ERROR:Null dataMappingClass");
+					"DATA_MAPPING_CLASS_ERROR:Null dataMappingClass");
 		}
 
 		if (!isSelectStatement(sql)) {
@@ -1025,18 +1028,20 @@ public class JdbcUtils {
 	 * @param params
 	 *            执行参数值
 	 * @exception
-	 *            <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL_ERROR)；</li>
-	 *            <li><code>String sql==null</code>，抛出SQLException异常(SQL_NULL_ERROR)；</li>
+	 *            <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_ERROR:Null
+	 *            connection)；</li>
+	 *            <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_ERROR:Null
+	 *            SQL statement)；</li>
 	 */
 	public int execute(Connection conn, String sql, Object[] params)
 			throws SQLException {
 
 		if (conn == null) {
-			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
+			throw new SQLException("CONNECTION_ERROR:Null connection");
 		}
 
 		if (sql == null) {
-			throw new SQLException("SQL_NULL_ERROR:Null SQL statement");
+			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
 		}
 
 		PreparedStatement stmt = null;
@@ -1194,7 +1199,7 @@ public class JdbcUtils {
 		return conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_READ_ONLY);
 	}
-	
+
 	protected void fillStatement(PreparedStatement stmt, Object[] params)
 			throws SQLException {
 
@@ -1240,31 +1245,30 @@ public class JdbcUtils {
 	/** ******************************************************************************************** */
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************** */
-	
-	
+
 	public boolean isSelectStatement(String sql) {
-		if(sql == null){
+		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("SELECT");
 	}
 
 	public boolean isUpateStatement(String sql) {
-		if(sql == null){
+		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("UPDATE");
 	}
 
 	public boolean isDeleteStatement(String sql) {
-		if(sql == null){
+		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("DELETE");
 	}
 
 	public boolean isInsertStatement(String sql) {
-		if(sql == null){
+		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("INSERT");
