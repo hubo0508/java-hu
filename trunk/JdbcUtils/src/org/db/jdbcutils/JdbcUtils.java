@@ -546,10 +546,11 @@ public class JdbcUtils {
 	 * @param params
 	 *            查询参数
 	 * @return Object
-	 * @exception 查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result
-	 *                set is not
-	 *                unique!)。查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)。
+	 * @exception
+	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result set
+	 *         is not unique!)</li>
+	 *         <li>查询SQL语句不是标准Sql时，抛出SQLException异常(SQL_TYPES_ERROR:SQL types
+	 *         do not match！)</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -611,7 +612,8 @@ public class JdbcUtils {
 		}
 
 		if (getDataMappingClass() == null) {
-			throw new SQLException("DATA_MAPPING_CLASS_NULL_ERROR:Null dataMappingClass");
+			throw new SQLException(
+					"DATA_MAPPING_CLASS_NULL_ERROR:Null dataMappingClass");
 		}
 
 		if (!isSelect(sql)) {
@@ -624,7 +626,7 @@ public class JdbcUtils {
 		try {
 			stmt = this.prepareStatement(conn, sql);
 			this.fillStatement(stmt, params);
-			rs = this.wrap(stmt.executeQuery());
+			rs = stmt.executeQuery();
 			result = rsPro.handle(rs, instanceCollectionOrClass);
 		} catch (SQLException e) {
 			this.rethrow(e, sql, params);
@@ -938,11 +940,12 @@ public class JdbcUtils {
 	 * @param params
 	 *            删除参数
 	 * @return 影响的行数
-	 * @exception 当SQL语句不是Delete语句时，抛出SQLException。
+	 * @exception 当SQL语句不是Delete语句时，抛出SQLException(SQL_TYPES_ERROR:SQL
+	 *                types do not match！)。
 	 */
 	public int delete(Connection conn, String sql) throws SQLException {
 		if (!isDelete(sql)) {
-			throw new SQLException();
+			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 		return execute(conn, sql, null);
 	}
@@ -1021,17 +1024,19 @@ public class JdbcUtils {
 	 *            执行SQL语句
 	 * @param params
 	 *            执行参数值
-	 * @throws SQLException
+	 * @exception
+	 *            <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL_ERROR)；</li>
+	 *            <li><code>String sql==null</code>，抛出SQLException异常(SQL_NULL_ERROR)；</li>
 	 */
 	public int execute(Connection conn, String sql, Object[] params)
 			throws SQLException {
 
 		if (conn == null) {
-			throw new SQLException("Null connection");
+			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
 		}
 
 		if (sql == null) {
-			throw new SQLException("Null SQL statement");
+			throw new SQLException("SQL_NULL_ERROR:Null SQL statement");
 		}
 
 		PreparedStatement stmt = null;
@@ -1169,6 +1174,13 @@ public class JdbcUtils {
 
 	/**
 	 * 检查数据的唯一性
+	 * 
+	 * @param rs
+	 *            数据库结果集的数据表
+	 * 
+	 * @exception
+	 * <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result set is not
+	 * unique!)</li>
 	 */
 	private void checkDataUnique(ResultSet rs) throws SQLException {
 		if (rsPro.resultSize(rs) >= 2) {
@@ -1177,16 +1189,12 @@ public class JdbcUtils {
 		}
 	}
 
-	protected ResultSet wrap(ResultSet rs) {
-		return rs;
-	}
-
 	protected PreparedStatement prepareStatement(Connection conn, String sql)
 			throws SQLException {
 		return conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_READ_ONLY);
 	}
-
+	
 	protected void fillStatement(PreparedStatement stmt, Object[] params)
 			throws SQLException {
 
