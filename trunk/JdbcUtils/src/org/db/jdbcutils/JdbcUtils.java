@@ -43,12 +43,6 @@ import test.ConfigDevice;
  * </br></br>
  * 
  * 异常代码说明：
- * <li>RESULT_SIZE_ERROR : 查询结果集中超过两条数据；</li>
- * <li>SQL_TYPES_ERROR : 查询SQL语句不是标准Sql；</li>
- * <li>CONNECTION_NULL_ERROR : Connection连接数据对象为NULL；</li>
- * <li>SQL_NULL_ERROR :SQL查询语句为NULL；</li>
- * <li>RESULT_SET_TYPE_NULL_ERROR : 查询结果返回数据类型为NULL；</li>
- * <li>DATA_MAPPING_CLASS_NULL_ERROR : 数据映射模版为NULL；</li>
  * 
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
@@ -481,7 +475,7 @@ public class JdbcUtils {
 	 * @return LinkedHashMap
 	 * @exception
 	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_NULL_ERROR)</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
@@ -515,7 +509,7 @@ public class JdbcUtils {
 	 * @return LinkedHashMap
 	 * @exception
 	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_NULL_ERROR)</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
@@ -548,7 +542,7 @@ public class JdbcUtils {
 	 * @exception
 	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
 	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_NULL_ERROR)</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
@@ -579,7 +573,7 @@ public class JdbcUtils {
 	 * @exception
 	 *         <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
 	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
+	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_NULL_ERROR)</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
@@ -612,9 +606,9 @@ public class JdbcUtils {
 	 * @exception
 	 *         <li>参数<code>Object instanceCollectionOrClass</code>值为Java
 	 *         Bean或Java 基础类型时，查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
-	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_ERROR)；</li>
-	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_ERROR)；</li>
-	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_SET_TYPE_ERROR)；</li>
+	 *         <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL_ERROR)；</li>
+	 *         <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_NULL_ERROR)；</li>
+	 *         <li><code>Object instanceCollectionOrClass==null</code>，抛出SQLException异常(RESULT_TYPE_NULL_ERROR)；</li>
 	 *         <li>当查询SQL语句不是标准Sql时，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
@@ -628,20 +622,15 @@ public class JdbcUtils {
 			Object instanceCollectionOrClass) throws SQLException {
 
 		if (conn == null) {
-			throw new SQLException("CONNECTION_ERROR:Null connection");
+			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
 		}
 
 		if (sql == null) {
-			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
+			throw new SQLException("SQL_STATEMENT_NULL_ERROR:Null SQL statement");
 		}
 
 		if (instanceCollectionOrClass == null) {
-			throw new SQLException("RESULT_SET_TYPE_ERROR:Null result set");
-		}
-
-		if (getDataMappingClass() == null) {
-			throw new SQLException(
-					"DATA_MAPPING_CLASS_ERROR:Null dataMappingClass");
+			throw new SQLException("RESULT_TYPE_NULL_ERROR:Null result set");
 		}
 
 		if (!isSelectStatement(sql)) {
@@ -968,8 +957,7 @@ public class JdbcUtils {
 	 * @param params
 	 *            删除参数
 	 * @return 影响的行数
-	 * @exception 当SQL语句不是Delete语句时，抛出SQLException(SQL_TYPES_ERROR:SQL
-	 *                types do not match！)。
+	 * @exception 当SQL语句不是Delete语句时，抛出SQLException(SQL_TYPES_ERROR)。
 	 */
 	public int delete(Connection conn, String sql) throws SQLException {
 		if (!isDeleteStatement(sql)) {
@@ -1053,20 +1041,19 @@ public class JdbcUtils {
 	 * @param params
 	 *            执行参数值
 	 * @exception
-	 *            <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_ERROR:Null
-	 *            connection)；</li>
-	 *            <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_ERROR:Null
-	 *            SQL statement)；</li>
+	 *            <li><code>Connection conn==null</code>，抛出SQLException异常(CONNECTION_NULL_ERROR)；</li>
+	 *            <li><code>String sql==null</code>，抛出SQLException异常(SQL_STATEMENT_NULL_ERROR)；</li>
 	 */
 	public int execute(Connection conn, String sql, Object[] params)
 			throws SQLException {
 
 		if (conn == null) {
-			throw new SQLException("CONNECTION_ERROR:Null connection");
+			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
 		}
 
 		if (sql == null) {
-			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
+			throw new SQLException(
+					"SQL_STATEMENT_NULL_ERROR:Null SQL statement");
 		}
 
 		PreparedStatement stmt = null;
@@ -1158,7 +1145,7 @@ public class JdbcUtils {
 		}
 		StringBuffer msg = new StringBuffer(causeMessage);
 
-		msg.append(" Query: ");
+		msg.append(" SQL: ");
 		msg.append(sql);
 		msg.append(" Parameters: ");
 
@@ -1209,8 +1196,7 @@ public class JdbcUtils {
 	 *            数据库结果集的数据表
 	 * 
 	 * @exception
-	 * <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR：Result set is not
-	 * unique!)</li>
+	 * <li>查询结果集中超过两条数据将会抛出SQLException异常(RESULT_SIZE_ERROR)</li>
 	 */
 	private void checkDataUnique(ResultSet rs) throws SQLException {
 		if (rsPro.resultSize(rs) >= 2) {
@@ -1691,7 +1677,7 @@ public class JdbcUtils {
 				throws SQLException {
 
 			if (instanceCollectionOrClass == null) {
-				throw new SQLException("Null result set");
+				throw new SQLException("RESULT_SET_NULL_ERROR:Null result set");
 			}
 
 			// Result is ArrayList
@@ -1742,11 +1728,9 @@ public class JdbcUtils {
 		 * @throws SQLException
 		 */
 		private long resultSize(ResultSet rs) throws SQLException {
-
 			rs.last();
 			long rowCount = rs.getRow();
 			rs.beforeFirst();
-
 			return rowCount;
 		}
 
@@ -1759,20 +1743,17 @@ public class JdbcUtils {
 		 *            数据库结果集的数据表
 		 * 
 		 * @return Java基本数据类型数据集
-		 * @exception
-		 *         在数据库结果集数据表列超过2列时，抛出SQLException；数据库结果集数据表中数据类型与设定的类型不匹配，抛出SQLException；
 		 * @throws SQLException
 		 * 
 		 * @see ResultProcessor#getDataMappingClass()
 		 */
 		private Object toUniqueBiscType(ResultSet rs, Class clazz)
 				throws SQLException {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int cols = rsmd.getColumnCount();
-
-			if (cols >= 2) {
-				throw new SQLException("Query column number greater than !");
-			}
+			// ResultSetMetaData rsmd = rs.getMetaData();
+			// int cols = rsmd.getColumnCount();
+			// if (cols >= 2) {
+			// throw new SQLException("Query column number greater than !");
+			// }
 
 			Object value = rs.getObject(1);
 			if (!clazz.toString().equals(value.getClass().toString())) {
