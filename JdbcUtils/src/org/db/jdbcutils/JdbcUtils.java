@@ -236,8 +236,8 @@ public class JdbcUtils {
 	 *            Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
 	 *            Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * 
-	 * @exception
-	 * <li><code>Class dataMappingClass == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
+	 * @throws 如果
+	 *             <code>Class dataMappingClass == null</code>，抛出异常(DATA_MAPPING_CLASS_ERROR)
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 */
@@ -253,8 +253,8 @@ public class JdbcUtils {
 	 *            Bean或其它Java类型），同查询数据库结果集的数据表相对应
 	 * @param rule
 	 *            数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
-	 * @exception
-	 *            <li><code>Class dataMappingClass == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
+	 * @throws 如果
+	 *             <code>Class dataMappingClass == null</code>，抛出异常(DATA_MAPPING_CLASS_ERROR)
 	 * 
 	 * @see JdbcUtils#getRule()
 	 * @see JdbcUtils#HUMP
@@ -274,8 +274,7 @@ public class JdbcUtils {
 	 * @return ArrayList
 	 * @exception
 	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
+	 *         <li>vk其它SQLException则为非功能性SQLException异常；</li>
 	 * 
 	 * @see JdbcUtils#getDataMappingClass()
 	 * @see JdbcUtils#getSqlMappingClass()
@@ -303,8 +302,7 @@ public class JdbcUtils {
 	 *            SQL查询语句或查询条件
 	 * @return ArrayList
 	 * @exception
-	 *         <li><code>String sqlOrWhereIf</code>语句开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR:SQL
-	 *         types do not match！)；</li>
+	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_STATEMENT_ERROR)；</li>
 	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
@@ -335,7 +333,7 @@ public class JdbcUtils {
 	 *            查询参数
 	 * @return ArrayList
 	 * @exception
-	 *         <li><code>String sqlOrWhereIf</code>语句开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
+	 *         <li><code>String sqlOrWhereIf</code>语句开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_STATEMENT_ERROR)；</li>
 	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
 	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
 	 * 
@@ -347,6 +345,15 @@ public class JdbcUtils {
 	 */
 	public ArrayList queryResultToArrayList(Connection conn,
 			String sqlOrWhereIf, Object[] params) throws SQLException {
+
+		if (sqlOrWhereIf == null) {
+			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
+		}
+
+		if (!isSelectStatement(sqlOrWhereIf) || !isWhereStatement(sqlOrWhereIf)) {
+			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
+		}
+
 		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
@@ -1264,6 +1271,13 @@ public class JdbcUtils {
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************** */
 
+	public boolean isWhereStatement(String sql) {
+		if (sql == null) {
+			return false;
+		}
+		return sql.toUpperCase().startsWith("WHERE");
+	}
+
 	public boolean isSelectStatement(String sql) {
 		if (sql == null) {
 			return false;
@@ -1468,6 +1482,9 @@ public class JdbcUtils {
 	 * </br></br>当<code>JdbcUtils.dataMappingClass</code>类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>（目前API只实现了对这些类型的支持）基本数据类型时。
 	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可调用SDK<code>JdbcUtils.setSqlMappingClass(Class)</code>来实现自动的SQL与返回数据映谢。
 	 * </p>
+	 * 
+	 * @exception
+	 * <li><code>Class dataMappingClass == null</code>，抛出SQLException异常(DATA_MAPPING_CLASS_ERROR)；</li>
 	 * 
 	 * @see JdbcUtils#setSqlMappingClass(Class)
 	 * @see JdbcUtils#getSqlFilter()
