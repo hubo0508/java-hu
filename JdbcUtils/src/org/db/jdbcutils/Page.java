@@ -1,49 +1,9 @@
 package org.db.jdbcutils;
 
+/**
+ * 分页参数类
+ */
 public class Page {
-
-	public Page() {
-
-	}
-
-	/**
-	 * @param pageSize
-	 *            每页显示行数
-	 * @param startPage 起启页
-	 */
-	public Page(int startPage, int pageSize) {
-		super();
-		this.pageSize = pageSize;
-		this.startPage = startPage;
-	}
-
-	/**
-	 * @param startPage 起启页
-	 */
-	public Page(int startPage) {
-		super();
-		this.startPage = startPage;
-	}
-
-	/**
-	 * @param pageSize
-	 *            每显显示记录数
-	 * @param totalCount
-	 *            总记录数
-	 * @param result
-	 *            查询结果
-	 */
-	public Page(long totalCount, int thisPage, int pageSize, Object result) {
-		this.totalCount = totalCount;
-		this.result = result;
-		this.thisPage = thisPage;
-		this.pageSize = pageSize;
-		this.totalPage = this.getTotalPages();// 共多少页
-
-		this.setPagePrev(thisPage > 1 ? thisPage - 1 : thisPage);
-		this.setPageNext(thisPage < totalPage ? thisPage + 1 : thisPage);
-		this.setPageLast(Integer.parseInt((totalPage + "")));
-	}
 
 	/**
 	 * 每页显示行数
@@ -96,7 +56,50 @@ public class Page {
 
 	// 返回结果 //
 	private Object result = new Object();
+	
+	public Page() {
+		
+	}
 
+	/**
+	 * @param pageSize
+	 *            每页显示行数
+	 * @param startPage 起启页
+	 */
+	public Page(int startPage, int pageSize) {
+		super();
+		this.pageSize = pageSize;
+		this.startPage = startPage;
+	}
+
+	/**
+	 * @param startPage 起启页
+	 */
+	public Page(int startPage) {
+		super();
+		this.startPage = startPage;
+	}
+
+	/**
+	 * @param pageSize
+	 *            每显显示记录数
+	 * @param totalCount
+	 *            总记录数
+	 * @param result
+	 *            查询结果
+	 */
+	public Page(long totalCount, int thisPage, int pageSize, Object result) {
+		this.totalCount = totalCount;
+		this.result = result;
+		this.thisPage = thisPage;
+		this.pageSize = pageSize;
+		this.totalPage = this.getTotalPages();// 共多少页
+
+		this.setPagePrev(thisPage > 1 ? thisPage - 1 : thisPage);
+		this.setPageNext(thisPage < totalPage ? thisPage + 1 : thisPage);
+		this.setPageLast(Integer.parseInt((totalPage + "")));
+	}
+	
 	public int getStartToDatabase(String database) {
 		if (JdbcUtils.MYSQL.equals(database)) {
 			int starts = (startPage - 1) * pageSize;
