@@ -2,6 +2,10 @@ package org.db.jdbcutils;
 
 /**
  * 分页参数类
+ * 
+ * @User: HUBO
+ * @Date Apr 02, 2012
+ * @Time 4:39:42 PM
  */
 public class Page {
 
@@ -56,9 +60,9 @@ public class Page {
 
 	// 返回结果 //
 	private Object result = new Object();
-	
+
 	public Page() {
-		
+
 	}
 
 	/**
@@ -99,7 +103,7 @@ public class Page {
 		this.setPageNext(thisPage < totalPage ? thisPage + 1 : thisPage);
 		this.setPageLast(Integer.parseInt((totalPage + "")));
 	}
-	
+
 	public int getStartToDatabase(String database) {
 		if (JdbcUtils.MYSQL.equals(database)) {
 			int starts = (startPage - 1) * pageSize;
