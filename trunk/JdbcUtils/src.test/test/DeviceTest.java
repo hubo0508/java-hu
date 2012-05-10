@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.db.jdbcutils.JdbcUtils;
+import org.db.jdbcutils.Page;
 
 import pool.*;
 
@@ -20,6 +21,8 @@ public class DeviceTest {
 	public static void main(String[] args) {
 
 		DeviceTest test = new DeviceTest();
+
+		test.queryPage();
 
 		// test.queryResultToUniqueA();
 		// test.queryResultToUniqueB();
@@ -47,6 +50,34 @@ public class DeviceTest {
 		// test.updateObjectC();
 	}
 
+	public void queryPage() {
+		try {
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
+					JdbcUtils.SEGMENTATION, new Page(1, 2));
+			db.setDatabase(JdbcUtils.MYSQL);
+			Page page = (Page) db.queryResultToArrayList(con);
+
+			List result = (List) page.getResult();
+
+			for (int i = 0; i < result.size(); i++) {
+				ConfigDevice d = (ConfigDevice) result.get(i);
+				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
+			}
+
+			System.out.println("当前页：" + page.getThisPage());
+			System.out.println("下一页：" + page.getPageNext());
+			System.out.println("上一页：" + page.getPagePrev());
+			System.out.println("尾  页：" + page.getPageLast());
+			System.out.println("总页数：" + page.getTotalPage());
+			System.out.println("总行数：" + page.getTotalCount());
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+	}
+
 	public void updateObjectC() {
 
 		ConfigDevice d = new ConfigDevice();
@@ -60,8 +91,7 @@ public class DeviceTest {
 
 		String sql = "update Nhwm_Config_Device set has_data=? where id=?";
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.update(con, sql, d);
 			System.out.println(rows);
@@ -77,8 +107,7 @@ public class DeviceTest {
 		Object[] params = new Object[] { new Integer(1), new Integer(5886) };
 		String sql = "update Nhwm_Config_Device set has_data=? where id=?";
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.update(con, sql, params);
 			System.out.println(rows);
@@ -100,10 +129,9 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("ename");
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
 		try {
-			int rows = db.update(con, d);
+			int rows = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION)
+					.update(con, d);
 			System.out.println(rows);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -124,8 +152,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("D-ENAME");
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 
 		try {
 			int rows = db.insert(con, d, JdbcUtils.ORACLE, null);
@@ -148,8 +175,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("ename");
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 
 		try {
 			int rows = db.insert(con, d, JdbcUtils.ORACLE, "seq");
@@ -173,8 +199,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("D-ENAME");
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 
 		try {
 			int rows = db.insert(con, d, JdbcUtils.MYSQL, null);
@@ -224,8 +249,7 @@ public class DeviceTest {
 		d.setHasData(new Integer(0));
 		d.setDeviceEname("ename");
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 
 		try {
 			int rows = db.insert(con, d, JdbcUtils.MYSQL, JdbcUtils.MYSQL_SEQ);
@@ -241,8 +265,7 @@ public class DeviceTest {
 
 		Object[] params = new Object[] { new Integer(6000) };
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-				JdbcUtils.SEGMENTATION);
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
 		try {
 			int rows = db.delete(con, "id>?", params);
 			System.out.println(rows);
@@ -263,7 +286,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			map = db.queryResultToLinkedHashMap(con, sql, params);
+			map = (Map) db.queryResultToLinkedHashMap(con, sql, params);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -281,7 +304,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			map = db.queryResultToLinkedHashMap(con, sql, params);
+			map = (Map) db.queryResultToLinkedHashMap(con, sql, params);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -300,7 +323,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			map = db.queryResultToHashMap(con, sql, params);
+			map = (Map) db.queryResultToHashMap(con, sql, params);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -318,7 +341,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			map = db.queryResultToHashMap(con, sql, params);
+			map = (Map) db.queryResultToHashMap(con, sql, params);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -334,7 +357,7 @@ public class DeviceTest {
 			JdbcUtils db = new JdbcUtils(LinkedHashMap.class,
 					JdbcUtils.SEGMENTATION);
 			db.setSqlMappingClass(ConfigDevice.class);
-			List list = db.queryResultToArrayList(con);
+			List list = (List) db.queryResultToArrayList(con);
 
 			for (int i = 0; i < list.size(); i++) {
 				System.out.println(list.get(i));
@@ -365,7 +388,7 @@ public class DeviceTest {
 
 			JdbcUtils db = new JdbcUtils(LinkedHashMap.class,
 					JdbcUtils.SEGMENTATION);
-			List list = db.queryResultToArrayList(con, sql, params);
+			List list = (List) db.queryResultToArrayList(con, sql, params);
 
 			for (int i = 0; i < list.size(); i++) {
 				System.out.println(list.get(i));
@@ -391,7 +414,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			List list = db.queryResultToArrayList(con);
+			List list = (List) db.queryResultToArrayList(con);
 
 			for (int i = 0; i < list.size(); i++) {
 				ConfigDevice d = (ConfigDevice) list.get(i);
@@ -417,8 +440,8 @@ public class DeviceTest {
 
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			ConfigDevice device = (ConfigDevice) db
-					.queryResultToUnique(con, sql, params);
+			ConfigDevice device = (ConfigDevice) db.queryResultToUnique(con,
+					sql, params);
 
 			System.out.println(device.getDeviceIp() + "|"
 					+ device.getDeviceCname());
