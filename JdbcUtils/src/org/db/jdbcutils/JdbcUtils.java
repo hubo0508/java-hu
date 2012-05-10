@@ -38,7 +38,7 @@ import test.ConfigDevice;
  * <li>操作底层可为纯SQL，适用习惯于写SQL的开发人员；</li>
  * <li>操作底层可为对象，适用习惯用Hibernate操作的开发人员，于Hiberante类似80%；</li>
  * <li>操作底层为对象时，可以指定SQL字段的命名方式，如userName或user_name；</li>
- * <li>可为不同数据之间的简单兼容进行处理；Insert的主键维护机制(sqlserver未实现)、分页构造机制(分页暂时未实现)；</li>
+ * <li>可为不同数据之间的简单兼容进行处理；Insert的主键维护机制(sqlserver未实现)、分页构造机制(sqlserver未实现)；</li>
  * <li>自动生成SQL语句时，增加过滤条件；</li>
  * <li>目前版本对sqlserver的API不支持；</li>
  * 
@@ -273,6 +273,12 @@ public class JdbcUtils {
 		this.setPage(page);
 	}
 
+	public JdbcUtils(Class dataMappingClass, Page page, String database) {
+		this(dataMappingClass);
+		this.setPage(page);
+		this.setDatabase(database);
+	}
+
 	/**
 	 * 构造函数
 	 * 
@@ -297,6 +303,13 @@ public class JdbcUtils {
 	public JdbcUtils(Class dataMappingClass, String rule, Page page) {
 		this(dataMappingClass, rule);
 		this.setPage(page);
+	}
+
+	public JdbcUtils(Class dataMappingClass, String rule, Page page,
+			String database) {
+		this(dataMappingClass, rule);
+		this.setPage(page);
+		this.setDatabase(database);
 	}
 
 	// ////////////////////////构造函数END/////////////////////////////////////////////////////////////////
