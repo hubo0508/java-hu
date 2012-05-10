@@ -58,7 +58,7 @@ public class JdbcUtils {
 
 	/**
 	 * Java Bean 字段命名与数据库字段命名的方式为：驼峰命名法。如：userName；可通过 API
-	 * <code>JdbcUtils.setRule(String)</code>设置工具(JdbcUtils)类的命名规则，工具(JdbcUtils)类默认的规则为<code>JdbcUtils.HUMP</code>
+	 * <code>JdbcUtils.setRule(String)</code>设置工具(JdbcUtils)类的命名规则，工具(JdbcUtils)类默认的规则为<code>JdbcUtils.SEGMENTATION</code>
 	 * 
 	 * @see JdbcUtils#setRule(String)
 	 */
@@ -66,7 +66,7 @@ public class JdbcUtils {
 
 	/**
 	 * Java Bean 字段命名与数据库字段命名的方式为：分段名法。如：user_name；可通过 API
-	 * <code>JdbcUtils.setRule(String)</code>设置工具(JdbcUtils)类的命名规则，工具(JdbcUtils)类默认的规则为<code>JdbcUtils.HUMP</code>
+	 * <code>JdbcUtils.setRule(String)</code>设置工具(JdbcUtils)类的命名规则，工具(JdbcUtils)类默认的规则为<code>JdbcUtils.SEGMENTATION</code>
 	 * 
 	 * @see JdbcUtils#setRule(String)
 	 */
@@ -93,12 +93,12 @@ public class JdbcUtils {
 	public final static String MYSQL_SEQ = "increase by degrees";
 
 	/**
-	 * 数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.HUMP</code>)
+	 * 数据库字段与Java Bean字段的命名规则，默认为驼峰命名法(<code>JdbcUtils.SEGMENTATION</code>)
 	 * 
 	 * @see JdbcUtils#HUMP
 	 * @see JdbcUtils#SEGMENTATION
 	 */
-	private String rule = HUMP;
+	private String rule = SEGMENTATION;
 
 	/**
 	 * Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
