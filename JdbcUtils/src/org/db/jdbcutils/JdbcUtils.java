@@ -215,6 +215,11 @@ public class JdbcUtils {
 	 * 结果集处理(私有)
 	 */
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
+	
+	/**
+	 * 分页参数Bean
+	 */
+	private Page page = null;
 
 	/*
 	 * SQL转换成统计语句处理(私有)
@@ -223,6 +228,9 @@ public class JdbcUtils {
 	 */
 	// private final SqlStatisticsProcessor statPro = new
 	// JdbcUtils.SqlStatisticsProcessor();
+	
+	// ////////////////////////构造函数START/////////////////////////////////////////////////////////////////
+
 	/**
 	 * 构造函数
 	 * 
@@ -259,6 +267,8 @@ public class JdbcUtils {
 		this.setDataMappingClass(dataMappingClass);
 		this.setRule(rule);
 	}
+
+	// ////////////////////////构造函数END/////////////////////////////////////////////////////////////////
 
 	/**
 	 * 无参数查询数据，SQL自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
@@ -626,7 +636,8 @@ public class JdbcUtils {
 		}
 
 		if (sql == null) {
-			throw new SQLException("SQL_STATEMENT_NULL_ERROR:Null SQL statement");
+			throw new SQLException(
+					"SQL_STATEMENT_NULL_ERROR:Null SQL statement");
 		}
 
 		if (instanceCollectionOrClass == null) {
@@ -1662,6 +1673,20 @@ public class JdbcUtils {
 	 */
 	public void setSqlFilter(Map sqlFilter) {
 		this.sqlFilter = sqlFilter;
+	}
+	
+	/**
+	 * 取得分页参数Bean
+	 */
+	public Page getPage() {
+		return page;
+	}
+	
+	/**
+	 * 设置分页参数Bean
+	 */
+	public void setPage(Page page) {
+		this.page = page;
 	}
 
 	/**
