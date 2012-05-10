@@ -52,8 +52,7 @@ public class DeviceTest {
 
 	public void queryPage() {
 		try {
-			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-					JdbcUtils.SEGMENTATION, new Page(1, 2));
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class, new Page(1, 2));
 			db.setDatabase(JdbcUtils.MYSQL);
 			Page page = (Page) db.queryResultToArrayList(con);
 
@@ -61,7 +60,7 @@ public class DeviceTest {
 
 			for (int i = 0; i < result.size(); i++) {
 				ConfigDevice d = (ConfigDevice) result.get(i);
-				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
+				System.out.println(d.getDeviceIp() + "|" + d.getId());
 			}
 
 			System.out.println("当前页：" + page.getThisPage());
