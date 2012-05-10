@@ -61,14 +61,11 @@ public class Page {
 	// 返回结果 //
 	private Object result = new Object();
 
-	public Page() {
-
-	}
-
 	/**
+	 * @param startPage 起启页
 	 * @param pageSize
 	 *            每页显示行数
-	 * @param startPage 起启页
+	 * 
 	 */
 	public Page(int startPage, int pageSize) {
 		super();
