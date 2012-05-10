@@ -68,7 +68,7 @@ public class SqlCompatible {
 	public String getPagingSql(String sqlText) {
 		return getPagingSql(sqlText, this.database);
 	}
-
+	
 	public String getPagingSql(String sqlText, String database) {
 
 		StringBuffer sb = new StringBuffer(100);
