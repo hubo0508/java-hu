@@ -215,7 +215,7 @@ public class JdbcUtils {
 	 * 结果集处理(私有)
 	 */
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
-	
+
 	/**
 	 * 分页参数Bean
 	 */
@@ -228,9 +228,7 @@ public class JdbcUtils {
 	 */
 	// private final SqlStatisticsProcessor statPro = new
 	// JdbcUtils.SqlStatisticsProcessor();
-	
 	// ////////////////////////构造函数START/////////////////////////////////////////////////////////////////
-
 	/**
 	 * 构造函数
 	 * 
@@ -245,6 +243,11 @@ public class JdbcUtils {
 	 */
 	public JdbcUtils(Class dataMappingClass) {
 		this.setDataMappingClass(dataMappingClass);
+	}
+
+	public JdbcUtils(Class dataMappingClass, Page page) {
+		this(dataMappingClass);
+		this.setPage(page);
 	}
 
 	/**
@@ -266,6 +269,11 @@ public class JdbcUtils {
 	public JdbcUtils(Class dataMappingClass, String rule) {
 		this.setDataMappingClass(dataMappingClass);
 		this.setRule(rule);
+	}
+
+	public JdbcUtils(Class dataMappingClass, String rule, Page page) {
+		this(dataMappingClass, rule);
+		this.setPage(page);
 	}
 
 	// ////////////////////////构造函数END/////////////////////////////////////////////////////////////////
@@ -605,7 +613,7 @@ public class JdbcUtils {
 	 * 
 	 * @param conn
 	 *            数据库连接对象
-	 * @param sql
+	 * @param statement
 	 *            查询SQL语句
 	 * @param params
 	 *            查询参数
@@ -628,14 +636,14 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public Object query(Connection conn, String sql, Object[] params,
+	public Object query(Connection conn, String statement, Object[] params,
 			Object instanceCollectionOrClass) throws SQLException {
 
 		if (conn == null) {
 			throw new SQLException("CONNECTION_NULL_ERROR:Null connection");
 		}
 
-		if (sql == null) {
+		if (statement == null) {
 			throw new SQLException(
 					"SQL_STATEMENT_NULL_ERROR:Null SQL statement");
 		}
@@ -644,7 +652,7 @@ public class JdbcUtils {
 			throw new SQLException("RESULT_TYPE_NULL_ERROR:Null result set");
 		}
 
-		if (!isSelectStatement(sql)) {
+		if (!isSelectStatement(statement)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 
@@ -652,18 +660,24 @@ public class JdbcUtils {
 		ResultSet rs = null;
 		Object result = null;
 		try {
-			stmt = this.prepareStatement(conn, sql);
+			stmt = this.prepareStatement(conn, statement);
 			this.fillStatement(stmt, params);
 			rs = stmt.executeQuery();
 			result = rsPro.handle(rs, instanceCollectionOrClass);
 		} catch (SQLException e) {
-			this.rethrow(e, sql, params);
+			this.rethrow(e, statement, params);
 		} finally {
 			try {
 				close(rs, stmt);
 			} catch (Exception e) {
 				close(rs, stmt);
 			}
+		}
+
+		// 分页查询
+		if (this.getPage() != null) {
+			String countStatement = new SqlCompatible().count(statement);
+			Long count = (Long) query(conn, countStatement, params, Long.class);
 		}
 
 		return result;
@@ -1674,14 +1688,14 @@ public class JdbcUtils {
 	public void setSqlFilter(Map sqlFilter) {
 		this.sqlFilter = sqlFilter;
 	}
-	
+
 	/**
 	 * 取得分页参数Bean
 	 */
 	public Page getPage() {
 		return page;
 	}
-	
+
 	/**
 	 * 设置分页参数Bean
 	 */
