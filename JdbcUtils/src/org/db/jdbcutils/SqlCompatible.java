@@ -5,9 +5,12 @@ import java.util.regex.Pattern;
 /**
  * SQL统计处理
  * 
- * @User: 魔力猫咪<code>(http://wlmouse.iteye.com/category/60230)</code>
+ * @author: 魔力猫咪<code>(http://wlmouse.iteye.com/category/60230)</code>
+ * @author: hubo.0508@gmail.com
  */
-public class SqlStatisticsProcessor {
+public class SqlCompatible {
+	
+	
 
 	/**
 	 * 数量统计正则表达式
@@ -49,6 +52,27 @@ public class SqlStatisticsProcessor {
 	 */
 	private Pattern regex = Pattern.compile("(SELECT)(.*)(FROM.*)",
 			Pattern.CASE_INSENSITIVE);
+	
+	public String getPagingSQL(String sqlText, String database) {
+
+		StringBuffer sb = new StringBuffer(100);
+		if (JdbcUtils.ORACLE.equals(database)) {
+			sb.append("SELECT * FROM (SELECT row_.*, ROWNUM rownum_ FROM ( ");
+			sb.append(sqlText);
+			sb.append(" ) row_ WHERE ROWNUM<=?) WHERE ROWNUM>=?");
+			return sb.toString();
+		}
+
+		if (JdbcUtils.SQLSERVER.equals(database)) {
+			
+		}
+
+		if (JdbcUtils.MYSQL.equals(database)) {
+			return sqlText + " LIMIT ?,?";
+		}
+
+		return sqlText;
+	}
 
 	/**
 	 * 数量统计
