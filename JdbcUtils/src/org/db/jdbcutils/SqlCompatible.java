@@ -3,14 +3,26 @@ package org.db.jdbcutils;
 import java.util.regex.Pattern;
 
 /**
- * SQL统计处理
+ * SQL兼容处理
  * 
  * @author: 魔力猫咪<code>(http://wlmouse.iteye.com/category/60230)</code>
  * @author: hubo.0508@gmail.com
  */
 public class SqlCompatible {
-	
-	
+
+	public SqlCompatible() {
+
+	}
+
+	public SqlCompatible(String database) {
+		super();
+		this.database = database;
+	}
+
+	/**
+	 * 数据库类型
+	 */
+	private String database;
 
 	/**
 	 * 数量统计正则表达式
@@ -52,8 +64,12 @@ public class SqlCompatible {
 	 */
 	private Pattern regex = Pattern.compile("(SELECT)(.*)(FROM.*)",
 			Pattern.CASE_INSENSITIVE);
-	
-	public String getPagingSQL(String sqlText, String database) {
+
+	public String getPagingSql(String sqlText) {
+		return getPagingSql(sqlText, this.database);
+	}
+
+	public String getPagingSql(String sqlText, String database) {
 
 		StringBuffer sb = new StringBuffer(100);
 		if (JdbcUtils.ORACLE.equals(database)) {
@@ -64,7 +80,7 @@ public class SqlCompatible {
 		}
 
 		if (JdbcUtils.SQLSERVER.equals(database)) {
-			
+
 		}
 
 		if (JdbcUtils.MYSQL.equals(database)) {
@@ -136,4 +152,13 @@ public class SqlCompatible {
 	public String avg(String statement) {
 		return regex.matcher(statement).replaceAll(avgRegex);
 	}
+
+	public String getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(String database) {
+		this.database = database;
+	}
+
 }
