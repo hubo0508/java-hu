@@ -25,6 +25,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import test.ConfigDevice;
 
 /**
@@ -51,6 +53,8 @@ import test.ConfigDevice;
  * 
  */
 public class JdbcUtils {
+
+	Logger log = Logger.getLogger(JdbcUtils.class);
 
 	/**
 	 * Java Bean 字段命名与数据库字段命名的方式为：驼峰命名法。如：userName；可通过 API
@@ -221,6 +225,25 @@ public class JdbcUtils {
 	 */
 	private Page page = null;
 
+	/**
+	 * 数据库
+	 */
+	private String database;
+
+	/**
+	 * 取得数据库
+	 */
+	public String getDatabase() {
+		return database;
+	}
+
+	/**
+	 * 设置数据库
+	 */
+	public void setDatabase(String database) {
+		this.database = database;
+	}
+
 	/*
 	 * SQL转换成统计语句处理(私有)
 	 * 
@@ -294,10 +317,8 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public ArrayList queryResultToArrayList(Connection conn)
-			throws SQLException {
-		return (ArrayList) query(conn, sqlPro.makeSelectSql(), null,
-				new ArrayList());
+	public Object queryResultToArrayList(Connection conn) throws SQLException {
+		return query(conn, sqlPro.makeSelectSql(), null, new ArrayList());
 	}
 
 	/**
@@ -324,7 +345,7 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public ArrayList queryResultToArrayList(Connection conn, String sqlOrWhereIf)
+	public Object queryResultToArrayList(Connection conn, String sqlOrWhereIf)
 			throws SQLException {
 		return queryResultToArrayList(conn, sqlOrWhereIf, null);
 	}
@@ -355,8 +376,8 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public ArrayList queryResultToArrayList(Connection conn,
-			String sqlOrWhereIf, Object[] params) throws SQLException {
+	public Object queryResultToArrayList(Connection conn, String sqlOrWhereIf,
+			Object[] params) throws SQLException {
 
 		if (sqlOrWhereIf == null) {
 			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
@@ -369,7 +390,7 @@ public class JdbcUtils {
 		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return (ArrayList) query(conn, sqlOrWhereIf, params, new ArrayList());
+		return query(conn, sqlOrWhereIf, params, new ArrayList());
 	}
 
 	/**
@@ -388,8 +409,8 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public HashMap queryResultToHashMap(Connection con) throws SQLException {
-		return (HashMap) query(con, sqlPro.makeSelectSql(), null, new HashMap());
+	public Object queryResultToHashMap(Connection con) throws SQLException {
+		return query(con, sqlPro.makeSelectSql(), null, new HashMap());
 	}
 
 	/**
@@ -416,7 +437,7 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf)
+	public Object queryResultToHashMap(Connection con, String sqlOrWhereIf)
 			throws SQLException {
 		return queryResultToHashMap(con, sqlOrWhereIf, null);
 	}
@@ -447,13 +468,13 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public HashMap queryResultToHashMap(Connection con, String sqlOrWhereIf,
+	public Object queryResultToHashMap(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
 
 		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return (HashMap) query(con, sqlOrWhereIf, params, new HashMap());
+		return query(con, sqlOrWhereIf, params, new HashMap());
 	}
 
 	/**
@@ -472,10 +493,9 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public LinkedHashMap queryResultToLinkedHashMap(Connection con)
+	public Object queryResultToLinkedHashMap(Connection con)
 			throws SQLException {
-		return (LinkedHashMap) query(con, sqlPro.makeSelectSql(), null,
-				new LinkedHashMap());
+		return query(con, sqlPro.makeSelectSql(), null, new LinkedHashMap());
 	}
 
 	/**
@@ -502,8 +522,8 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
-			String sqlOrWhereIf) throws SQLException {
+	public Object queryResultToLinkedHashMap(Connection con, String sqlOrWhereIf)
+			throws SQLException {
 		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
@@ -536,13 +556,12 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public LinkedHashMap queryResultToLinkedHashMap(Connection con,
+	public Object queryResultToLinkedHashMap(Connection con,
 			String sqlOrWhereIf, Object[] params) throws SQLException {
 		if (!isSelectStatement(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return (LinkedHashMap) query(con, sqlOrWhereIf, params,
-				new LinkedHashMap());
+		return query(con, sqlOrWhereIf, params, new LinkedHashMap());
 	}
 
 	/**
@@ -656,6 +675,32 @@ public class JdbcUtils {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 
+		if (this.getPage() != null) {
+			SqlCompatible stateSql = new SqlCompatible(getDatabase());
+			Object[] pageParams = params == null || params.length == 0 ? null
+					: beanPro.mergerObject(params, getParamsObject(), database);
+			params = params == null || params.length == 0 ? getParamsObject()
+					: beanPro.mergerObject(params, getParamsObject(), database);
+
+			Class temp = this.getDataMappingClass();
+			this.setDataMappingClass(Long.class);
+			long totalCount = Long.valueOf(
+					queryResult(conn, stateSql.count(statement), pageParams,
+							Long.class).toString()).longValue();
+			this.setDataMappingClass(temp);
+
+			return new Page(totalCount, getPage().getStartPage() + 1, getPage()
+					.getPageSize(), queryResult(conn, stateSql
+					.paging(statement), params, instanceCollectionOrClass));
+		}
+
+		return queryResult(conn, statement, params, instanceCollectionOrClass);
+	}
+
+	private Object queryResult(Connection conn, String statement,
+			Object[] params, Object instanceCollectionOrClass)
+			throws SQLException {
+
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Object result = null;
@@ -674,13 +719,13 @@ public class JdbcUtils {
 			}
 		}
 
-		// 分页查询
-		if (this.getPage() != null) {
-			String countStatement = new SqlCompatible().count(statement);
-			Long count = (Long) query(conn, countStatement, params, Long.class);
-		}
-
 		return result;
+	}
+
+	private Object[] getParamsObject() {
+		int start = getPage().getStartToDatabase(getDatabase());
+		int end = getPage().getEndToDatabase(getDatabase());
+		return new Object[] { new Integer(start), new Integer(end) };
 	}
 
 	// //////////////////////INSERT-BEGIN///////////////////////////////////////////////////////////////
@@ -1836,6 +1881,8 @@ public class JdbcUtils {
 					((Map) instanceObject).put(field, rs.getObject(field));
 				} else if (isList(instanceObject.getClass())) {
 					((List) instanceObject).add(rs.getObject(field));
+				} else if (beanPro.isBasicType(instanceObject.getClass())) {
+					return rs.getObject(1);
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
 							.convert(field, TOTYPE[0]));
@@ -2078,6 +2125,33 @@ public class JdbcUtils {
 			}
 
 			return cleanEmpty(params);
+		}
+
+		public Object[] mergerObject(Object[] params, Object[] paramsPage,
+				String database) {
+			Object[] newparams = new Object[params.length + paramsPage.length];
+
+			for (int i = 0; i < params.length; i++) {
+				newparams[i] = params[i];
+			}
+
+			if (JdbcUtils.MYSQL.equals(database)) {
+				for (int i = 0; i < paramsPage.length; i++) {
+					newparams[i + params.length] = paramsPage[i];
+				}
+			} else if (JdbcUtils.SQLSERVER.equals(database)) {
+
+			} else if (JdbcUtils.ORACLE.equals(database)) {
+				int len = paramsPage.length - 1;
+				int count = params.length;
+				for (int i = len; i >= 0; i--) {
+					newparams[count] = paramsPage[i];
+					count++;
+
+				}
+			}
+
+			return newparams;
 		}
 
 		/**
@@ -3311,14 +3385,17 @@ public class JdbcUtils {
 	public static void main(String[] args) throws SQLException {
 
 		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
-		// System.out.println(db.sqlPro.makeSelectSql("where id=111"));
-		System.out.println(db.sqlPro.makeDeleteSql());
+		System.out.println(db.sqlPro.makeSelectSql());
+		// System.out.println(db.sqlPro.makeDeleteSql());
 		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
 
-		String sql = "SELECT device_ename, device_factory, device_ip, device_type, id FROM nhwm_config_device where id=111";
-		System.out.println(sql.startsWith("SELECT"));
-		System.out.println(new Object[] {});
+		// SqlCompatible sqlCom = new SqlCompatible();
+		// String sql = db.sqlPro.makeSelectSql();
+		// sql = sqlCom.getPagingSql(sql, "mysql");
+		// System.out.println(sql);
+		// System.out.println(new SqlCompatible().count(sql));
+
 	}
 
 }

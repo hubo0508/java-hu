@@ -65,11 +65,11 @@ public class SqlCompatible {
 	private Pattern regex = Pattern.compile("(SELECT)(.*)(FROM.*)",
 			Pattern.CASE_INSENSITIVE);
 
-	public String getPagingSql(String sqlText) {
-		return getPagingSql(sqlText, this.database);
+	public String paging(String sqlText) {
+		return paging(sqlText, this.database);
 	}
 	
-	public String getPagingSql(String sqlText, String database) {
+	public String paging(String sqlText, String database) {
 
 		StringBuffer sb = new StringBuffer(100);
 		if (JdbcUtils.ORACLE.equals(database)) {
