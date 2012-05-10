@@ -52,8 +52,8 @@ public class DeviceTest {
 
 	public void queryPage() {
 		try {
-			JdbcUtils db = new JdbcUtils(ConfigDevice.class, new Page(1, 2));
-			db.setDatabase(JdbcUtils.MYSQL);
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class, new Page(1, 2),
+					JdbcUtils.MYSQL);
 			Page page = (Page) db.queryResultToArrayList(con);
 
 			List result = (List) page.getResult();
