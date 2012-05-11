@@ -689,7 +689,7 @@ public class JdbcUtils {
 		}
 
 		if (this.getPage() != null) {
-			SqlCompatible stateSql = new SqlCompatible(getDatabase());
+			Statement stateSql = new Statement(getDatabase());
 			Object[] pageParams = params == null || params.length == 0 ? null
 					: beanPro.mergerObject(params, getParamsObject(), database);
 			params = params == null || params.length == 0 ? getParamsObject()

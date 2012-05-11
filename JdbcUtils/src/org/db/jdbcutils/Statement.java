@@ -8,13 +8,13 @@ import java.util.regex.Pattern;
  * @author: 魔力猫咪<code>(http://wlmouse.iteye.com/category/60230)</code>
  * @author: hubo.0508@gmail.com
  */
-public class SqlCompatible {
+public class Statement {
 
-	public SqlCompatible() {
+	public Statement() {
 
 	}
 
-	public SqlCompatible(String database) {
+	public Statement(String database) {
 		super();
 		this.database = database;
 	}
