@@ -62,14 +62,7 @@ public class DeviceTest {
 				ConfigDevice d = (ConfigDevice) result.get(i);
 				System.out.println(d.getDeviceIp() + "|" + d.getId());
 			}
-
-			System.out.println("当前页：" + page.getThisPage());
-			System.out.println("下一页：" + page.getPageNext());
-			System.out.println("上一页：" + page.getPagePrev());
-			System.out.println("尾  页：" + page.getPageLast());
-			System.out.println("总页数：" + page.getTotalPage());
-			System.out.println("总行数：" + page.getTotalCount());
-
+			writeLog(page);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -481,5 +474,15 @@ public class DeviceTest {
 		} finally {
 			JdbcUtils.close(con);
 		}
+	}
+	
+	
+	public void writeLog(Page page){
+		System.out.println("当前页：" + page.getThisPage());
+		System.out.println("下一页：" + page.getPageNext());
+		System.out.println("上一页：" + page.getPagePrev());
+		System.out.println("尾  页：" + page.getPageLast());
+		System.out.println("总页数：" + page.getTotalPage());
+		System.out.println("总行数：" + page.getTotalCount());
 	}
 }
