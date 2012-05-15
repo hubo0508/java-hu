@@ -1,6 +1,7 @@
 package pool;
 
-import util.PropertiesUtil;
+import org.db.jdbcutils.PropertiesFile;
+
 
 /**
  * 
@@ -30,7 +31,7 @@ public class SQLServerPool extends DBPool {
 
 	private static void setupProperties() {
 
-		PropertiesUtil proUtil = PropertiesUtil.getInstance();
+		PropertiesFile proUtil = PropertiesFile.getInstance();
 		String path = "D:\\work\\myeclipse6.6\\JdbcUtils\\src.test\\jdbc.properties";
 
 		String poolName = proUtil.getProperty(path, "sqlserver.jdbc.poolName");
