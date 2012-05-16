@@ -11,6 +11,7 @@ import org.db.jdbcutils.JdbcUtils;
 import org.db.jdbcutils.Page;
 
 import pool.*;
+import test.pojo.ConfigDevice;
 
 public class DeviceTest {
 
