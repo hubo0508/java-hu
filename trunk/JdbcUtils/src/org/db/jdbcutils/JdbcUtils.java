@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.db.jdbcutils.sql.SqlStatement;
 
-import test.ConfigDevice;
+import test.pojo.Users;
 
 /**
  * 数据库底层工具类
@@ -2656,7 +2656,7 @@ public class JdbcUtils {
 		private void appendSelectParams(StringBuffer sb, String name, int i,
 				int len) throws SQLException {
 			sb.append(sqlPro.convert(name, TOTYPE[1]));
-			if (i < (len - 1)) {
+			if (i < (len - 2)) {
 				sb.append(", ");
 			}
 		}
@@ -3398,8 +3398,8 @@ public class JdbcUtils {
 
 	public static void main(String[] args) throws SQLException {
 
-		JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
-		System.out.println(db.sqlPro.makeSelectSql());
+		//JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
+		//System.out.println(db.sqlPro.makeSelectSql());
 		// System.out.println(db.sqlPro.makeDeleteSql());
 		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
@@ -3410,6 +3410,8 @@ public class JdbcUtils {
 		// System.out.println(sql);
 		// System.out.println(new SqlCompatible().count(sql));
 
+		JdbcUtils db = new JdbcUtils(Users.class);
+		System.out.println(db.sqlPro.makeSelectSql());
 	}
 
 }
