@@ -1,6 +1,7 @@
 package org.db.jdbcutils;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,72 +9,145 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 属性文件的读取
+ */
 public class PropertiesFile {
-	Logger log = Logger.getLogger(PropertiesFile.class);
 
-	private static String cachePath;
+	/**
+	 * 日志输出
+	 */
+	protected Logger log = Logger.getLogger(PropertiesFile.class);
 
+	/**
+	 * 文件路径
+	 */
+	public static String url;
+
+	public PropertiesFile() {
+	}
+
+	public PropertiesFile(String url) {
+		if (PropertiesFile.url != null && !PropertiesFile.url.equals(url)) {
+			PropertiesFile.url = url;
+		}
+	}
+
+	/**
+	 * 取得单例缓存
+	 */
 	private static class Instance {
 		public final static PropertiesFile pro = new PropertiesFile();
-		public static Properties props = new Properties();
+		public final static Properties props = new Properties();
 	}
 
 	public static PropertiesFile getInstance() {
 		return Instance.pro;
 	}
-
-	private static Properties getProps() {
-		return Instance.props;
-	}
-
-	private synchronized void loadProperties(String typeOrPath)
-			throws IOException {
-
-		cachePath = typeOrPath;
-		getProps().load(new FileInputStream(typeOrPath));
-
-	}
-
-	public String getProperty(String typeOrPath, String key) {
+	
+	/**
+	 * 加载属性文件
+	 */
+	private synchronized void loadProperties(String path) {
+		FileInputStream fileStr = null;
 		try {
-			if (getProps() == null || !typeOrPath.equals(cachePath)) {
-				loadProperties(typeOrPath);
-			}
-			return getProps().getProperty(key);
+			fileStr = new FileInputStream(path);
+			Instance.props.load(fileStr);
+		} catch (FileNotFoundException e) {
+			log.error(e.getMessage(), e);
 		} catch (IOException e) {
-			log.info(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
+			log.error(e.getMessage(), e);
+		}finally{
+			closeIS(fileStr);
 		}
 	}
 
-	public void setProperty(String path, String key, String value)
-			throws IOException {
+	/**
+	 * 取值
+	 */
+	public String getValue(String key) {
+		return getValue(null, key);
+	}
+
+	/**
+	 * 取值
+	 */
+	public String getValue(String url, String key) {
+
+		if (url == null && PropertiesFile.url == null) {
+			throw new RuntimeException("加载配置文件路径为空。");
+		}
+
+		if (url == null || !url.equals(PropertiesFile.url)) {
+			loadProperties(url);
+			PropertiesFile.url = url;
+		}
+
+		return Instance.props.getProperty(key);
+	}
+
+	/**
+	 * 设置值
+	 */
+	public void setValue(String key, String value) {
+		this.setValue(PropertiesFile.url, key, value);
+	}
+
+	/**
+	 * 设置值
+	 */
+	public void setValue(String url, String key, String value) {
+		if (url == null) {
+			throw new RuntimeException("加载配置文件路径为空。");
+		}
+		Instance.props.setProperty(key, value);
+		saveValue(url);
+	}
+
+	/**
+	 * 将值写入到硬盘
+	 */
+	private void saveValue(String url) {
+		OutputStream outputStream = null;
 		try {
-			if (getProps() == null) {
-				loadProperties(path);
-			}
-			getProps().setProperty(key, value);
-
-			saveConfig(path);
-		} catch (Exception e) {
-			log.info(e.getMessage(), e);
-			throw new IOException(e.getMessage());
+			outputStream = new FileOutputStream(url);
+			Instance.props.store(outputStream, "set");
+		} catch (FileNotFoundException e) {
+			log.error(e.getMessage(), e);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		} finally {
+			closeOS(outputStream);
 		}
 	}
 
-	public void saveConfig(String filePath) throws IOException {
-		OutputStream outputStream = new FileOutputStream(filePath);
-		getProps().store(outputStream, "set");
-		outputStream.close();
+	/**
+	 * 关闭输出流连接通道
+	 */
+	private void closeOS(OutputStream outputStream) {
+		if (outputStream == null) {
+			return;
+		}
+		try {
+			outputStream.close();
+		} catch (IOException e) {
+		}
 	}
 
+	private void closeIS(FileInputStream fileStr) {
+		if (fileStr == null) {
+			return;
+		}
+		try {
+			fileStr.close();
+		} catch (IOException e) {
+		}
+	}
+	
 	public static void main(String[] args) throws IOException {
 		String path = "D:\\temp\\UUID.properties";
-
-		PropertiesFile.getInstance().setProperty(path, "age", "asdfasdfasdf");
-
-		System.out.println(PropertiesFile.getInstance()
-				.getProperty(path, "age"));
+		PropertiesFile.getInstance().setValue(path, "age", "asdfasdfasdf");
+		System.out.println(PropertiesFile.getInstance().getValue(path, "age"));
 
 	}
 }
