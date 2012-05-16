@@ -12,22 +12,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.db.jdbcutils.sql.SqlStatement;
+import org.db.jdbcutils.utils.Constant;
 
 import test.pojo.ConfigDevice;
 
@@ -246,13 +244,6 @@ public class JdbcUtils {
 		this.database = database;
 	}
 
-	/*
-	 * SQL转换成统计语句处理(私有)
-	 * 
-	 * @User: 魔力猫咪(http://wlmouse.iteye.com/category/60230)
-	 */
-	// private final SqlStatisticsProcessor statPro = new
-	// JdbcUtils.SqlStatisticsProcessor();
 	// ////////////////////////构造函数START/////////////////////////////////////////////////////////////////
 	/**
 	 * 构造函数
@@ -321,6 +312,8 @@ public class JdbcUtils {
 	 * 
 	 * @param conn
 	 *            数据库连接对象
+	 * @param instanceCollection
+	 *            查询返回数据集类型(List\Map\Set)
 	 * @return ArrayList
 	 * @exception
 	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
@@ -361,9 +354,9 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public Object queryResultToArrayList(Connection conn, String sqlOrWhereIf)
-			throws SQLException {
-		return queryResultToArrayList(conn, sqlOrWhereIf, null);
+	public Object queryResultTo(Connection conn, String sqlOrWhereIf,
+			Object instanceCollection) throws SQLException {
+		return queryResultTo(conn, sqlOrWhereIf, null, instanceCollection);
 	}
 
 	/**
@@ -392,192 +385,18 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public Object queryResultToArrayList(Connection conn, String sqlOrWhereIf,
-			Object[] params) throws SQLException {
+	public Object queryResultTo(Connection conn, String sqlOrWhereIf,
+			Object[] params, Object instanceCollection) throws SQLException {
 
 		if (sqlOrWhereIf == null) {
 			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
 		}
 
-		if (!isSelectStatement(sqlOrWhereIf) || !isWhereStatement(sqlOrWhereIf)) {
-			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
-		}
-
-		if (!isSelectStatement(sqlOrWhereIf)) {
+		if (!startsWithSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
-		return query(conn, sqlOrWhereIf, params, new ArrayList());
-	}
 
-	/**
-	 * 无参数查询数据，SQL自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @return HashMap
-	 * @exception
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
-	 * @see JdbcUtils#getDataMappingClass()
-	 * @see JdbcUtils#getSqlMappingClass()
-	 * @see JdbcUtils#setSqlMappingClass(Class)
-	 * @see JdbcUtils#setSqlFilter(Map)
-	 * @see JdbcUtils#getSqlFilter()
-	 */
-	public Object queryResultToHashMap(Connection con) throws SQLException {
-		return query(con, sqlPro.makeSelectSql(), null, new HashMap());
-	}
-
-	/**
-	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
-	 * 
-	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
-	 * API不作什么解析与附加过滤条件；</li>
-	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
-	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param sqlOrWhereIf
-	 *            SQL查询语句或查询条件
-	 * @return HashMap
-	 * @exception
-	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
-	 * @see JdbcUtils#getDataMappingClass()
-	 * @see JdbcUtils#getSqlMappingClass()
-	 * @see JdbcUtils#setSqlMappingClass(Class)
-	 * @see JdbcUtils#setSqlFilter(Map)
-	 * @see JdbcUtils#getSqlFilter()
-	 */
-	public Object queryResultToHashMap(Connection con, String sqlOrWhereIf)
-			throws SQLException {
-		return queryResultToHashMap(con, sqlOrWhereIf, null);
-	}
-
-	/**
-	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
-	 * 
-	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
-	 * API不作什么解析与附加过滤条件；</li>
-	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
-	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param sqlOrWhereIf
-	 *            SQL查询语句或查询条件
-	 * @param params
-	 *            查询参数
-	 * @return HashMap
-	 * @exception
-	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
-	 * @see JdbcUtils#getDataMappingClass()
-	 * @see JdbcUtils#getSqlMappingClass()
-	 * @see JdbcUtils#setSqlMappingClass(Class)
-	 * @see JdbcUtils#setSqlFilter(Map)
-	 * @see JdbcUtils#getSqlFilter()
-	 */
-	public Object queryResultToHashMap(Connection con, String sqlOrWhereIf,
-			Object[] params) throws SQLException {
-
-		if (!isSelectStatement(sqlOrWhereIf)) {
-			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
-		}
-		return query(con, sqlOrWhereIf, params, new HashMap());
-	}
-
-	/**
-	 * 无参数查询数据，SQL自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @return LinkedHashMap
-	 * @exception
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
-	 * @see JdbcUtils#getDataMappingClass()
-	 * @see JdbcUtils#getSqlMappingClass()
-	 * @see JdbcUtils#setSqlMappingClass(Class)
-	 * @see JdbcUtils#setSqlFilter(Map)
-	 * @see JdbcUtils#getSqlFilter()
-	 */
-	public Object queryResultToLinkedHashMap(Connection con)
-			throws SQLException {
-		return query(con, sqlPro.makeSelectSql(), null, new LinkedHashMap());
-	}
-
-	/**
-	 * 无参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
-	 * 
-	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
-	 * API不作什么解析与附加过滤条件；</li>
-	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
-	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param sqlOrWhereIf
-	 *            SQL查询语句或查询条件
-	 * @return LinkedHashMap
-	 * @exception
-	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_NULL_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
-	 * @see JdbcUtils#getDataMappingClass()
-	 * @see JdbcUtils#getSqlMappingClass()
-	 * @see JdbcUtils#setSqlMappingClass(Class)
-	 * @see JdbcUtils#setSqlFilter(Map)
-	 * @see JdbcUtils#getSqlFilter()
-	 */
-	public Object queryResultToLinkedHashMap(Connection con, String sqlOrWhereIf)
-			throws SQLException {
-		if (!isSelectStatement(sqlOrWhereIf)) {
-			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
-		}
-		return queryResultToLinkedHashMap(con, sqlOrWhereIf, null);
-	}
-
-	/**
-	 * 有参数查询数据，SQL半自动构造。根据映射模版<code>JdbcUtils.getDataMappingClass()</code>或<code>JdbcUtils#getSqlMappingClass()</code>自动产生SQL语句。可对映射模版增加过滤条件(<code>JdbcUtils.setSqlFilter(Map)/public Map sqlFilter(){}</code>)。
-	 * 
-	 * <li>sqlOrWhereIf=“<code>select * from user</code>”时，SDK
-	 * API不作什么解析与附加过滤条件；</li>
-	 * <li>sqlOrWhereIf=“<code>where name=“张三”</code>”时，在SDK
-	 * API构造的SQL语句后增加条件，<code>select id,user_name,password from user where name=?</code>其中where之前SQL语句根据映射模版自动构造。</li>
-	 * 
-	 * @param conn
-	 *            数据库连接对象
-	 * @param sqlOrWhereIf
-	 *            SQL查询语句或查询条件
-	 * @param params
-	 *            查询参数
-	 * @return LinkedHashMap
-	 * @exception
-	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_TYPES_ERROR)；</li>
-	 *         <li>数据库连接对象Connection为NULL时，抛出SQLException异常(CONNECTION_NULL_ERROR)</li>
-	 *         <li>其它SQLException则为非功能性SQLException异常；</li>
-	 * 
-	 * @see JdbcUtils#getDataMappingClass()
-	 * @see JdbcUtils#getSqlMappingClass()
-	 * @see JdbcUtils#setSqlMappingClass(Class)
-	 * @see JdbcUtils#setSqlFilter(Map)
-	 * @see JdbcUtils#getSqlFilter()
-	 */
-	public Object queryResultToLinkedHashMap(Connection con,
-			String sqlOrWhereIf, Object[] params) throws SQLException {
-		if (!isSelectStatement(sqlOrWhereIf)) {
-			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
-		}
-		return query(con, sqlOrWhereIf, params, new LinkedHashMap());
+		return query(conn, sqlOrWhereIf, params, instanceCollection);
 	}
 
 	/**
@@ -637,7 +456,7 @@ public class JdbcUtils {
 	 */
 	public Object queryResultToUnique(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
-		if (!isSelectStatement(sqlOrWhereIf)) {
+		if (!startsWithSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return this.query(con, sqlOrWhereIf, params, getDataMappingClass());
@@ -687,7 +506,7 @@ public class JdbcUtils {
 			throw new SQLException("RESULT_TYPE_NULL_ERROR:Null result set");
 		}
 
-		if (!isSelectStatement(statement)) {
+		if (!startsWithSelect(statement)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 
@@ -935,7 +754,7 @@ public class JdbcUtils {
 	 */
 	public int update(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
-		if (!isUpateStatement(sqlOrWhereIf)) {
+		if (!startsWithUpate(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
 		}
 		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
@@ -1046,7 +865,7 @@ public class JdbcUtils {
 	 * @exception 当SQL语句不是Delete语句时，抛出SQLException(SQL_TYPES_ERROR)。
 	 */
 	public int delete(Connection conn, String sql) throws SQLException {
-		if (!isDeleteStatement(sql)) {
+		if (!startsWithDelete(sql)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 		return execute(conn, sql, null);
@@ -1076,7 +895,7 @@ public class JdbcUtils {
 	 */
 	public int delete(Connection conn, String sqlOrWhereIf, Object[] params)
 			throws SQLException {
-		if (!isDeleteStatement(sqlOrWhereIf)) {
+		if (!startsWithDelete(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
 		return execute(conn, sqlPro.makeDeleteSql(sqlOrWhereIf), params);
@@ -1107,7 +926,7 @@ public class JdbcUtils {
 	public int delete(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
 
-		if (!isDeleteStatement(sqlOrWhereIf)) {
+		if (!startsWithDelete(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
 
@@ -1343,35 +1162,35 @@ public class JdbcUtils {
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************** */
 
-	public boolean isWhereStatement(String sql) {
+	public boolean startsWithWhere(String sql) {
 		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("WHERE");
 	}
 
-	public boolean isSelectStatement(String sql) {
+	public boolean startsWithSelect(String sql) {
 		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("SELECT");
 	}
 
-	public boolean isUpateStatement(String sql) {
+	public boolean startsWithUpate(String sql) {
 		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("UPDATE");
 	}
 
-	public boolean isDeleteStatement(String sql) {
+	public boolean startsWithDelete(String sql) {
 		if (sql == null) {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("DELETE");
 	}
 
-	public boolean isInsertStatement(String sql) {
+	public boolean startsWithInsert(String sql) {
 		if (sql == null) {
 			return false;
 		}
@@ -1642,6 +1461,7 @@ public class JdbcUtils {
 		this.sqlMappingClass = sqlMappingClass;
 		this.sqlPro.setDataMappingClass(sqlMappingClass);
 		this.beanPro.setDataMappingClass(sqlMappingClass);
+		this.setSqlFilter(this.beanPro.getSqlFilter(sqlMappingClass));
 	}
 
 	/**
@@ -1807,7 +1627,7 @@ public class JdbcUtils {
 				} else if (isArrayList(getDataMappingClass())) {
 					return rs.next() ? rsPro
 							.toUniqueObject(new ArrayList(), rs) : null;
-				} else if (beanPro.isBasicType(getDataMappingClass())) {
+				} else if (Constant.isBasicType(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueBiscType(rs,
 							getDataMappingClass()) : null;
 				} else {
@@ -1897,7 +1717,7 @@ public class JdbcUtils {
 					((Map) instanceObject).put(field, rs.getObject(field));
 				} else if (isList(instanceObject.getClass())) {
 					((List) instanceObject).add(rs.getObject(field));
-				} else if (beanPro.isBasicType(instanceObject.getClass())) {
+				} else if (Constant.isBasicType(instanceObject.getClass())) {
 					return rs.getObject(1);
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
@@ -2055,8 +1875,12 @@ public class JdbcUtils {
 		 * @see BeanProcessor#getDataMappingClass()
 		 */
 		public Map getSqlFilter() {
+			return getSqlFilter(getDataMappingClass());
+		}
+
+		public Map getSqlFilter(Class dataMappingClazz) {
 			try {
-				Object obj = newInstance(getDataMappingClass());
+				Object obj = newInstance(dataMappingClazz);
 				return (Map) callGetter(obj, "sqlFilter");
 			} catch (SQLException e) {
 			}
@@ -2127,7 +1951,7 @@ public class JdbcUtils {
 				String domainField = sqlPro.convert(columns[j], TOTYPE[0]);
 				for (int i = 0; i < len; i++) {
 					PropertyDescriptor prop = proDesc[i];
-					if (beanPro.isBasicType(prop.getPropertyType())
+					if (Constant.isBasicType(prop.getPropertyType())
 							&& prop.getName().equals(domainField)) {
 						if (sqlPro.isOracleAutomatic(prop, database, sequence)) {
 						} else if (sqlPro.isMySqlAutomatic(prop, database,
@@ -2398,7 +2222,7 @@ public class JdbcUtils {
 			PropertyDescriptor[] proDesc = propertyDescriptors(getDataMappingClass());
 			for (int i = 0; i < proDesc.length; i++) {
 				PropertyDescriptor pro = proDesc[i];
-				if (isBasicType(pro.getPropertyType())
+				if (Constant.isBasicType(pro.getPropertyType())
 						&& pro.getName().toUpperCase().equals(column)) {
 					return pro.getName();
 				}
@@ -2447,66 +2271,6 @@ public class JdbcUtils {
 				throw new SQLException("Cannot create " + c.getName() + ": "
 						+ e.getMessage());
 			}
-		}
-
-		private boolean isSetGroup(Class type) {
-			if (Class.class.isAssignableFrom(type)) {
-				return true;
-			} else if (type.isInterface()) {
-				return true;
-			} else if (Map.class.isAssignableFrom(type)) {
-				return true;
-			} else if (List.class.isAssignableFrom(type)) {
-				return true;
-			} else if (Set.class.isAssignableFrom(type)) {
-				return true;
-			}
-			return false;
-		}
-
-		/**
-		 * 判断Class模版是否基础类型
-		 * 
-		 * @param clazz
-		 *            Class模版
-		 * @return true(是基础类型) || false(不是基础类型)
-		 */
-		private boolean isBasicType(Class clazz) {
-			if (clazz == String.class) {
-				return true;
-
-			} else if (clazz == int.class || clazz == Integer.class) {
-				return true;
-
-			} else if (clazz == double.class || clazz == Double.class) {
-				return true;
-
-			} else if (clazz == boolean.class || clazz == Boolean.class) {
-				return true;
-
-			} else if (clazz == float.class || clazz == Float.class) {
-				return true;
-
-			} else if (clazz == long.class || clazz == Long.class) {
-				return true;
-
-			} else if (clazz == Date.class) {
-				return true;
-
-			} else if (clazz == byte.class || clazz == Byte.class) {
-				return true;
-
-			} else if (clazz == short.class || clazz == Short.class) {
-				return true;
-
-			} else if (clazz == char.class || clazz == Character.class) {
-				return true;
-
-			} else if (clazz == Timestamp.class) {
-				return true;
-			}
-
-			return false;
 		}
 	}
 
@@ -2615,8 +2379,10 @@ public class JdbcUtils {
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
-				if (beanPro.isBasicType(pro.getPropertyType())
-						|| !beanPro.isSetGroup(pro.getPropertyType())) {
+				Class proType = pro.getPropertyType();
+				if ((Constant.isBasicType(proType) || !Constant
+						.isCollection(proType))
+						&& !Class.class.isAssignableFrom(proType)) {
 
 					if (sqlFilter == null) {
 						temp = appendSelectParams(sb, pro.getName(), temp, i);
@@ -2809,7 +2575,7 @@ public class JdbcUtils {
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
-				if (beanPro.isBasicType(pro.getPropertyType())) {
+				if (Constant.isBasicType(pro.getPropertyType())) {
 					if (sqlFilter == null) {
 						temp = appendUpdateParams(sb, pro.getName(), temp, i);
 					} else {
@@ -2825,9 +2591,9 @@ public class JdbcUtils {
 					}
 				}
 			}
-			
+
 			sb.append("=?");
-			
+
 			if (isNotEmpty(whereIf)) {
 				appendParamsId(sb, whereIf);
 			} else {
@@ -2848,7 +2614,7 @@ public class JdbcUtils {
 		 */
 		private Integer appendUpdateParams(StringBuffer sb, String name,
 				Integer temp, int i) throws SQLException {
-			
+
 			if (temp == null) {
 				temp = new Integer(i);
 			}
@@ -2923,7 +2689,7 @@ public class JdbcUtils {
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
-				if (beanPro.isBasicType(pro.getPropertyType())) {
+				if (Constant.isBasicType(pro.getPropertyType())) {
 
 					if (sqlFilter != null
 							&& toBoolean(sqlFilter.get(pro.getName())) == false) {
@@ -3059,10 +2825,10 @@ public class JdbcUtils {
 
 			sql = standardFormatting(sql);
 
-			if (isInsertStatement(sql)) {
+			if (startsWithInsert(sql)) {
 				return columnsKeyOfInsert(sql);
 			}
-			if (isUpateStatement(sql) || isDeleteStatement(sql)) {
+			if (startsWithUpate(sql) || startsWithDelete(sql)) {
 				return columnsKeyOfUpdate(sql);
 			}
 
