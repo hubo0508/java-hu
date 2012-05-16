@@ -1,6 +1,8 @@
 package test.pojo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConfigDevice {
@@ -14,6 +16,16 @@ public class ConfigDevice {
 	private Integer hasData;
 	private String deviceCname;
 	
+	private List llist= new ArrayList();
+	
+	public List getLlist() {
+		return llist;
+	}
+
+	public void setLlist(List llist) {
+		this.llist = llist;
+	}
+
 	public Map sqlFilter(){
 		
 		Map filter = new HashMap();

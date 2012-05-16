@@ -1,7 +1,9 @@
 package test.pojo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Users {
 
@@ -10,6 +12,14 @@ public class Users {
 	private String passord;
 	
 	private List users = new ArrayList();
+	
+	public Map sqlFilter(){
+		
+		Map filter = new HashMap();
+		filter.put("Users", "NhwmUsers");
+		
+		return filter;
+	}
 
 	public List getUsers() {
 		return users;
