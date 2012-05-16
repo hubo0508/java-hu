@@ -32,6 +32,7 @@ public class ConfigDevice {
 		filter.put("ConfigDevice", "NhwmConfigDevice");
 		filter.put("deviceCname", new Boolean(false));
 		filter.put("hasData", new Boolean(false));
+		filter.put("users", new Boolean(false));
 		
 		return filter;
 	}

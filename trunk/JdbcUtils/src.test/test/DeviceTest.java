@@ -1,7 +1,9 @@
 package test;
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,7 +57,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class, new Page(1, 2),
 					JdbcUtils.MYSQL);
-			Page page = (Page) db.queryResultToArrayList(con);
+			Page page = (Page) db.queryResultTo(con, new ArrayList());
 
 			List result = (List) page.getResult();
 
@@ -350,7 +352,7 @@ public class DeviceTest {
 			JdbcUtils db = new JdbcUtils(LinkedHashMap.class,
 					JdbcUtils.SEGMENTATION);
 			db.setSqlMappingClass(ConfigDevice.class);
-			List list = (List) db.queryResultToArrayList(con);
+			List list = (List) db.queryResultTo(con, new ArrayList());
 
 			for (int i = 0; i < list.size(); i++) {
 				System.out.println(list.get(i));
@@ -407,7 +409,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			List list = (List) db.queryResultToArrayList(con);
+			List list = (List) db.queryResultTo(con, new ArrayList());
 
 			for (int i = 0; i < list.size(); i++) {
 				ConfigDevice d = (ConfigDevice) list.get(i);
