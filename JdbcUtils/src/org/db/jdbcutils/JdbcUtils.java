@@ -2826,7 +2826,7 @@ public class JdbcUtils {
 				}
 			}
 			
-			sb.append("=? ");
+			sb.append("=?");
 			
 			if (isNotEmpty(whereIf)) {
 				appendParamsId(sb, whereIf);
