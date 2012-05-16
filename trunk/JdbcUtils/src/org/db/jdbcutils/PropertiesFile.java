@@ -27,6 +27,9 @@ public class PropertiesFile {
 	public PropertiesFile() {
 	}
 
+	/**
+	 * 构造函数设置文件路径
+	 */
 	public PropertiesFile(String url) {
 		if (PropertiesFile.url != null && !PropertiesFile.url.equals(url)) {
 			PropertiesFile.url = url;
@@ -41,10 +44,13 @@ public class PropertiesFile {
 		public final static Properties props = new Properties();
 	}
 
+	/**
+	 * 取得单例
+	 */
 	public static PropertiesFile getInstance() {
 		return Instance.pro;
 	}
-	
+
 	/**
 	 * 加载属性文件
 	 */
@@ -57,7 +63,7 @@ public class PropertiesFile {
 			log.error(e.getMessage(), e);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-		}finally{
+		} finally {
 			closeIS(fileStr);
 		}
 	}
@@ -143,7 +149,7 @@ public class PropertiesFile {
 		} catch (IOException e) {
 		}
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 		String path = "D:\\temp\\UUID.properties";
 		PropertiesFile.getInstance().setValue(path, "age", "asdfasdfasdf");
