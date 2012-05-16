@@ -1,6 +1,6 @@
 package pool;
 
-import org.db.jdbcutils.PropertiesFile;
+import org.db.jdbcutils.utils.PropertiesFile;
 
 /**
  * 
