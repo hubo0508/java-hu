@@ -52,6 +52,16 @@ public class PropertiesFile {
 	}
 
 	/**
+	 * 取得单例
+	 */
+	public static PropertiesFile getInstance(String url) {
+		if (url != null && !url.equals(PropertiesFile.url)) {
+			PropertiesFile.url = url;
+		}
+		return Instance.pro;
+	}
+
+	/**
 	 * 加载属性文件
 	 */
 	private synchronized void loadProperties(String path) {
@@ -72,7 +82,7 @@ public class PropertiesFile {
 	 * 取值
 	 */
 	public String getValue(String key) {
-		return getValue(null, key);
+		return getValue(PropertiesFile.url, key);
 	}
 
 	/**
@@ -80,12 +90,12 @@ public class PropertiesFile {
 	 */
 	public String getValue(String url, String key) {
 
-		if (url == null && PropertiesFile.url == null) {
+		if (url == null) {
 			throw new RuntimeException("加载配置文件路径为空。");
 		}
 
-		if (url == null || !url.equals(PropertiesFile.url)) {
-			loadProperties(url);
+		loadProperties(url);
+		if (!url.equals(PropertiesFile.url)) {
 			PropertiesFile.url = url;
 		}
 
@@ -151,9 +161,9 @@ public class PropertiesFile {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String path = "D:\\temp\\UUID.properties";
-		PropertiesFile.getInstance().setValue(path, "age", "asdfasdfasdf");
-		System.out.println(PropertiesFile.getInstance().getValue(path, "age"));
-
+		String url = "D:\\work\\myeclipse6.6\\JdbcUtils\\src.test\\jdbc.properties";
+		// PropertiesFile.getInstance().setValue(path, "age", "asdfasdfasdf");
+		PropertiesFile pro = PropertiesFile.getInstance(url);
+		System.out.println(pro.getValue("sqlserver.jdbc.password"));
 	}
 }
