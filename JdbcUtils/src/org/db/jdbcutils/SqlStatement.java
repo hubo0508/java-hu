@@ -65,10 +65,16 @@ public class SqlStatement {
 	private Pattern regex = Pattern.compile("(SELECT)(.*)(FROM.*)",
 			Pattern.CASE_INSENSITIVE);
 
+	/**
+	 * 取得兼容数据库分页SQL
+	 */
 	public String paging(String sqlText) {
 		return paging(sqlText, this.database);
 	}
 	
+	/**
+	 * 取得兼容数据库分页SQL
+	 */
 	public String paging(String sqlText, String database) {
 
 		StringBuffer sb = new StringBuffer(100);
