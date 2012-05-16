@@ -25,7 +25,7 @@ public class DeviceTest {
 
 		DeviceTest test = new DeviceTest();
 
-		test.queryPage();
+		// test.queryPage();
 
 		// test.queryResultToUniqueA();
 		// test.queryResultToUniqueB();
@@ -208,30 +208,30 @@ public class DeviceTest {
 
 	// 主键自动维护,SQL手动维护
 	public void insertObjectToMySqlC() {
-
-		ConfigDevice d = new ConfigDevice();
-		d.setDeviceCname("D-NAME");
-		d.setDeviceFactory("D-FACTORY");
-		d.setDeviceIp("D-IP");
-		d.setDeviceType("D-TYPE");
-		d.setHasData(new Integer(0));
-		d.setDeviceEname("D-ENAME");
-
-		String sql = "INSERT INTO nhwm_config_device (device_cname, device_ename, device_factory, device_ip, device_type, has_data ) "
-				+ "VALUES (?, ?, ?, ?, ?, ? )";
-
-		JdbcUtils db = new JdbcUtils(null, JdbcUtils.SEGMENTATION);
-
-		try {
-			int rows = db.insert(con, sql, d, JdbcUtils.MYSQL,
-					JdbcUtils.MYSQL_SEQ);
-			System.out.println(rows);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBPool.close(con);
-		}
-	}
+	
+	 ConfigDevice d = new ConfigDevice();
+	 d.setDeviceCname("D-NAME");
+	 d.setDeviceFactory("D-FACTORY");
+	 d.setDeviceIp("D-IP");
+	 d.setDeviceType("D-TYPE");
+	 d.setHasData(new Integer(0));
+	 d.setDeviceEname("D-ENAME");
+	
+	 String sql = "INSERT INTO nhwm_config_device (device_cname, device_ename, device_factory, device_ip, device_type, has_data ) "
+	 + "VALUES (?, ?, ?, ?, ?, ? )";
+	
+	 JdbcUtils db = new JdbcUtils(null, JdbcUtils.SEGMENTATION);
+	
+	 try {
+	 int rows = db.insert(con, sql, d, JdbcUtils.MYSQL,
+	 JdbcUtils.MYSQL_SEQ);
+	 System.out.println(rows);
+	 } catch (SQLException e) {
+	 e.printStackTrace();
+	 } finally {
+	 DBPool.close(con);
+	 }
+	 }
 
 	// 主键自动递增
 	public void insertObjectToMySqlA() {
@@ -279,9 +279,8 @@ public class DeviceTest {
 		Object[] params = new Object[] { new Integer(1) };
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-					JdbcUtils.SEGMENTATION);
-			map = (Map) db.queryResultToLinkedHashMap(con, sql, params);
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class);
+			map = (Map) db.queryResultTo(con, sql, params, new LinkedHashMap());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -299,7 +298,7 @@ public class DeviceTest {
 		try {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
 					JdbcUtils.SEGMENTATION);
-			map = (Map) db.queryResultToLinkedHashMap(con, sql, params);
+			map = (Map) db.queryResultTo(con, sql, params, new LinkedHashMap());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -316,9 +315,8 @@ public class DeviceTest {
 		Object[] params = new Object[] { new Integer(1) };
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-					JdbcUtils.SEGMENTATION);
-			map = (Map) db.queryResultToHashMap(con, sql, params);
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class);
+			map = (Map) db.queryResultTo(con, sql, params, new HashMap());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -334,9 +332,8 @@ public class DeviceTest {
 
 		Map map = null;
 		try {
-			JdbcUtils db = new JdbcUtils(ConfigDevice.class,
-					JdbcUtils.SEGMENTATION);
-			map = (Map) db.queryResultToHashMap(con, sql, params);
+			JdbcUtils db = new JdbcUtils(ConfigDevice.class);
+			map = (Map) db.queryResultTo(con, sql, params, new HashMap());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -349,8 +346,7 @@ public class DeviceTest {
 
 		try {
 
-			JdbcUtils db = new JdbcUtils(LinkedHashMap.class,
-					JdbcUtils.SEGMENTATION);
+			JdbcUtils db = new JdbcUtils(LinkedHashMap.class);
 			db.setSqlMappingClass(ConfigDevice.class);
 			List list = (List) db.queryResultTo(con, new ArrayList());
 
@@ -376,14 +372,15 @@ public class DeviceTest {
 
 	public void queryResultToArrayListB() {
 
-		String sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME "
+		String sql = "SELECT ID,DEVICE_IP,DEVICE_ENAME,DEVICE_TYPE,DEVICE_FACTORY,HAS_DATA,DEVICE_TYPE,DEVICE_CNAME"
 				+ " FROM nhwm_config_device where id > ?";
 		Object[] params = new Object[] { new Integer(15) };
 		try {
 
 			JdbcUtils db = new JdbcUtils(LinkedHashMap.class,
 					JdbcUtils.SEGMENTATION);
-			List list = (List) db.queryResultToArrayList(con, sql, params);
+			List list = (List) db.queryResultTo(con, sql, params,
+					new ArrayList());
 
 			for (int i = 0; i < list.size(); i++) {
 				System.out.println(list.get(i));
@@ -413,7 +410,8 @@ public class DeviceTest {
 
 			for (int i = 0; i < list.size(); i++) {
 				ConfigDevice d = (ConfigDevice) list.get(i);
-				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname());
+				System.out.println(d.getDeviceIp() + "|" + d.getDeviceCname()
+						+ "|" + d.getDeviceFactory());
 			}
 
 		} catch (SQLException e) {
@@ -478,9 +476,8 @@ public class DeviceTest {
 			JdbcUtils.close(con);
 		}
 	}
-	
-	
-	public void writeLog(Page page){
+
+	public void writeLog(Page page) {
 		System.out.println("当前页：" + page.getThisPage());
 		System.out.println("下一页：" + page.getPageNext());
 		System.out.println("上一页：" + page.getPagePrev());
