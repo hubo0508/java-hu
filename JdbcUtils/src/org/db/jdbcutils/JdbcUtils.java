@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.db.jdbcutils.sql.SqlStatement;
 
-import test.pojo.Users;
+import test.pojo.ConfigDevice;
 
 /**
  * 数据库底层工具类
@@ -2447,6 +2448,21 @@ public class JdbcUtils {
 			}
 		}
 
+		private boolean isSetGroup(Class type) {
+			if (Class.class.isAssignableFrom(type)) {
+				return true;
+			} else if (type.isInterface()) {
+				return true;
+			} else if (Map.class.isAssignableFrom(type)) {
+				return true;
+			} else if (List.class.isAssignableFrom(type)) {
+				return true;
+			} else if (Set.class.isAssignableFrom(type)) {
+				return true;
+			}
+			return false;
+		}
+
 		/**
 		 * 判断Class模版是否基础类型
 		 * 
@@ -2596,7 +2612,8 @@ public class JdbcUtils {
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
-				if (beanPro.isBasicType(pro.getPropertyType())) {
+				if (beanPro.isBasicType(pro.getPropertyType())
+						|| !beanPro.isSetGroup(pro.getPropertyType())) {
 					if (sqlFilter == null) {
 						appendSelectParams(sb, pro.getName(), i, len);
 					} else {
@@ -3398,8 +3415,8 @@ public class JdbcUtils {
 
 	public static void main(String[] args) throws SQLException {
 
-		//JdbcUtils db = new JdbcUtils(ConfigDevice.class, JdbcUtils.SEGMENTATION);
-		//System.out.println(db.sqlPro.makeSelectSql());
+		JdbcUtils db = new JdbcUtils(ConfigDevice.class);
+		// System.out.println(db.sqlPro.makeSelectSql());
 		// System.out.println(db.sqlPro.makeDeleteSql());
 		// System.out.println(db.sqlPro.makeUpdateSql());
 		// System.out.println(db.sqlPro.makeInsertSql(JdbcUtils.MYSQL, null));
@@ -3410,7 +3427,7 @@ public class JdbcUtils {
 		// System.out.println(sql);
 		// System.out.println(new SqlCompatible().count(sql));
 
-		JdbcUtils db = new JdbcUtils(Users.class);
+		// JdbcUtils db = new JdbcUtils(Users.class);
 		System.out.println(db.sqlPro.makeSelectSql());
 	}
 
