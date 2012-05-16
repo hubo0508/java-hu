@@ -1,4 +1,4 @@
-package org.db.jdbcutils;
+package org.db.jdbcutils.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
