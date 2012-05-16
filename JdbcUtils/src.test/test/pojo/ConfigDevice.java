@@ -6,13 +6,13 @@ import java.util.Map;
 public class ConfigDevice {
 
 	private Integer id;
+	private Users users;
 	private String deviceIp;
 	private String deviceEname;
 	private String deviceType;
 	private String deviceFactory;
 	private Integer hasData;
 	private String deviceCname;
-	
 	
 	public Map sqlFilter(){
 		
@@ -78,6 +78,14 @@ public class ConfigDevice {
 
 	public void setDeviceCname(String deviceCname) {
 		this.deviceCname = deviceCname;
+	}
+
+	public Users getUsers() {
+		return users;
+	}
+
+	public void setUsers(Users users) {
+		this.users = users;
 	}
 
 }
