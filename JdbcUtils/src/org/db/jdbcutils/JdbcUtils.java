@@ -332,8 +332,9 @@ public class JdbcUtils {
 	 * @see JdbcUtils#setSqlFilter(Map)
 	 * @see JdbcUtils#getSqlFilter()
 	 */
-	public Object queryResultToArrayList(Connection conn) throws SQLException {
-		return query(conn, sqlPro.makeSelectSql(), null, new ArrayList());
+	public Object queryResultTo(Connection conn, Object instanceCollection)
+			throws SQLException {
+		return query(conn, sqlPro.makeSelectSql(), null, instanceCollection);
 	}
 
 	/**
@@ -2607,6 +2608,8 @@ public class JdbcUtils {
 		public String makeSelectSql(String key) throws SQLException {
 			StringBuffer sb = new StringBuffer("SELECT ");
 
+			Integer temp = null;
+
 			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
 					.getDataMappingClass());
 			int len = proDesc.length;
@@ -2614,15 +2617,18 @@ public class JdbcUtils {
 				PropertyDescriptor pro = proDesc[i];
 				if (beanPro.isBasicType(pro.getPropertyType())
 						|| !beanPro.isSetGroup(pro.getPropertyType())) {
+
 					if (sqlFilter == null) {
-						appendSelectParams(sb, pro.getName(), i, len);
+						temp = appendSelectParams(sb, pro.getName(), temp, i);
 					} else {
 						Object filter = sqlFilter.get(pro.getName());
 						if (String.class.isInstance(filter)
 								&& filter.toString().equals(pro.getName())) {
-							appendSelectParams(sb, filter.toString(), i, len);
+							temp = appendSelectParams(sb, filter.toString(),
+									temp, i);
 						} else if (filter == null || toBoolean(filter)) {
-							appendSelectParams(sb, pro.getName(), i, len);
+							temp = appendSelectParams(sb, pro.getName(), temp,
+									i);
 						}
 					}
 				}
@@ -2670,12 +2676,19 @@ public class JdbcUtils {
 		 * @param len
 		 * @throws SQLException
 		 */
-		private void appendSelectParams(StringBuffer sb, String name, int i,
-				int len) throws SQLException {
-			sb.append(sqlPro.convert(name, TOTYPE[1]));
-			if (i < (len - 2)) {
+		private Integer appendSelectParams(StringBuffer sb, String name,
+				Integer temp, int i) throws SQLException {
+
+			if (temp == null) {
+				temp = new Integer(i);
+			}
+
+			if (temp.intValue() != i) {
 				sb.append(", ");
 			}
+			sb.append(sqlPro.convert(name, TOTYPE[1]));
+
+			return temp;
 		}
 
 		/**
@@ -2789,6 +2802,8 @@ public class JdbcUtils {
 			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
 			sb.append(" SET ");
 
+			Integer temp = null;
+
 			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
 					.getDataMappingClass());
 			int len = proDesc.length;
@@ -2796,18 +2811,23 @@ public class JdbcUtils {
 				PropertyDescriptor pro = proDesc[i];
 				if (beanPro.isBasicType(pro.getPropertyType())) {
 					if (sqlFilter == null) {
-						appendSelectParams(sb, pro.getName(), i, len);
+						temp = appendUpdateParams(sb, pro.getName(), temp, i);
 					} else {
 						Object filter = sqlFilter.get(pro.getName());
 						if (String.class.isInstance(filter)
 								&& filter.toString().equals(pro.getName())) {
-							appendUpdateParams(sb, filter.toString(), i, len);
+							temp = appendUpdateParams(sb, filter.toString(),
+									temp, i);
 						} else if (filter == null || toBoolean(filter)) {
-							appendUpdateParams(sb, pro.getName(), i, len);
+							temp = appendUpdateParams(sb, pro.getName(), temp,
+									i);
 						}
 					}
 				}
 			}
+			
+			sb.append("=? ");
+			
 			if (isNotEmpty(whereIf)) {
 				appendParamsId(sb, whereIf);
 			} else {
@@ -2826,14 +2846,19 @@ public class JdbcUtils {
 		 * @param len
 		 * @throws SQLException
 		 */
-		private void appendUpdateParams(StringBuffer sb, String name, int i,
-				int len) throws SQLException {
-			sb.append(sqlPro.convert(name, TOTYPE[1]));
-			if (i < len - 1) {
-				sb.append("=?, ");
-			} else {
-				sb.append("=? ");
+		private Integer appendUpdateParams(StringBuffer sb, String name,
+				Integer temp, int i) throws SQLException {
+			
+			if (temp == null) {
+				temp = new Integer(i);
 			}
+
+			if (temp.intValue() != i) {
+				sb.append("=?, ");
+			}
+			sb.append(sqlPro.convert(name, TOTYPE[1]));
+
+			return temp;
 		}
 
 		/**
@@ -3014,7 +3039,7 @@ public class JdbcUtils {
 			if (isNotEmpty(whereIf)) {
 				sb.append(whereIf);
 			} else {
-				sb.append("WHERE ");
+				sb.append(" WHERE ");
 				sb.append(getPrimaryKey());
 				sb.append("=?");
 			}
@@ -3429,7 +3454,8 @@ public class JdbcUtils {
 
 		// JdbcUtils db = new JdbcUtils(Users.class);
 		System.out.println(db.sqlPro.makeSelectSql());
-		
+		System.out.println(db.sqlPro.makeUpdateSql());
+
 	}
 
 }
