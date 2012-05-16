@@ -151,6 +151,9 @@ public class PropertiesFile {
 		}
 	}
 
+	/**
+	 * 关闭输入流连接通道
+	 */
 	private void closeIS(FileInputStream fileStr) {
 		if (fileStr == null) {
 			return;
