@@ -2,7 +2,6 @@ package pool;
 
 import org.db.jdbcutils.PropertiesFile;
 
-
 /**
  * 
  * <p>
@@ -31,16 +30,16 @@ public class SQLServerPool extends DBPool {
 
 	private static void setupProperties() {
 
-		PropertiesFile proUtil = PropertiesFile.getInstance();
 		String path = "D:\\work\\myeclipse6.6\\JdbcUtils\\src.test\\jdbc.properties";
+		PropertiesFile proUtil = PropertiesFile.getInstance(path);
 
-		String poolName = proUtil.getProperty(path, "sqlserver.jdbc.poolName");
-		String driver = proUtil.getProperty(path, "sqlserver.jdbc.driver");
-		String URL = proUtil.getProperty(path, "sqlserver.jdbc.url");
-		String username = proUtil.getProperty(path, "sqlserver.jdbc.username");
-		String password = proUtil.getProperty(path, "sqlserver.jdbc.password");
-		int maxCon = Integer.parseInt(proUtil.getProperty(path,
-				"sqlserver.jdbc.maxConn"));
+		String poolName = proUtil.getValue("sqlserver.jdbc.poolName");
+		String driver = proUtil.getValue("sqlserver.jdbc.driver");
+		String URL = proUtil.getValue("sqlserver.jdbc.url");
+		String username = proUtil.getValue("sqlserver.jdbc.username");
+		String password = proUtil.getValue("sqlserver.jdbc.password");
+		int maxCon = Integer.parseInt(proUtil
+				.getValue("sqlserver.jdbc.maxConn"));
 
 		getInstance().setPoolName(poolName);
 		getInstance().setDriver(driver);
