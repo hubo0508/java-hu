@@ -21,13 +21,14 @@ public class MySqlPool extends DBPool {
 
 	private static void setupProperties() {
 
-		PropertiesFile proUtil = PropertiesFile.getInstance();
 		String path = "D:\\work\\myeclipse6.6\\JdbcUtils\\src.test\\jdbc.properties";
+		PropertiesFile proUtil = PropertiesFile.getInstance(path);
+		
 
-		String driver = proUtil.getProperty(path, "mysql.jdbc.driver");
-		String URL = proUtil.getProperty(path, "mysql.jdbc.url");
-		String username = proUtil.getProperty(path, "mysql.jdbc.username");
-		String password = proUtil.getProperty(path, "mysql.jdbc.password");
+		String driver = proUtil.getValue("mysql.jdbc.driver");
+		String URL = proUtil.getValue("mysql.jdbc.url");
+		String username = proUtil.getValue("mysql.jdbc.username");
+		String password = proUtil.getValue("mysql.jdbc.password");
 
 		getInstance().setDriver(driver);
 		getInstance().setUrl(URL);

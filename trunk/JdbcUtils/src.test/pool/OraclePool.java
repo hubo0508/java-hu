@@ -2,9 +2,8 @@ package pool;
 
 import org.db.jdbcutils.PropertiesFile;
 
-
 public class OraclePool extends DBPool {
-	
+
 	private static class Instance {
 		public static final OraclePool pool = new OraclePool();
 	}
@@ -21,16 +20,15 @@ public class OraclePool extends DBPool {
 
 	private static void setupProperties() {
 
-		PropertiesFile proUtil = PropertiesFile.getInstance();
 		String path = "D:\\work\\myeclipse6.6\\JdbcUtils\\src.test\\jdbc.properties";
+		PropertiesFile proUtil = PropertiesFile.getInstance(path);
 
-		String poolName = proUtil.getProperty(path, "oracle.jdbc.poolName");
-		String driver = proUtil.getProperty(path, "oracle.jdbc.driver");
-		String URL = proUtil.getProperty(path, "oracle.jdbc.url");
-		String username = proUtil.getProperty(path, "oracle.jdbc.username");
-		String password = proUtil.getProperty(path, "oracle.jdbc.password");
-		int maxCon = Integer.parseInt(proUtil.getProperty(path,
-				"oracle.jdbc.maxConn"));
+		String poolName = proUtil.getValue("oracle.jdbc.poolName");
+		String driver = proUtil.getValue("oracle.jdbc.driver");
+		String URL = proUtil.getValue("oracle.jdbc.url");
+		String username = proUtil.getValue("oracle.jdbc.username");
+		String password = proUtil.getValue("oracle.jdbc.password");
+		int maxCon = Integer.parseInt(proUtil.getValue("oracle.jdbc.maxConn"));
 
 		getInstance().setPoolName(poolName);
 		getInstance().setDriver(driver);
