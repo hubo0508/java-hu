@@ -64,16 +64,17 @@ public class PropertiesFile {
 	/**
 	 * 加载属性文件
 	 */
-	private synchronized void loadProperties(String path) {
+	private synchronized void loadProperties(String url) {
 		FileInputStream fileStr = null;
 		try {
-			fileStr = new FileInputStream(path);
+			fileStr = new FileInputStream(url);
 			Instance.props.load(fileStr);
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage(), e);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		} finally {
+			log.info("URI:"+url);
 			closeIS(fileStr);
 		}
 	}
