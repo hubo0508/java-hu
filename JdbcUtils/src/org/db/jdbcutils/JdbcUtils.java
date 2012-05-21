@@ -203,6 +203,9 @@ public class JdbcUtils {
 	 */
 	private volatile boolean pmdKnownBroken = false;
 
+	/*
+	 * Java Bean 与 Database 的类型(私有)
+	 */
 	private final static String[] TOTYPE = { "bean", "database" };
 
 	/*
@@ -221,7 +224,28 @@ public class JdbcUtils {
 	private final ResultProcessor rsPro = new JdbcUtils.ResultProcessor();
 
 	/**
-	 * 分页参数Bean
+	 * 分页参数Java Bean
+	 * 
+	 * <p>
+	 * 当调用<code>ju.queryResultTo(args,args)</code>前，设置了值<code>ju.setPage(new Page(new Page(1, 2)))</code>，在查询数据时将会进行分页查询
+	 * <blockquote>
+	 * 
+	 * <pre>
+	 * JdbcUtils ju = new JdbcUtils(User.class, new Page(1, 2), JdbcUtils.MYSQL);
+	 * ju.setPage(new Page(new Page(1, 2)));
+	 * Page page = (Page) db.queryResultTo(con, new ArrayList());//分页Java Bean
+	 * List result = (List) page.getResult();//结果数据
+	 * 
+	 * System.out.println(&quot;当前页：&quot; + page.getThisPage());
+	 * System.out.println(&quot;下一页：&quot; + page.getPageNext());
+	 * System.out.println(&quot;上一页：&quot; + page.getPagePrev());
+	 * System.out.println(&quot;尾  页：&quot; + page.getPageLast());
+	 * System.out.println(&quot;总页数：&quot; + page.getTotalPage());
+	 * System.out.println(&quot;总行数：&quot; + page.getTotalCount());
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * </p>
 	 */
 	private Page page = null;
 
@@ -1358,14 +1382,56 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 取得分页参数Bean
+	 * 取得分页参数Java Bean
+	 * 
+	 * <p>
+	 * 当调用<code>ju.queryResultTo(args,args)</code>前，设置了值<code>ju.setPage(new Page(new Page(1, 2)))</code>，在查询数据时将会进行分页查询
+	 * <blockquote>
+	 * 
+	 * <pre>
+	 * JdbcUtils ju = new JdbcUtils(User.class, new Page(1, 2), JdbcUtils.MYSQL);
+	 * ju.setPage(new Page(new Page(1, 2)));
+	 * Page page = (Page) db.queryResultTo(con, new ArrayList());//分页Java Bean
+	 * List result = (List) page.getResult();//结果数据
+	 * 
+	 * System.out.println(&quot;当前页：&quot; + page.getThisPage());
+	 * System.out.println(&quot;下一页：&quot; + page.getPageNext());
+	 * System.out.println(&quot;上一页：&quot; + page.getPagePrev());
+	 * System.out.println(&quot;尾  页：&quot; + page.getPageLast());
+	 * System.out.println(&quot;总页数：&quot; + page.getTotalPage());
+	 * System.out.println(&quot;总行数：&quot; + page.getTotalCount());
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * </p>
 	 */
 	public Page getPage() {
 		return page;
 	}
 
 	/**
-	 * 设置分页参数Bean
+	 * 设置分页参数Java Bean
+	 * 
+	 * <p>
+	 * 当调用<code>ju.queryResultTo(args,args)</code>前，设置了值<code>ju.setPage(new Page(new Page(1, 2)))</code>，在查询数据时将会进行分页查询
+	 * <blockquote>
+	 * 
+	 * <pre>
+	 * JdbcUtils ju = new JdbcUtils(User.class, new Page(1, 2), JdbcUtils.MYSQL);
+	 * ju.setPage(new Page(new Page(1, 2)));
+	 * Page page = (Page) db.queryResultTo(con, new ArrayList());//分页Java Bean
+	 * List result = (List) page.getResult();//结果数据
+	 * 
+	 * System.out.println(&quot;当前页：&quot; + page.getThisPage());
+	 * System.out.println(&quot;下一页：&quot; + page.getPageNext());
+	 * System.out.println(&quot;上一页：&quot; + page.getPagePrev());
+	 * System.out.println(&quot;尾  页：&quot; + page.getPageLast());
+	 * System.out.println(&quot;总页数：&quot; + page.getTotalPage());
+	 * System.out.println(&quot;总行数：&quot; + page.getTotalCount());
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * </p>
 	 */
 	public void setPage(Page page) {
 		this.page = page;
