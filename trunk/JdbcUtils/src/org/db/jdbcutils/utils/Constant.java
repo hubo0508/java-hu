@@ -1,5 +1,9 @@
 package org.db.jdbcutils.utils;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -83,6 +87,66 @@ public final class Constant {
 			return true;
 		} 
 		return false;
+	}
+	
+	/**
+	 * 关闭连接
+	 */
+	public static void close(ResultSet rs, PreparedStatement stmt) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if (stmt != null) {
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 关闭连接
+	 */
+	public static void close(PreparedStatement stmt) {
+		try {
+			if (stmt != null) {
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 关闭连接
+	 */
+	public static void close(Connection conn) {
+		try {
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 关闭连接
+	 */
+	public static void close(ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
