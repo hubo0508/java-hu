@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,14 +81,64 @@ public final class Constant {
 	}
 	
 	/**
-	 * 判断Class是否为List或为List的子集ArrayList
+	 * 判断Class是否为ArrayList
 	 * 
 	 * @return true(为List或为List的子集ArrayList)，false(不为List或为List的子集ArrayList)
 	 */
 	public static boolean isArrayList(Class clazz) {
+		if (ArrayList.class.isAssignableFrom(clazz)) {
+			return true;
+		} 
+		return false;
+	}
+	
+	
+	/**
+	 * 判断Class是否为List或为List的子集
+	 * 
+	 * @return true(为List或为List的子集)，false(不为List或为List的子集)
+	 */
+	public static boolean isList(Class clazz) {
 		if (List.class.isAssignableFrom(clazz)) {
 			return true;
 		} 
+		return false;
+	}
+	
+
+	/**
+	 * 判断Class是否为Map
+	 * 
+	 * @return true(为Map)，false(不为Map)
+	 */
+	public static boolean isMap(Class clazz) {
+		if (Map.class.isAssignableFrom(clazz)) {
+			return true;
+		} 
+		return false;
+	}
+	
+	/**
+	 * 判断Class是否为Map或为Map的子集HashMap
+	 * 
+	 * @return true(为Map或为Map的子集HashMap)，false(不为Map或为Map的子集HashMap)
+	 */
+	public static boolean isHashMap(Class clazz) {
+		if (HashMap.class.isAssignableFrom(clazz)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 判断Class是否为Map或为Map的子集LinkedHashMap
+	 * 
+	 * @return true(为Map或为Map的子集LinkedHashMap)，false(不为Map或为Map的子集LinkedHashMap)
+	 */
+	public static boolean isLinkedHashMap(Class clazz) {
+		if (LinkedHashMap.class.isAssignableFrom(clazz)) {
+			return true;
+		}
 		return false;
 	}
 	
