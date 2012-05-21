@@ -40,7 +40,7 @@ import test.pojo.ConfigDevice;
  * <li>操作底层为对象时，可以指定SQL字段的命名方式，如userName或user_name；</li>
  * <li>可为不同数据之间的简单兼容进行处理；Insert的主键维护机制(sqlserver未实现)、分页构造机制(sqlserver未实现)；</li>
  * <li>自动生成SQL语句时，增加过滤条件；</li>
- * <li>目前版本对sqlserver的API不支持；</li>
+ * <li>目前版本对sqlserver的API不支持。</li>
  * 
  * </br></br>
  * 
