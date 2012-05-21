@@ -1024,7 +1024,7 @@ public class JdbcUtils {
 		if (params == null) {
 			msg.append("[]");
 		} else {
-			msg.append(deepToString(params));
+			msg.append(Constant.deepToString(params));
 		}
 
 		SQLException e = new SQLException(msg.toString(), cause.getSQLState(),
@@ -1044,21 +1044,6 @@ public class JdbcUtils {
 			throws SQLException {
 		this.setDataMappingClass(dataMappingClass);
 		return beanPro.mapColumnsToBean(getDataMappingClass(), list);
-	}
-
-	/**
-	 * 将Object[]数组输出成字符串
-	 */
-	private String deepToString(Object[] a) {
-		if (a == null || a.length == 0)
-			return "null";
-
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < a.length; i++) {
-			buf.append(a[i] + ",");
-		}
-
-		return buf.toString();
 	}
 
 	/**
@@ -1162,57 +1147,6 @@ public class JdbcUtils {
 			return false;
 		}
 		return sql.toUpperCase().startsWith("INSERT");
-	}
-
-	/**
-	 * 判断Class是否为Map
-	 * 
-	 * @return true(为Map)，false(不为Map)
-	 */
-	private boolean isMap(Class clazz) {
-		String type = clazz.toString();
-		if ("interface java.util.Map".equals(type)
-				|| "class java.util.HashMap".equals(type)
-				|| "class java.util.LinkedHashMap".equals(type)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 清除Object[]数组中null元素，返回新数组
-	 */
-	public Object[] cleanEmpty(Object[] value) {
-		int emptyCount = countCharacter(deepToString(value), "null");
-		if (emptyCount == 0) {
-			return value;
-		}
-
-		int count = 0;
-
-		Object[] newObject = new Object[value.length - emptyCount];
-		for (int i = 0; i < value.length; i++) {
-			Object obj = value[i];
-			if (obj != null) {
-				newObject[count] = value[i];
-				count++;
-			}
-		}
-
-		return newObject;
-	}
-
-	/**
-	 * 取得字符在文本中出现的次数
-	 */
-	public int countCharacter(String text, String character) {
-		int count = 0;
-		int m = text.indexOf(character);
-		while (m != -1) {
-			m = text.indexOf(character, m + 1);
-			count++;
-		}
-		return count;
 	}
 
 	/**
@@ -1601,9 +1535,9 @@ public class JdbcUtils {
 
 			for (int i = 0; i < cols; i++) {
 				String field = rsmd.getColumnName(i + 1);
-				if (isMap(instanceObject.getClass())) {
+				if (Constant.isMap(instanceObject.getClass())) {
 					((Map) instanceObject).put(field, rs.getObject(field));
-				} else if (Constant.isArrayList(instanceObject.getClass())) {
+				} else if (Constant.isList(instanceObject.getClass())) {
 					((List) instanceObject).add(rs.getObject(field));
 				} else if (Constant.isBasicType(instanceObject.getClass())) {
 					return rs.getObject(1);
@@ -1642,7 +1576,7 @@ public class JdbcUtils {
 			int cols = rsmd.getColumnCount();
 
 			for (int i = 1; i <= cols; i++) {
-				if (isMap(getDataMappingClass())) {
+				if (Constant.isMap(getDataMappingClass())) {
 					rsh.put(rsmd.getColumnName(i), rs.getObject(i));
 				} else {
 					rsh.put(sqlPro.convert(rsmd.getColumnName(i), TOTYPE[0]),
@@ -1852,7 +1786,7 @@ public class JdbcUtils {
 				}
 			}
 
-			return cleanEmpty(params);
+			return Constant.cleanEmpty(params);
 		}
 
 		public Object[] mergerObject(Object[] params, Object[] paramsPage,
@@ -2734,7 +2668,7 @@ public class JdbcUtils {
 		 * @return SQL语句参数键数组
 		 */
 		private String[] columnsKeyOfUpdate(String sql) {
-			int len = countCharacter(sql, "?");
+			int len = Constant.countCharacter(sql, "?");
 			String[] rsColumns = new String[len];
 
 			String[] columns = sql.split("\\?");

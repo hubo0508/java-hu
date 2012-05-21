@@ -65,6 +65,55 @@ public final class Constant {
 		}
 		return true;
 	}
+	
+	/**
+	 * 清除Object[]数组中null元素，返回新数组
+	 */
+	public static Object[] cleanEmpty(Object[] value) {
+		int emptyCount = countCharacter(deepToString(value), "null");
+		if (emptyCount == 0) {
+			return value;
+		}
+
+		int count = 0;
+
+		Object[] newObject = new Object[value.length - emptyCount];
+		for (int i = 0; i < value.length; i++) {
+			Object obj = value[i];
+			if (obj != null) {
+				newObject[count] = value[i];
+				count++;
+			}
+		}
+
+		return newObject;
+	}
+	
+	public static String deepToString(Object[] a) {
+		if (a == null || a.length == 0)
+			return "null";
+
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < a.length; i++) {
+			buf.append(a[i] + ",");
+		}
+
+		return buf.toString();
+	}
+
+	/**
+	 * 取得字符在文本中出现的次数
+	 */
+	public static int countCharacter(String text, String character) {
+		int count = 0;
+		int m = text.indexOf(character);
+		while (m != -1) {
+			m = text.indexOf(character, m + 1);
+			count++;
+		}
+		return count;
+	}
+
 
 	/**
 	 * 判断参数是否为Java集合类型
@@ -91,7 +140,6 @@ public final class Constant {
 		} 
 		return false;
 	}
-	
 	
 	/**
 	 * 判断Class是否为List或为List的子集
