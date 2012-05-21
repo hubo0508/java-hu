@@ -1197,29 +1197,7 @@ public class JdbcUtils {
 		return sql.toUpperCase().startsWith("INSERT");
 	}
 
-	/**
-	 * 判断字符串类型等于nul或空字符串。
-	 * 
-	 * @return true(等于nul或空字符串)，false(不等于nul或空字符串)
-	 */
-	public boolean isEmpty(String value) {
-		if (value == null || value.equals("")) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 判断字符串类型不等于nul或空字符串。
-	 * 
-	 * @return true(不等于nul或空字符串)，false(等于nul或空字符串)
-	 */
-	public boolean isNotEmpty(String value) {
-		if (value == null || value.equals("")) {
-			return false;
-		}
-		return true;
-	}
+	
 
 	/**
 	 * 判断Class是否为List或为List的子集ArrayList
@@ -2401,7 +2379,7 @@ public class JdbcUtils {
 			}
 			sb.append(" FROM ");
 			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
-			if (isNotEmpty(key)) {
+			if (Constant.isNotEmpty(key)) {
 				sb.append(" ");
 				appendParamsId(sb, key);
 			}
@@ -2516,7 +2494,7 @@ public class JdbcUtils {
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
 			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
-			if (isNotEmpty(whereIf)) {
+			if (Constant.isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
 			} else {
@@ -2594,7 +2572,7 @@ public class JdbcUtils {
 
 			sb.append("=?");
 
-			if (isNotEmpty(whereIf)) {
+			if (Constant.isNotEmpty(whereIf)) {
 				appendParamsId(sb, whereIf);
 			} else {
 				appendParamsId(sb, null);
@@ -2757,7 +2735,7 @@ public class JdbcUtils {
 				String database, String sequence) {
 			if (pro.getName().equals(getPrimaryKey())
 					&& JdbcUtils.ORACLE.equals(database)
-					&& isNotEmpty(sequence)) {
+					&& Constant.isNotEmpty(sequence)) {
 				return true;
 			}
 
@@ -2803,7 +2781,7 @@ public class JdbcUtils {
 		 *            SQL查询或更新、删除条件
 		 */
 		private void appendParamsId(StringBuffer sb, String whereIf) {
-			if (isNotEmpty(whereIf)) {
+			if (Constant.isNotEmpty(whereIf)) {
 				sb.append(whereIf);
 			} else {
 				sb.append(" WHERE ");
