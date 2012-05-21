@@ -49,8 +49,7 @@ import test.pojo.ConfigDevice;
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
  * @Time 10:43:09 AM
- * @since 0.2.2
- * 
+ * @since 0.1：创建；0.3：增加分页兼容
  */
 public class JdbcUtils {
 
