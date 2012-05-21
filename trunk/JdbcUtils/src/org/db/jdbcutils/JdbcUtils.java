@@ -2756,7 +2756,8 @@ public class JdbcUtils {
 		protected boolean isOracleAutomatic(PropertyDescriptor pro,
 				String database, String sequence) {
 			if (pro.getName().equals(getPrimaryKey())
-					&& ORACLE.equals(database) && isNotEmpty(sequence)) {
+					&& JdbcUtils.ORACLE.equals(database)
+					&& isNotEmpty(sequence)) {
 				return true;
 			}
 
