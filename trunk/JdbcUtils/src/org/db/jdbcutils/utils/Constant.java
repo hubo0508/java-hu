@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 /**
  * 常量库
  * 
@@ -21,6 +23,11 @@ import java.util.Set;
  * @Time 10:16:15 AM
  */
 public final class Constant {
+	
+	/**
+	 * 日志输出
+	 */
+	static Logger log = Logger.getLogger(Constant.class);
 
 	/**
 	 * 数据库类型：oracle
@@ -249,7 +256,7 @@ public final class Constant {
 				rs.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 
 		try {
@@ -257,7 +264,7 @@ public final class Constant {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
@@ -270,7 +277,7 @@ public final class Constant {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
@@ -283,7 +290,7 @@ public final class Constant {
 				conn.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
@@ -296,7 +303,7 @@ public final class Constant {
 				rs.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
