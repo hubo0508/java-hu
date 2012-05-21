@@ -118,7 +118,7 @@ public class JdbcUtils {
 	 * <li>List.class/ListArray.class</li>
 	 * <li>Integer.class 或其它基本数据类型</li>
 	 * 
-	 * </br></br>当<code>JdbcUtils.dataMappingClass</code>类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ListArray.class/</code>（目前API只实现了对这些类型的支持）基本数据类型时。
+	 * </br></br>当<code>JdbcUtils.dataMappingClass</code>类型是<code>Map.class/HashMap.class/LinkedHashMap.class/List.class/ArrayList.class/</code>（目前API只实现了对这些类型的支持）基本数据类型时。
 	 * 此时与数据库结果集的数据表相对应、自动构造SQL时对应都不成立，必须手动写SQL语句。为了可能自动构造SQL及数据映射，可调用SDK<code>JdbcUtils.setSqlMappingClass(Class)</code>来实现自动的SQL与返回数据映谢。
 	 * </p>
 	 * 
@@ -150,9 +150,9 @@ public class JdbcUtils {
 	 * 自动构造SQL语句的过滤规则
 	 * 
 	 * <p>
-	 * 在对数据执行增、删、改、查时，使用对象Java Bean自动构造SQL API时，改变量可以影响自动构造出的SQL结果。 在Java
-	 * Bean中定义了<code>JdbcUtils.setSqlFilter(Map)</code>方法，会影响到所有执行增、删、改、查动作时，根据映射模版<code>JdbcUtils.setDataMappingClass(Class)</code>或<code>JdbcUtils.setSqlMappingClass(Class)</code>自动构造的SQL语句。
-	 * 当在执行增、删、改、查动作时，每个SDK API临时调用<code>JdbcUtils.setSqlFilter(Map)</code>只会作用于当前动作。
+	 * 在对数据执行增、删、改、查时，使用对象Java Bean自动构造SQL API时，过虑条伯可以影响自动构造出的SQL结果。 在Java
+	 * Bean中定义了<code>public Map sqlFilter(){}</code>方法，会影响到执行增、删、改、查动作时，根据映射模版<code>JdbcUtils.setDataMappingClass(Class)</code>或<code>JdbcUtils.setSqlMappingClass(Class)</code>自动构造的SQL语句。
+	 * 当在执行增、删、改、查动作时，单独的设置<code>JdbcUtils.setSqlFilter(Map)</code>只会作用于当前动作。
 	 * </p>
 	 * 
 	 * <blockquote>
@@ -176,11 +176,11 @@ public class JdbcUtils {
 	 * 
 	 * </blockquote>
 	 * 
-	 * 如上Java Bean User.java所示，在类中定义了全局方法<code>public Map sqlFilter(){}</code>，该方法返回一个Map集合。
-	 * 下面我们通过实际的例子讲解：当正情况下未定义全局<code>public Map sqlFilter(){}</code>方法时，产生的查询SQL为：
-	 * <code>SELECT id, user_name, password, has_data FROM USER</code>。此时我们将全局<code>public Map sqlFilter(){}</code>方法加上，再次自动构造的SQL为：
-	 * <code>SELECT id, user_name, password FROM simple_user</code>。两条SQL语句对比可发现，SQL表名user转换成了simple_user，而has_data字段在第二个SQL语句中查询。
-	 * 也就是说定义的全局<code>public Map sqlFilter(){}</code>方法影响到了最终自动构造成的SQL。
+	 * 如上Java Bean User.java所示，在类中定义了方法<code>public Map sqlFilter(){}</code>，该方法返回一个Map集合。
+	 * 下面我们通过实际的例子讲解：当正情况下未定义<code>public Map sqlFilter(){}</code>方法时，产生的查询SQL为：
+	 * <code>SELECT id, user_name, password, has_data FROM USER</code>。此时我们将<code>public Map sqlFilter(){}</code>方法加上，再次自动构造的SQL为：
+	 * <code>SELECT id, user_name, password FROM simple_user</code>。两条SQL语句对比可发现，SQL表名user转换成了simple_user，而has_data字段在第二个SQL语句中无查询字段。
+	 * 也就是说定义的<code>public Map sqlFilter(){}</code>方法影响到了最终自动构造成的SQL。
 	 * 
 	 * <p>
 	 * 现有规则如下(现SDK只实现了以下规则)：
@@ -255,20 +255,6 @@ public class JdbcUtils {
 	 * 数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
 	 */
 	private String database;
-
-	/**
-	 * 取得数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
-	 */
-	public String getDatabase() {
-		return database;
-	}
-
-	/**
-	 * 设置数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
-	 */
-	public void setDatabase(String database) {
-		this.database = database;
-	}
 
 	// ////////////////////////构造函数START/////////////////////////////////////////////////////////////////
 	/**
@@ -1390,6 +1376,20 @@ public class JdbcUtils {
 	 */
 	public void setSqlFilter(Map sqlFilter) {
 		this.sqlFilter = sqlFilter;
+	}
+	
+	/**
+	 * 取得数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
+	 */
+	public String getDatabase() {
+		return database;
+	}
+
+	/**
+	 * 设置数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
+	 */
+	public void setDatabase(String database) {
+		this.database = database;
 	}
 
 	/**
