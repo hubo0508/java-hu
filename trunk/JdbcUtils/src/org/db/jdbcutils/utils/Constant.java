@@ -34,6 +34,30 @@ public final class Constant {
 	 * MySQL数据库ID键值是否递增
 	 */
 	public static String MYSQL_SEQ = "increase by degrees";
+	
+	/**
+	 * 判断字符串类型等于nul或空字符串。
+	 * 
+	 * @return true(等于nul或空字符串)，false(不等于nul或空字符串)
+	 */
+	public static boolean isEmpty(String value) {
+		if (value == null || value.equals("")) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 判断字符串类型不等于nul或空字符串。
+	 * 
+	 * @return true(不等于nul或空字符串)，false(等于nul或空字符串)
+	 */
+	public static boolean isNotEmpty(String value) {
+		if (value == null || value.equals("")) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * 判断参数是否为Java集合类型
