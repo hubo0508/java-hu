@@ -981,61 +981,28 @@ public class JdbcUtils {
 	 * 关闭连接
 	 */
 	public static void close(ResultSet rs, PreparedStatement stmt) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		Constant.close(rs, stmt);
 	}
 
 	/**
 	 * 关闭连接
 	 */
 	public static void close(PreparedStatement stmt) {
-		try {
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Constant.close(stmt);
 	}
 
 	/**
 	 * 关闭连接
 	 */
 	public static void close(Connection conn) {
-		try {
-			if (conn != null) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Constant.close(conn);
 	}
 
 	/**
 	 * 关闭连接
 	 */
 	public static void close(ResultSet rs) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Constant.close(rs);
 	}
 
 	/**
