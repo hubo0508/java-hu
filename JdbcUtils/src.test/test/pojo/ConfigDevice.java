@@ -3,6 +3,8 @@ package test.pojo;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.db.jdbcutils.JdbcUtils;
+
 public class ConfigDevice {
 
 	private Integer id;
@@ -14,14 +16,15 @@ public class ConfigDevice {
 	private Integer hasData;
 	private String deviceCname;
 	
+	/**
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 */
 	public Map sqlFilter(){
-		
 		Map filter = new HashMap();
 		filter.put("ConfigDevice", "NhwmConfigDevice");
 		filter.put("deviceCname", new Boolean(false));
 		filter.put("hasData", new Boolean(false));
-		filter.put("users", new Boolean(false));
-		
+		filter.put("users", new Boolean(true));
 		return filter;
 	}
 	
