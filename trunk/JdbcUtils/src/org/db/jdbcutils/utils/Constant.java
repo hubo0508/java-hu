@@ -114,6 +114,42 @@ public final class Constant {
 		return count;
 	}
 
+	
+
+	public static boolean startsWithWhere(String sql) {
+		if (sql == null) {
+			return false;
+		}
+		return sql.toUpperCase().startsWith("WHERE");
+	}
+
+	public static boolean startsWithSelect(String sql) {
+		if (sql == null) {
+			return false;
+		}
+		return sql.toUpperCase().startsWith("SELECT");
+	}
+
+	public static boolean startsWithUpate(String sql) {
+		if (sql == null) {
+			return false;
+		}
+		return sql.toUpperCase().startsWith("UPDATE");
+	}
+
+	public static boolean startsWithDelete(String sql) {
+		if (sql == null) {
+			return false;
+		}
+		return sql.toUpperCase().startsWith("DELETE");
+	}
+
+	public static boolean startsWithInsert(String sql) {
+		if (sql == null) {
+			return false;
+		}
+		return sql.toUpperCase().startsWith("INSERT");
+	}
 
 	/**
 	 * 判断参数是否为Java集合类型

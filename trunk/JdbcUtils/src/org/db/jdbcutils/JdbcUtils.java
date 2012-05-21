@@ -392,7 +392,7 @@ public class JdbcUtils {
 			throw new SQLException("SQL_STATEMENT_ERROR:Null SQL statement");
 		}
 
-		if (!startsWithSelect(sqlOrWhereIf)) {
+		if (!Constant.startsWithSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 
@@ -456,7 +456,7 @@ public class JdbcUtils {
 	 */
 	public Object queryResultToUnique(Connection con, String sqlOrWhereIf,
 			Object[] params) throws SQLException {
-		if (!startsWithSelect(sqlOrWhereIf)) {
+		if (!Constant.startsWithSelect(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeSelectSql(sqlOrWhereIf);
 		}
 		return this.query(con, sqlOrWhereIf, params, getDataMappingClass());
@@ -506,7 +506,7 @@ public class JdbcUtils {
 			throw new SQLException("RESULT_TYPE_NULL_ERROR:Null result set");
 		}
 
-		if (!startsWithSelect(statement)) {
+		if (!Constant.startsWithSelect(statement)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 
@@ -754,7 +754,7 @@ public class JdbcUtils {
 	 */
 	public int update(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
-		if (!startsWithUpate(sqlOrWhereIf)) {
+		if (!Constant.startsWithUpate(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeUpdateSql(sqlOrWhereIf);
 		}
 		Object[] params = beanPro.objectArray(instanceDomain, sqlOrWhereIf);
@@ -865,7 +865,7 @@ public class JdbcUtils {
 	 * @exception 当SQL语句不是Delete语句时，抛出SQLException(SQL_TYPES_ERROR)。
 	 */
 	public int delete(Connection conn, String sql) throws SQLException {
-		if (!startsWithDelete(sql)) {
+		if (!Constant.startsWithDelete(sql)) {
 			throw new SQLException("SQL_TYPES_ERROR:SQL types do not match！");
 		}
 		return execute(conn, sql, null);
@@ -895,7 +895,7 @@ public class JdbcUtils {
 	 */
 	public int delete(Connection conn, String sqlOrWhereIf, Object[] params)
 			throws SQLException {
-		if (!startsWithDelete(sqlOrWhereIf)) {
+		if (!Constant.startsWithDelete(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
 		return execute(conn, sqlPro.makeDeleteSql(sqlOrWhereIf), params);
@@ -926,7 +926,7 @@ public class JdbcUtils {
 	public int delete(Connection conn, String sqlOrWhereIf,
 			Object instanceDomain) throws SQLException {
 
-		if (!startsWithDelete(sqlOrWhereIf)) {
+		if (!Constant.startsWithDelete(sqlOrWhereIf)) {
 			sqlOrWhereIf = sqlPro.makeDeleteSql(sqlOrWhereIf);
 		}
 
@@ -1113,41 +1113,6 @@ public class JdbcUtils {
 	/** ******************************************************************************************** */
 	// ////////////////////////////////////////////////////////////////////////////////////////////////
 	/** ******************************************************************************************** */
-
-	public boolean startsWithWhere(String sql) {
-		if (sql == null) {
-			return false;
-		}
-		return sql.toUpperCase().startsWith("WHERE");
-	}
-
-	public boolean startsWithSelect(String sql) {
-		if (sql == null) {
-			return false;
-		}
-		return sql.toUpperCase().startsWith("SELECT");
-	}
-
-	public boolean startsWithUpate(String sql) {
-		if (sql == null) {
-			return false;
-		}
-		return sql.toUpperCase().startsWith("UPDATE");
-	}
-
-	public boolean startsWithDelete(String sql) {
-		if (sql == null) {
-			return false;
-		}
-		return sql.toUpperCase().startsWith("DELETE");
-	}
-
-	public boolean startsWithInsert(String sql) {
-		if (sql == null) {
-			return false;
-		}
-		return sql.toUpperCase().startsWith("INSERT");
-	}
 
 	/**
 	 * 取得Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
@@ -2648,10 +2613,10 @@ public class JdbcUtils {
 
 			sql = standardFormatting(sql);
 
-			if (startsWithInsert(sql)) {
+			if (Constant.startsWithInsert(sql)) {
 				return columnsKeyOfInsert(sql);
 			}
-			if (startsWithUpate(sql) || startsWithDelete(sql)) {
+			if (Constant.startsWithUpate(sql) || Constant.startsWithDelete(sql)) {
 				return columnsKeyOfUpdate(sql);
 			}
 
