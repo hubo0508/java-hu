@@ -1197,22 +1197,6 @@ public class JdbcUtils {
 		return sql.toUpperCase().startsWith("INSERT");
 	}
 
-	
-
-	/**
-	 * 判断Class是否为List或为List的子集ArrayList
-	 * 
-	 * @return true(为List或为List的子集ArrayList)，false(不为List或为List的子集ArrayList)
-	 */
-	private boolean isArrayList(Class clazz) {
-		String type = clazz.toString();
-		if ("class java.util.ArrayList".equals(type)
-				|| "interface java.util.List".equals(type)) {
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * 判断Class是否为List
 	 * 
@@ -1602,7 +1586,7 @@ public class JdbcUtils {
 				} else if (isLinkedHashMap(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueObject(
 							new LinkedHashMap(), rs) : null;
-				} else if (isArrayList(getDataMappingClass())) {
+				} else if (Constant.isArrayList(getDataMappingClass())) {
 					return rs.next() ? rsPro
 							.toUniqueObject(new ArrayList(), rs) : null;
 				} else if (Constant.isBasicType(getDataMappingClass())) {

@@ -72,6 +72,18 @@ public final class Constant {
 		}
 		return false;
 	}
+	
+	/**
+	 * 判断Class是否为List或为List的子集ArrayList
+	 * 
+	 * @return true(为List或为List的子集ArrayList)，false(不为List或为List的子集ArrayList)
+	 */
+	public static boolean isArrayList(Class clazz) {
+		if (List.class.isAssignableFrom(clazz)) {
+			return true;
+		} 
+		return false;
+	}
 
 	/**
 	 * 判断Class模版是否基础类型
