@@ -1508,7 +1508,7 @@ public class JdbcUtils {
 					return rs.getObject(1);
 				} else {
 					PropertyDescriptor pro = beanPro.getProDescByName(sqlPro
-							.convert(field, TOTYPE[0]));
+							.convert(field, JdbcUtils.TOTYPE[0]));
 					beanPro
 							.callSetter(instanceObject, pro, rs
 									.getObject(field));
@@ -1544,8 +1544,8 @@ public class JdbcUtils {
 				if (Constant.isMap(getDataMappingClass())) {
 					rsh.put(rsmd.getColumnName(i), rs.getObject(i));
 				} else {
-					rsh.put(sqlPro.convert(rsmd.getColumnName(i), TOTYPE[0]),
-							rs.getObject(i));
+					rsh.put(sqlPro.convert(rsmd.getColumnName(i),
+							JdbcUtils.TOTYPE[0]), rs.getObject(i));
 				}
 			}
 
@@ -1585,7 +1585,7 @@ public class JdbcUtils {
 						String field = rsmd.getColumnName(i + 1);
 						PropertyDescriptor pro = beanPro
 								.getProDescByName(sqlPro.convert(field,
-										TOTYPE[0]));
+										JdbcUtils.TOTYPE[0]));
 						beanPro.callSetter(bean, pro, rs.getObject(field));
 					}
 					rsh.add(bean);
@@ -1735,7 +1735,8 @@ public class JdbcUtils {
 			Object[] params = new Object[columnsLen];
 
 			for (int j = 0; j < columnsLen; j++) {
-				String domainField = sqlPro.convert(columns[j], TOTYPE[0]);
+				String domainField = sqlPro.convert(columns[j],
+						JdbcUtils.TOTYPE[0]);
 				for (int i = 0; i < len; i++) {
 					PropertyDescriptor prop = proDesc[i];
 					if (Constant.isBasicType(prop.getPropertyType())
@@ -1803,7 +1804,7 @@ public class JdbcUtils {
 			while (iter.hasNext()) {
 				Map.Entry entry = (Map.Entry) iter.next();
 				String key = (String) entry.getKey();
-				afterConver.put(sqlPro.convert(key, TOTYPE[0]), entry
+				afterConver.put(sqlPro.convert(key, JdbcUtils.TOTYPE[0]), entry
 						.getValue());
 			}
 			map = null;
@@ -1837,12 +1838,6 @@ public class JdbcUtils {
 
 			return afterConver;
 		}
-
-		// private String makeStringName(String methodPrefix, String fieldName)
-		// {
-		// String firstLetter = fieldName.substring(0, 1).toUpperCase();
-		// return methodPrefix + firstLetter + fieldName.substring(1);
-		// }
 
 		/**
 		 * 根据Java Bean字段名称取得属性存储器(PropertyDescriptor)
@@ -2187,7 +2182,9 @@ public class JdbcUtils {
 				}
 			}
 			sb.append(" FROM ");
-			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
+			sb
+					.append(convert(textFilter(getSimpleName()),
+							JdbcUtils.TOTYPE[1]));
 			if (Constant.isNotEmpty(key)) {
 				sb.append(" ");
 				appendParamsId(sb, key);
@@ -2239,7 +2236,7 @@ public class JdbcUtils {
 			if (temp.intValue() != i) {
 				sb.append(", ");
 			}
-			sb.append(sqlPro.convert(name, TOTYPE[1]));
+			sb.append(sqlPro.convert(name, JdbcUtils.TOTYPE[1]));
 
 			return temp;
 		}
@@ -2302,7 +2299,9 @@ public class JdbcUtils {
 		public String makeDeleteSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("DELETE FROM ");
-			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
+			sb
+					.append(convert(textFilter(getSimpleName()),
+							JdbcUtils.TOTYPE[1]));
 			if (Constant.isNotEmpty(whereIf)) {
 				sb.append(" ");
 				appendParamsId(sb, whereIf);
@@ -2352,7 +2351,9 @@ public class JdbcUtils {
 		public String makeUpdateSql(String whereIf) throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE ");
-			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
+			sb
+					.append(convert(textFilter(getSimpleName()),
+							JdbcUtils.TOTYPE[1]));
 			sb.append(" SET ");
 
 			Integer temp = null;
@@ -2409,7 +2410,7 @@ public class JdbcUtils {
 			if (temp.intValue() != i) {
 				sb.append("=?, ");
 			}
-			sb.append(sqlPro.convert(name, TOTYPE[1]));
+			sb.append(sqlPro.convert(name, JdbcUtils.TOTYPE[1]));
 
 			return temp;
 		}
@@ -2466,7 +2467,9 @@ public class JdbcUtils {
 				throws SQLException {
 			StringBuffer sb = new StringBuffer();
 			sb.append("INSERT INTO ");
-			sb.append(convert(textFilter(getSimpleName()), TOTYPE[1]));
+			sb
+					.append(convert(textFilter(getSimpleName()),
+							JdbcUtils.TOTYPE[1]));
 			sb.append(" (");
 
 			StringBuffer paramsvalue = new StringBuffer();
@@ -2492,9 +2495,10 @@ public class JdbcUtils {
 						if (String.class.isInstance(filter)
 								&& filter.toString().equals(pro.getName())) {
 							sb.append(sqlPro.convert(filter.toString(),
-									TOTYPE[1]));
+									JdbcUtils.TOTYPE[1]));
 						} else {
-							sb.append(sqlPro.convert(pro.getName(), TOTYPE[1]));
+							sb.append(sqlPro.convert(pro.getName(),
+									JdbcUtils.TOTYPE[1]));
 						}
 					}
 
@@ -2570,8 +2574,9 @@ public class JdbcUtils {
 		 */
 		protected boolean isMySqlAutomatic(PropertyDescriptor pro,
 				String database, String sequence) {
-			if (MYSQL.equals(database) && pro.getName().equals(getPrimaryKey())
-					&& MYSQL_SEQ.equals(sequence)) {
+			if (JdbcUtils.MYSQL.equals(database)
+					&& pro.getName().equals(getPrimaryKey())
+					&& JdbcUtils.MYSQL_SEQ.equals(sequence)) {
 				return true;
 			}
 
@@ -2723,9 +2728,9 @@ public class JdbcUtils {
 		 * @see JdbcUtils#TOTYPE
 		 */
 		public String convert(String text, String toType) throws SQLException {
-			if (HUMP.equals(getRule())) {
-				if (isAllCaps(text)) {
-					if (toType.equals(TOTYPE[0])) {
+			if (JdbcUtils.HUMP.equals(getRule())) {
+				if (Constant.isAllCaps(text)) {
+					if (toType.equals(JdbcUtils.TOTYPE[0])) {
 						return beanPro.convertedBeanField(text);
 					} else {
 
@@ -2735,16 +2740,16 @@ public class JdbcUtils {
 				}
 			}
 
-			if (SEGMENTATION.equals(getRule())) {
-				if (isAllCaps(text)) {
-					if (toType.equals(TOTYPE[0])) {
+			if (JdbcUtils.SEGMENTATION.equals(getRule())) {
+				if (Constant.isAllCaps(text)) {
+					if (toType.equals(JdbcUtils.TOTYPE[0])) {
 						return beanPro
 								.convertedBeanField(removeSeparator(text));
 					} else {
 
 					}
 				} else {
-					if (toType.equals(TOTYPE[1])) {
+					if (toType.equals(JdbcUtils.TOTYPE[1])) {
 						return sqlPro.convertedIntoSegmentation(text);
 					}
 					return sqlPro.convertedIntoHump(text);
@@ -2752,20 +2757,6 @@ public class JdbcUtils {
 			}
 
 			return text;
-		}
-
-		/**
-		 * 判断文本是否全部大写
-		 * 
-		 * @param text
-		 *            文本
-		 * @return true(文本全为大写) || false(文本不全为大写)
-		 */
-		public boolean isAllCaps(String text) {
-			if (text.equals(text.toUpperCase())) {
-				return true;
-			}
-			return false;
 		}
 
 		/**

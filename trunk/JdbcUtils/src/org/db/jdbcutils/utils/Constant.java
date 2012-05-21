@@ -227,6 +227,20 @@ public final class Constant {
 	}
 	
 	/**
+	 * 判断文本是否全部大写
+	 * 
+	 * @param text
+	 *            文本
+	 * @return true(文本全为大写) || false(文本不全为大写)
+	 */
+	public static boolean isAllCaps(String text) {
+		if (text.equals(text.toUpperCase())) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * 关闭连接
 	 */
 	public static void close(ResultSet rs, PreparedStatement stmt) {
