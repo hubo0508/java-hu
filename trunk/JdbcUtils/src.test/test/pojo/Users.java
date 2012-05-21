@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.db.jdbcutils.JdbcUtils;
+
 public class Users {
 
 	private Integer id;
@@ -13,11 +15,12 @@ public class Users {
 	
 	private List users = new ArrayList();
 	
+	/**
+	 * @see JdbcUtils#setSqlFilter(Map)
+	 */
 	public Map sqlFilter(){
-		
 		Map filter = new HashMap();
 		filter.put("Users", "NhwmUsers");
-		
 		return filter;
 	}
 

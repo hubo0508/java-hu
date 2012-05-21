@@ -1,6 +1,5 @@
 package test;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class DeviceTest {
 
 		DeviceTest test = new DeviceTest();
 
-		// test.queryPage();
+		test.queryPage();
 
 		// test.queryResultToUniqueA();
 		// test.queryResultToUniqueB();
@@ -58,7 +57,6 @@ public class DeviceTest {
 			JdbcUtils db = new JdbcUtils(ConfigDevice.class, new Page(1, 2),
 					JdbcUtils.MYSQL);
 			Page page = (Page) db.queryResultTo(con, new ArrayList());
-
 			List result = (List) page.getResult();
 
 			for (int i = 0; i < result.size(); i++) {
@@ -208,30 +206,30 @@ public class DeviceTest {
 
 	// 主键自动维护,SQL手动维护
 	public void insertObjectToMySqlC() {
-	
-	 ConfigDevice d = new ConfigDevice();
-	 d.setDeviceCname("D-NAME");
-	 d.setDeviceFactory("D-FACTORY");
-	 d.setDeviceIp("D-IP");
-	 d.setDeviceType("D-TYPE");
-	 d.setHasData(new Integer(0));
-	 d.setDeviceEname("D-ENAME");
-	
-	 String sql = "INSERT INTO nhwm_config_device (device_cname, device_ename, device_factory, device_ip, device_type, has_data ) "
-	 + "VALUES (?, ?, ?, ?, ?, ? )";
-	
-	 JdbcUtils db = new JdbcUtils(null, JdbcUtils.SEGMENTATION);
-	
-	 try {
-	 int rows = db.insert(con, sql, d, JdbcUtils.MYSQL,
-	 JdbcUtils.MYSQL_SEQ);
-	 System.out.println(rows);
-	 } catch (SQLException e) {
-	 e.printStackTrace();
-	 } finally {
-	 DBPool.close(con);
-	 }
-	 }
+
+		ConfigDevice d = new ConfigDevice();
+		d.setDeviceCname("D-NAME");
+		d.setDeviceFactory("D-FACTORY");
+		d.setDeviceIp("D-IP");
+		d.setDeviceType("D-TYPE");
+		d.setHasData(new Integer(0));
+		d.setDeviceEname("D-ENAME");
+
+		String sql = "INSERT INTO nhwm_config_device (device_cname, device_ename, device_factory, device_ip, device_type, has_data ) "
+				+ "VALUES (?, ?, ?, ?, ?, ? )";
+
+		JdbcUtils db = new JdbcUtils(null, JdbcUtils.SEGMENTATION);
+
+		try {
+			int rows = db.insert(con, sql, d, JdbcUtils.MYSQL,
+					JdbcUtils.MYSQL_SEQ);
+			System.out.println(rows);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+	}
 
 	// 主键自动递增
 	public void insertObjectToMySqlA() {
