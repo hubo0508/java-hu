@@ -997,7 +997,7 @@ public class JdbcUtils {
 
 		return rows;
 	}
-
+	
 	/**
 	 * 关闭连接
 	 */
@@ -1026,6 +1026,7 @@ public class JdbcUtils {
 		Constant.close(rs);
 	}
 
+	
 	/**
 	 * 异常统计输出
 	 */
