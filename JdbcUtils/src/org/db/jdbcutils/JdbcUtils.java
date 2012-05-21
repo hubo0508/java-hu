@@ -54,6 +54,9 @@ import test.pojo.ConfigDevice;
  */
 public class JdbcUtils {
 
+	/**
+	 * 日志输出
+	 */
 	Logger log = Logger.getLogger(JdbcUtils.class);
 
 	/**
@@ -250,19 +253,19 @@ public class JdbcUtils {
 	private Page page = null;
 
 	/**
-	 * 数据库
+	 * 数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
 	 */
 	private String database;
 
 	/**
-	 * 取得数据库
+	 * 取得数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
 	 */
 	public String getDatabase() {
 		return database;
 	}
 
 	/**
-	 * 设置数据库
+	 * 设置数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
 	 */
 	public void setDatabase(String database) {
 		this.database = database;
@@ -284,12 +287,21 @@ public class JdbcUtils {
 	public JdbcUtils(Class dataMappingClass) {
 		this.setDataMappingClass(dataMappingClass);
 	}
-
+	
+	/**
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#setPage(Page)
+	 */
 	public JdbcUtils(Class dataMappingClass, Page page) {
 		this(dataMappingClass);
 		this.setPage(page);
 	}
 
+	/**
+	 * @see JdbcUtils#setDataMappingClass(Class)
+	 * @see JdbcUtils#setPage(Page)
+	 * @see JdbcUtils#setDatabase(String)
+	 */
 	public JdbcUtils(Class dataMappingClass, Page page, String database) {
 		this(dataMappingClass);
 		this.setPage(page);
