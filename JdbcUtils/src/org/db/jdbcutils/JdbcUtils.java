@@ -1165,18 +1165,6 @@ public class JdbcUtils {
 	}
 
 	/**
-	 * 判断Class是否为List
-	 * 
-	 * @return true(为List)，false(不为List)
-	 */
-	private boolean isList(Class clazz) {
-		if ("interface java.util.List".equals(clazz.toString())) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * 判断Class是否为Map
 	 * 
 	 * @return true(为Map)，false(不为Map)
@@ -1188,35 +1176,6 @@ public class JdbcUtils {
 				|| "class java.util.LinkedHashMap".equals(type)) {
 			return true;
 		}
-		return false;
-	}
-
-	/**
-	 * 判断Class是否为Map或为Map的子集HashMap
-	 * 
-	 * @return true(为Map或为Map的子集HashMap)，false(不为Map或为Map的子集HashMap)
-	 */
-	private boolean isHashMap(Class clazz) {
-		String rshTypeStr = clazz.toString();
-		if ("class java.util.HashMap".equals(rshTypeStr)
-				|| "interface java.util.Map".equals(rshTypeStr)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 判断Class是否为Map或为Map的子集LinkedHashMap
-	 * 
-	 * @return true(为Map或为Map的子集LinkedHashMap)，false(不为Map或为Map的子集LinkedHashMap)
-	 */
-	private boolean isLinkedHashMap(Class clazz) {
-		String rshTypeStr = clazz.toString();
-		if ("class java.util.LinkedHashMap".equals(rshTypeStr)
-				|| "interface java.util.Map".equals(rshTypeStr)) {
-			return true;
-		}
-
 		return false;
 	}
 
@@ -1547,10 +1506,10 @@ public class JdbcUtils {
 			if (instanceCollectionOrClass.toString().indexOf("class") == 0) {
 				checkDataUnique(rs);
 
-				if (isHashMap(getDataMappingClass())) {
+				if (Constant.isHashMap(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueObject(new HashMap(), rs)
 							: null;
-				} else if (isLinkedHashMap(getDataMappingClass())) {
+				} else if (Constant.isLinkedHashMap(getDataMappingClass())) {
 					return rs.next() ? rsPro.toUniqueObject(
 							new LinkedHashMap(), rs) : null;
 				} else if (Constant.isArrayList(getDataMappingClass())) {
@@ -1644,7 +1603,7 @@ public class JdbcUtils {
 				String field = rsmd.getColumnName(i + 1);
 				if (isMap(instanceObject.getClass())) {
 					((Map) instanceObject).put(field, rs.getObject(field));
-				} else if (isList(instanceObject.getClass())) {
+				} else if (Constant.isArrayList(instanceObject.getClass())) {
 					((List) instanceObject).add(rs.getObject(field));
 				} else if (Constant.isBasicType(instanceObject.getClass())) {
 					return rs.getObject(1);
@@ -1717,9 +1676,9 @@ public class JdbcUtils {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 			while (rs.next()) {
-				if (isHashMap(getDataMappingClass())) {
+				if (Constant.isHashMap(getDataMappingClass())) {
 					rsh.add(toMap(new HashMap(), rs));
-				} else if (isLinkedHashMap(getDataMappingClass())) {
+				} else if (Constant.isLinkedHashMap(getDataMappingClass())) {
 					rsh.add(toMap(new LinkedHashMap(), rs));
 				} else {
 					Object bean = beanPro.newInstance(getDataMappingClass());
