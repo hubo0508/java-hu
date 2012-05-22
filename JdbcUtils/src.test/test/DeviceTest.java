@@ -13,18 +13,21 @@ import org.db.jdbcutils.Page;
 
 import pool.*;
 import test.pojo.ConfigDevice;
+import test.pojo.Port;
 
 public class DeviceTest {
 
-	DBPool pool = MySqlPool.getInstance();
-	// DBPool pool = OraclePool.getInstance();
+	// DBPool pool = MySqlPool.getInstance();
+	DBPool pool = OraclePool.getInstance();
 	Connection con = pool.getConnection();
 
 	public static void main(String[] args) {
 
 		DeviceTest test = new DeviceTest();
 
-		test.queryPage();
+		// test.queryPage();
+
+		test.queryPageTooralce();
 
 		// test.queryResultToUniqueA();
 		// test.queryResultToUniqueB();
@@ -50,6 +53,27 @@ public class DeviceTest {
 		// test.updateObjectA();
 		// test.updateObjectB();
 		// test.updateObjectC();
+	}
+
+	public void queryPageTooralce() {
+		try {
+			String sql = "SELECT p.id,p.BTNM_NUMBERS FROM NHWM_CONFIG_PORT P LEFT JOIN  NHWM_CONFIG_DEVICE D ON P.NHWM_DEVICE_ID=D.ID WHERE 1=1 ORDER BY D.DEVICE_TYPE,D.DEVICE_CNAME";
+			JdbcUtils db = new JdbcUtils(Port.class, new Page(1, 10),
+					JdbcUtils.ORACLE);
+			Page page = (Page) db.queryResultTo(con, sql, new ArrayList());
+			List result = (List) page.getResult();
+			
+			System.out.println(result.size());
+			for (int i = 0; i < result.size(); i++) {
+				Port d = (Port) result.get(i);
+				System.out.println(d.getPortNum());
+			}
+			writeLog(page);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
 	}
 
 	public void queryPage() {
