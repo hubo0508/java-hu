@@ -6,6 +6,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
@@ -1541,6 +1542,9 @@ public class JdbcUtils {
 			// }
 
 			Object value = rs.getObject(1);
+			if(BigDecimal.class.isAssignableFrom(value.getClass())){
+				return value;
+			}
 			if (!clazz.toString().equals(value.getClass().toString())) {
 				throw new SQLException(
 						"Set the return value type does not match!"
