@@ -273,7 +273,7 @@ public class JdbcUtils {
 	public JdbcUtils(Class dataMappingClass) {
 		this.setDataMappingClass(dataMappingClass);
 	}
-	
+
 	/**
 	 * @see JdbcUtils#setDataMappingClass(Class)
 	 * @see JdbcUtils#setPage(Page)
@@ -558,6 +558,8 @@ public class JdbcUtils {
 			Object[] params, Object instanceCollectionOrClass)
 			throws SQLException {
 
+		log.info("SQL：" + statement);
+
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Object result = null;
@@ -582,7 +584,7 @@ public class JdbcUtils {
 	private Object[] getParamsObject() {
 		int start = getPage().getStartToDatabase(getDatabase());
 		int end = getPage().getEndToDatabase(getDatabase());
-		return new Object[] { new Integer(start), new Integer(end) };
+		return new Object[] { new Integer(end), new Integer(start) };
 	}
 
 	// //////////////////////INSERT-BEGIN///////////////////////////////////////////////////////////////
@@ -998,7 +1000,7 @@ public class JdbcUtils {
 
 		return rows;
 	}
-	
+
 	/**
 	 * 关闭连接
 	 */
@@ -1027,7 +1029,6 @@ public class JdbcUtils {
 		Constant.close(rs);
 	}
 
-	
 	/**
 	 * 异常统计输出
 	 */
@@ -1379,7 +1380,7 @@ public class JdbcUtils {
 	public void setSqlFilter(Map sqlFilter) {
 		this.sqlFilter = sqlFilter;
 	}
-	
+
 	/**
 	 * 取得数据库类型，该类型直接影响到自动构造的Insert语句，可设置类型有：<code>JdbcUtils.MYSQL、JdbcUtils.ORACLE、Jdbcutils.SQLSERVER</code>
 	 */
@@ -1542,7 +1543,7 @@ public class JdbcUtils {
 			// }
 
 			Object value = rs.getObject(1);
-			if(BigDecimal.class.isAssignableFrom(value.getClass())){
+			if (BigDecimal.class.isAssignableFrom(value.getClass())) {
 				return value;
 			}
 			if (!clazz.toString().equals(value.getClass().toString())) {
@@ -1665,9 +1666,16 @@ public class JdbcUtils {
 					Object bean = beanPro.newInstance(getDataMappingClass());
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
+						String beanname = sqlPro.convert(field,
+								JdbcUtils.TOTYPE[0]);
+						if (beanname == null) {
+							throw new SQLException("在'"
+									+ Constant.getURI(getDataMappingClass())
+									+ "'中无法找到与SQL查询语句的列名称'" + field
+									+ "'相匹配，无法动态设置值。");
+						}
 						PropertyDescriptor pro = beanPro
-								.getProDescByName(sqlPro.convert(field,
-										JdbcUtils.TOTYPE[0]));
+								.getProDescByName(beanname);
 						beanPro.callSetter(bean, pro, rs.getObject(field));
 					}
 					rsh.add(bean);
@@ -1676,7 +1684,6 @@ public class JdbcUtils {
 
 			return rsh;
 		}
-
 	}
 
 	/**
@@ -2047,12 +2054,19 @@ public class JdbcUtils {
 					}
 				}
 
+				System.out.println(value + "|" + setter.getName());
+
 				// Don't call setter if the value object isn't the right type
-				if (params[0].isInstance(value)) {
-					setter.invoke(target, new Object[] { value });
+				if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+					setter.invoke(target, new Object[] { Constant.valueOf(
+							long.class, value) });
 				} else {
-					throw new SQLException("Cannot set " + prop.getName()
-							+ ": incompatible types.");
+					if (params[0].isInstance(value)) {
+						setter.invoke(target, new Object[] { value });
+					} else {
+						throw new SQLException("Cannot set " + prop.getName()
+								+ ": incompatible types.");
+					}
 				}
 
 			} catch (IllegalArgumentException e) {
