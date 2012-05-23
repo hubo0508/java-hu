@@ -1669,12 +1669,16 @@ public class JdbcUtils {
 					Object bean = beanPro.newInstance(getDataMappingClass());
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
+						//System.out.println("field = " + field);
 						String fValue = field;
 						if (sqlFilter != null) {
 							Object rValue = sqlFilter.get(field);
 
 							if (rValue != null
-									&& sqlPro.toBoolean(rValue) == false) {
+									&& Boolean.class.isAssignableFrom(rValue
+											.getClass())
+									&& Boolean.valueOf(rValue.toString())
+											.booleanValue() == false) {
 								continue;
 							}
 
@@ -2075,6 +2079,8 @@ public class JdbcUtils {
 						}
 					}
 				}
+
+				//System.out.println(value + "|" + setter.getName());
 
 				// Don't call setter if the value object isn't the right type
 				if (BigDecimal.class.isAssignableFrom(value.getClass())) {

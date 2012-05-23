@@ -65,6 +65,9 @@ public class PropertiesFile {
 	 * 加载属性文件
 	 */
 	private synchronized void loadProperties(String url) {
+		
+		log.info("URI:"+url);
+		
 		FileInputStream fileStr = null;
 		try {
 			fileStr = new FileInputStream(url);
@@ -74,7 +77,6 @@ public class PropertiesFile {
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		} finally {
-			log.info("URI:"+url);
 			closeIS(fileStr);
 		}
 	}
