@@ -66,7 +66,7 @@ public class DeviceTest {
 			System.out.println(result.size());
 			for (int i = 0; i < result.size(); i++) {
 				Port d = (Port) result.get(i);
-				System.out.println(d.getPortNum());
+				System.out.println(d.getId());
 			}
 			writeLog(page);
 		} catch (SQLException e) {
