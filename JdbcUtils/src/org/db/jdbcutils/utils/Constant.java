@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * @Time 10:16:15 AM
  */
 public final class Constant {
-	
+
 	/**
 	 * 日志输出
 	 */
@@ -48,7 +48,7 @@ public final class Constant {
 	 * MySQL数据库ID键值是否递增
 	 */
 	public static String MYSQL_SEQ = "increase by degrees";
-	
+
 	/**
 	 * 判断字符串类型等于nul或空字符串。
 	 * 
@@ -72,7 +72,7 @@ public final class Constant {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 清除Object[]数组中null元素，返回新数组
 	 */
@@ -95,7 +95,7 @@ public final class Constant {
 
 		return newObject;
 	}
-	
+
 	public static String deepToString(Object[] a) {
 		if (a == null || a.length == 0)
 			return "null";
@@ -120,8 +120,6 @@ public final class Constant {
 		}
 		return count;
 	}
-
-	
 
 	public static boolean startsWithWhere(String sql) {
 		if (sql == null) {
@@ -171,7 +169,7 @@ public final class Constant {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断Class是否为ArrayList
 	 * 
@@ -180,10 +178,10 @@ public final class Constant {
 	public static boolean isArrayList(Class clazz) {
 		if (ArrayList.class.isAssignableFrom(clazz)) {
 			return true;
-		} 
+		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断Class是否为List或为List的子集
 	 * 
@@ -192,10 +190,9 @@ public final class Constant {
 	public static boolean isList(Class clazz) {
 		if (List.class.isAssignableFrom(clazz)) {
 			return true;
-		} 
+		}
 		return false;
 	}
-	
 
 	/**
 	 * 判断Class是否为Map
@@ -205,10 +202,10 @@ public final class Constant {
 	public static boolean isMap(Class clazz) {
 		if (Map.class.isAssignableFrom(clazz)) {
 			return true;
-		} 
+		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断Class是否为Map或为Map的子集HashMap
 	 * 
@@ -232,7 +229,7 @@ public final class Constant {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 判断文本是否全部大写
 	 * 
@@ -246,7 +243,7 @@ public final class Constant {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 关闭连接
 	 */
@@ -306,6 +303,24 @@ public final class Constant {
 			log.error(e.getMessage());
 		}
 	}
+	
+	/**
+	 * 取得Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)类名称。
+	 * 
+	 * @return Java Bean名称
+	 */
+	public static  String getSimpleName(Class clazz) {
+		String text = clazz.getName();
+		int index = text.lastIndexOf(".");
+		if (index >= 0) {
+			return text.substring(text.lastIndexOf(".") + 1);
+		}
+		return text;
+	}
+	
+	public static String getURI(Class clazz){
+		return clazz.toString().substring(6);
+	}
 
 	/**
 	 * 判断Class模版是否基础类型
@@ -360,6 +375,62 @@ public final class Constant {
 		return false;
 	}
 
+	public static Object valueOf(Class clazz, Object value) {
+
+		if (value == null) {
+			return value;
+		}
+
+		if (String.class.isAssignableFrom(clazz)) {
+			return value.toString();
+
+		} else if (int.class.isAssignableFrom(clazz)
+				|| Integer.class.isAssignableFrom(clazz)) {
+			return Integer.valueOf(value.toString());
+
+		} else if (double.class.isAssignableFrom(clazz)
+				|| Double.class.isAssignableFrom(clazz)) {
+			return Double.valueOf(value.toString());
+
+		} else if (boolean.class.isAssignableFrom(clazz)
+				|| Boolean.class.isAssignableFrom(clazz)) {
+			return Boolean.valueOf(value.toString());
+
+		} else if (float.class.isAssignableFrom(clazz)
+				|| Float.class.isAssignableFrom(clazz)) {
+			return Float.valueOf(value.toString());
+
+		} else if (long.class.isAssignableFrom(clazz)
+				|| Long.class.isAssignableFrom(clazz)) {
+			return Long.valueOf(value.toString());
+
+		} else if (value instanceof java.util.Date) {
+			if (java.sql.Date.class.isAssignableFrom(clazz)) {
+				return new java.sql.Date(((java.util.Date) value).getTime());
+			} else if (java.sql.Time.class.isAssignableFrom(clazz)) {
+				return new java.sql.Time(((java.util.Date) value).getTime());
+			} else if (java.sql.Timestamp.class.isAssignableFrom(clazz)) {
+				return new java.sql.Timestamp(((java.util.Date) value)
+						.getTime());
+			}
+
+		} else if (byte.class.isAssignableFrom(clazz)
+				|| Byte.class.isAssignableFrom(clazz)) {
+			return Byte.valueOf(value.toString());
+
+		} else if (short.class.isAssignableFrom(clazz)
+				|| Short.class.isAssignableFrom(clazz)) {
+			return Short.valueOf(value.toString());
+			
+		} else if (Timestamp.class.isAssignableFrom(clazz)) {
+			return Timestamp.valueOf(value.toString());
+		}
+
+		return value;
+	}
+
 	public static void main(String[] args) {
+		String URI = "class test.pojo.Port";
+		System.out.println(URI.substring(6));
 	}
 }
