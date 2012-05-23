@@ -1655,6 +1655,9 @@ public class JdbcUtils {
 		 */
 		private List toArrayList(ArrayList rsh, ResultSet rs)
 				throws SQLException {
+
+			Map sqlFilter = beanPro.getSqlFilter();
+
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 			while (rs.next()) {
@@ -1666,14 +1669,24 @@ public class JdbcUtils {
 					Object bean = beanPro.newInstance(getDataMappingClass());
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
-						String beanname = sqlPro.convert(field,
-								JdbcUtils.TOTYPE[0]);
-						if (beanname == null) {
-							throw new SQLException("在'"
-									+ Constant.getURI(getDataMappingClass())
-									+ "'中无法找到与SQL查询语句的列名称'" + field
-									+ "'相匹配，无法动态设置值。");
+						String fValue = field;
+						if (sqlFilter != null) {
+							Object rValue = sqlFilter.get(field);
+
+							if (rValue != null
+									&& sqlPro.toBoolean(rValue) == false) {
+								continue;
+							}
+
+							if (rValue != null
+									&& String.class.isAssignableFrom(rValue
+											.getClass())) {
+								fValue = rValue.toString();
+							}
 						}
+						String beanname = sqlPro.convert(fValue,
+								JdbcUtils.TOTYPE[0]);
+						checkBeanname(beanname, field);
 						PropertyDescriptor pro = beanPro
 								.getProDescByName(beanname);
 						beanPro.callSetter(bean, pro, rs.getObject(field));
@@ -1683,6 +1696,15 @@ public class JdbcUtils {
 			}
 
 			return rsh;
+		}
+
+		private void checkBeanname(String beanname, String field)
+				throws SQLException {
+			if (beanname == null) {
+				throw new SQLException("在'"
+						+ Constant.getURI(getDataMappingClass())
+						+ "'中无法找到与SQL查询语句的列名称'" + field + "'相匹配，无法动态设置值。");
+			}
 		}
 	}
 
@@ -2053,8 +2075,6 @@ public class JdbcUtils {
 						}
 					}
 				}
-
-				System.out.println(value + "|" + setter.getName());
 
 				// Don't call setter if the value object isn't the right type
 				if (BigDecimal.class.isAssignableFrom(value.getClass())) {
