@@ -535,7 +535,7 @@ public class JdbcUtils {
 		}
 
 		if (this.getPage() != null) {
-			SqlStatement stateSql = new SqlStatement(getDatabase());
+			SqlStatement stmt = new SqlStatement(getDatabase());
 			Object[] pageParams = params == null || params.length == 0 ? null
 					: beanPro.mergerObject(params, getParamsObject(), database);
 			params = params == null || params.length == 0 ? getParamsObject()
@@ -544,13 +544,13 @@ public class JdbcUtils {
 			Class temp = this.getDataMappingClass();
 			this.setDataMappingClass(Long.class);
 			long totalCount = Long.valueOf(
-					queryResult(conn, stateSql.count(statement), pageParams,
+					queryResult(conn, stmt.count(statement), pageParams,
 							Long.class).toString()).longValue();
 			this.setDataMappingClass(temp);
 
 			return new Page(totalCount, getPage().getStartPage() + 1, getPage()
-					.getPageSize(), queryResult(conn, stateSql
-					.paging(statement), params, instanceCollectionOrClass));
+					.getPageSize(), queryResult(conn, stmt.paging(statement),
+					params, instanceCollectionOrClass));
 		}
 
 		return queryResult(conn, statement, params, instanceCollectionOrClass);
@@ -1466,7 +1466,7 @@ public class JdbcUtils {
 				throws SQLException {
 
 			if (instanceCollectionOrClass == null) {
-				throw new SQLException("RESULT_SET_NULL_ERROR:Null result set");
+				throw new SQLException("RESULT_SET_NULL_ERROR:查询结果返回数据类型为空!");
 			}
 
 			// Result is ArrayList
@@ -1479,9 +1479,13 @@ public class JdbcUtils {
 			// if (LinkedHashMap.class.isInstance(instanceCollectionOrClass)
 			// || HashMap.class.isInstance(instanceCollectionOrClass)) {
 			if (Constant.isMap(instanceCollectionOrClass.getClass())) {
-				checkDataUnique(rs);
-				return rs.next() ? rsPro.toMap((Map) instanceCollectionOrClass,
-						rs) : null;
+				// checkDataUnique(rs);
+				if (resultSize(rs) == 1 || resultSize(rs) == 0) {
+					return rs.next() ? rsPro.toMap(
+							(Map) instanceCollectionOrClass, rs) : null;
+				} else {
+					return rsPro.toManyMap((Map) instanceCollectionOrClass, rs);
+				}
 			}
 
 			// Back to the only result set
@@ -1638,6 +1642,25 @@ public class JdbcUtils {
 			return rsh;
 		}
 
+		private Map toManyMap(Map rsh, ResultSet rs) throws SQLException {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int cols = rsmd.getColumnCount();
+			int count = 0;
+			while (rs.next()) {
+				if (Constant.isMap(getDataMappingClass())) {
+					Map single = new HashMap();
+					for (int i = 1; i <= cols; i++) {
+						single.put(rsmd.getColumnName(i), rs.getObject(i));
+					}
+					rsh.put(count + "", single);
+				} else if (!Constant.isCollection(getDataMappingClass())) {
+					rsh.put(count + "", columnValueToBean(cols, rsmd, rs));
+				}
+				count++;
+			}
+			return rsh;
+		}
+
 		/**
 		 * 将数据库结果集的数据表映射成ArrayList数据集。
 		 * 
@@ -1658,9 +1681,6 @@ public class JdbcUtils {
 		 */
 		private List toArrayList(ArrayList rsh, ResultSet rs)
 				throws SQLException {
-
-			Map sqlFilter = beanPro.getSqlFilter();
-
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 			while (rs.next()) {
@@ -1669,40 +1689,43 @@ public class JdbcUtils {
 				} else if (Constant.isLinkedHashMap(getDataMappingClass())) {
 					rsh.add(toMap(new LinkedHashMap(), rs));
 				} else {
-					Object bean = beanPro.newInstance(getDataMappingClass());
-					for (int i = 0; i < cols; i++) {
-						String field = rsmd.getColumnName(i + 1);
-						// System.out.println("field = " + field);
-						String fValue = field;
-						if (sqlFilter != null) {
-							Object rValue = sqlFilter.get(field);
-
-							if (rValue != null
-									&& Boolean.class.isAssignableFrom(rValue
-											.getClass())
-									&& Boolean.valueOf(rValue.toString())
-											.booleanValue() == false) {
-								continue;
-							}
-
-							if (rValue != null
-									&& String.class.isAssignableFrom(rValue
-											.getClass())) {
-								fValue = rValue.toString();
-							}
-						}
-						String beanname = sqlPro.convert(fValue,
-								JdbcUtils.TOTYPE[0]);
-						checkBeanname(beanname, field);
-						PropertyDescriptor pro = beanPro
-								.getProDescByName(beanname);
-						beanPro.callSetter(bean, pro, rs.getObject(field));
-					}
-					rsh.add(bean);
+					rsh.add(columnValueToBean(cols, rsmd, rs));
 				}
 			}
 
 			return rsh;
+		}
+
+		private Object columnValueToBean(int cols, ResultSetMetaData rsmd,
+				ResultSet rs) throws SQLException {
+			Map filter = beanPro.getSqlFilter();
+			Object bean = beanPro.newInstance(getDataMappingClass());
+			for (int i = 0; i < cols; i++) {
+				String field = rsmd.getColumnName(i + 1);
+				String fValue = field;
+				if (filter != null) {
+					Object rValue = filter.get(field);
+
+					if (rValue != null
+							&& Boolean.class
+									.isAssignableFrom(rValue.getClass())
+							&& Boolean.valueOf(rValue.toString())
+									.booleanValue() == false) {
+						continue;
+					}
+
+					if (rValue != null
+							&& String.class.isAssignableFrom(rValue.getClass())) {
+						fValue = rValue.toString();
+					}
+				}
+				String beanname = sqlPro.convert(fValue, JdbcUtils.TOTYPE[0]);
+				checkBeanname(beanname, field);
+				PropertyDescriptor pro = beanPro.getProDescByName(beanname);
+				beanPro.callSetter(bean, pro, rs.getObject(field));
+			}
+
+			return bean;
 		}
 
 		private void checkBeanname(String beanname, String field)
