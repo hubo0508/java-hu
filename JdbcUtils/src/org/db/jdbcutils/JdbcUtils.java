@@ -1476,10 +1476,7 @@ public class JdbcUtils {
 			}
 
 			// Result is LinkedHashMap Or HashMap
-			// if (LinkedHashMap.class.isInstance(instanceCollectionOrClass)
-			// || HashMap.class.isInstance(instanceCollectionOrClass)) {
 			if (Constant.isMap(instanceCollectionOrClass.getClass())) {
-				// checkDataUnique(rs);
 				if (resultSize(rs) == 1 || resultSize(rs) == 0) {
 					return rs.next() ? rsPro.toMap(
 							(Map) instanceCollectionOrClass, rs) : null;
