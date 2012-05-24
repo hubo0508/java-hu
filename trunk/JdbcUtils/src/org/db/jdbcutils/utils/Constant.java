@@ -156,6 +156,13 @@ public final class Constant {
 		return sql.toUpperCase().startsWith("INSERT");
 	}
 
+	public static boolean isBean(Class clazz) {
+		if (isCollection(clazz) || isBasicType(clazz)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * 判断参数是否为Java集合类型
 	 */
@@ -303,13 +310,13 @@ public final class Constant {
 			log.error(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * 取得Java Bean(<code>SqlProcessor.getDataMappingClass()</code>)类名称。
 	 * 
 	 * @return Java Bean名称
 	 */
-	public static  String getSimpleName(Class clazz) {
+	public static String getSimpleName(Class clazz) {
 		String text = clazz.getName();
 		int index = text.lastIndexOf(".");
 		if (index >= 0) {
@@ -317,8 +324,8 @@ public final class Constant {
 		}
 		return text;
 	}
-	
-	public static String getURI(Class clazz){
+
+	public static String getURI(Class clazz) {
 		return clazz.toString().substring(6);
 	}
 
@@ -421,7 +428,7 @@ public final class Constant {
 		} else if (short.class.isAssignableFrom(clazz)
 				|| Short.class.isAssignableFrom(clazz)) {
 			return Short.valueOf(value.toString());
-			
+
 		} else if (Timestamp.class.isAssignableFrom(clazz)) {
 			return Timestamp.valueOf(value.toString());
 		}
