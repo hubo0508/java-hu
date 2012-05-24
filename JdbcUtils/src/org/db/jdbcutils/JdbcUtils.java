@@ -1648,11 +1648,7 @@ public class JdbcUtils {
 			int count = 0;
 			while (rs.next()) {
 				if (Constant.isMap(getDataMappingClass())) {
-					Map single = new HashMap();
-					for (int i = 1; i <= cols; i++) {
-						single.put(rsmd.getColumnName(i), rs.getObject(i));
-					}
-					rsh.put(count + "", single);
+					rsh.put(count + "", columnValueToMap(cols, rsmd, rs));
 				} else if (!Constant.isCollection(getDataMappingClass())) {
 					rsh.put(count + "", columnValueToBean(cols, rsmd, rs));
 				}
@@ -1694,6 +1690,16 @@ public class JdbcUtils {
 			}
 
 			return rsh;
+		}
+
+		private Map columnValueToMap(int cols, ResultSetMetaData rsmd,
+				ResultSet rs) throws SQLException {
+			Map map = new HashMap();
+			for (int i = 1; i <= cols; i++) {
+				map.put(rsmd.getColumnName(i), rs.getObject(i));
+			}
+
+			return map;
 		}
 
 		private Object columnValueToBean(int cols, ResultSetMetaData rsmd,
