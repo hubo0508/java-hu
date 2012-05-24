@@ -33,6 +33,7 @@ public class PropertiesFile {
 	public PropertiesFile(String url) {
 		if (PropertiesFile.url != null && !PropertiesFile.url.equals(url)) {
 			PropertiesFile.url = url;
+			loadProperties(url);
 		}
 	}
 
@@ -57,6 +58,7 @@ public class PropertiesFile {
 	public static PropertiesFile getInstance(String url) {
 		if (url != null && !url.equals(PropertiesFile.url)) {
 			PropertiesFile.url = url;
+			PropertiesFile.getInstance().loadProperties(url);
 		}
 		return Instance.pro;
 	}
@@ -97,9 +99,10 @@ public class PropertiesFile {
 			throw new RuntimeException("加载配置文件路径为空。");
 		}
 
-		loadProperties(url);
 		if (!url.equals(PropertiesFile.url)) {
 			PropertiesFile.url = url;
+			
+			loadProperties(url);
 		}
 
 		return Instance.props.getProperty(key);
