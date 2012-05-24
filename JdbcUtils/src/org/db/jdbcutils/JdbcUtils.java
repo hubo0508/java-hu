@@ -1465,28 +1465,29 @@ public class JdbcUtils {
 		private Object handle(ResultSet rs, Object instanceCollectionOrClass)
 				throws SQLException {
 
-			if (instanceCollectionOrClass == null) {
-				throw new SQLException("RESULT_SET_NULL_ERROR:查询结果返回数据类型为空!");
+			Object instOrClass = instanceCollectionOrClass;
+
+			if (instOrClass == null) {
+				throw new SQLException("JdbcUtils-0001：查询结果返回数据类型为空!");
 			}
 
 			// Result is ArrayList
-			if (ArrayList.class.isInstance(instanceCollectionOrClass)) {
-				return rsPro.toArrayList((ArrayList) instanceCollectionOrClass,
-						rs);
+			if (ArrayList.class.isInstance(instOrClass)) {
+				return rsPro.toArrayList((ArrayList) instOrClass, rs);
 			}
 
 			// Result is LinkedHashMap Or HashMap
-			if (Constant.isMap(instanceCollectionOrClass.getClass())) {
+			if (Constant.isMap(instOrClass.getClass())) {
 				if (resultSize(rs) == 1 || resultSize(rs) == 0) {
-					return rs.next() ? rsPro.toMap(
-							(Map) instanceCollectionOrClass, rs) : null;
+					return rs.next() ? rsPro.toMap((Map) instOrClass, rs)
+							: null;
 				} else {
-					return rsPro.toManyMap((Map) instanceCollectionOrClass, rs);
+					return rsPro.toManyMap((Map) instOrClass, rs);
 				}
 			}
 
 			// Back to the only result set
-			if (instanceCollectionOrClass.toString().indexOf("class") == 0) {
+			if (instOrClass.toString().indexOf("class") == 0) {
 				checkDataUnique(rs);
 
 				if (Constant.isHashMap(getDataMappingClass())) {
@@ -1646,7 +1647,7 @@ public class JdbcUtils {
 			while (rs.next()) {
 				if (Constant.isMap(getDataMappingClass())) {
 					rsh.put(count + "", columnValueToMap(cols, rsmd, rs));
-				} else if (!Constant.isCollection(getDataMappingClass())) {
+				} else if (Constant.isBean(getDataMappingClass())) {
 					rsh.put(count + "", columnValueToBean(cols, rsmd, rs));
 				}
 				count++;
