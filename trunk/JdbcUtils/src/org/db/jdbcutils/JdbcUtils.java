@@ -46,6 +46,7 @@ import test.pojo.ConfigDevice;
  * </br></br>
  * 
  * 异常代码说明：
+ * <li>JdbcUtils-0001：查询结果返回数据类型为空!</li>
  * 
  * @User: hubo.0508@gmail.com
  * @Date Apr 20, 2012
