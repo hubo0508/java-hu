@@ -364,6 +364,8 @@ public class JdbcUtils {
 	 *            数据库连接对象
 	 * @param sqlOrWhereIf
 	 *            SQL查询语句或查询条件
+	 * @param instanceCollection
+	 *            查询返回数据集类型(List\Map\Set)
 	 * @return ArrayList
 	 * @exception
 	 *         <li><code>String sqlOrWhereIf</code>参数值开头不包含SELECT或WHERE时，抛出SQLException异常(SQL_STATEMENT_ERROR)；</li>
@@ -1474,8 +1476,9 @@ public class JdbcUtils {
 			}
 
 			// Result is LinkedHashMap Or HashMap
-			if (LinkedHashMap.class.isInstance(instanceCollectionOrClass)
-					|| HashMap.class.isInstance(instanceCollectionOrClass)) {
+			// if (LinkedHashMap.class.isInstance(instanceCollectionOrClass)
+			// || HashMap.class.isInstance(instanceCollectionOrClass)) {
+			if (Constant.isMap(instanceCollectionOrClass.getClass())) {
 				checkDataUnique(rs);
 				return rs.next() ? rsPro.toMap((Map) instanceCollectionOrClass,
 						rs) : null;
@@ -1669,7 +1672,7 @@ public class JdbcUtils {
 					Object bean = beanPro.newInstance(getDataMappingClass());
 					for (int i = 0; i < cols; i++) {
 						String field = rsmd.getColumnName(i + 1);
-						//System.out.println("field = " + field);
+						// System.out.println("field = " + field);
 						String fValue = field;
 						if (sqlFilter != null) {
 							Object rValue = sqlFilter.get(field);
@@ -2080,7 +2083,7 @@ public class JdbcUtils {
 					}
 				}
 
-				//System.out.println(value + "|" + setter.getName());
+				// System.out.println(value + "|" + setter.getName());
 
 				// Don't call setter if the value object isn't the right type
 				if (BigDecimal.class.isAssignableFrom(value.getClass())) {
