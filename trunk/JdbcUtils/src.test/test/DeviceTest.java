@@ -22,12 +22,13 @@ public class DeviceTest {
 	Connection con = pool.getConnection();
 
 	public static void main(String[] args) {
-
+		
 		DeviceTest test = new DeviceTest();
 
 		// test.queryPage();
 
-		test.queryPageTooralce();
+		//test.queryPageTooralce();
+		test.queryPageTooralceB();
 
 		// test.queryResultToUniqueA();
 		// test.queryResultToUniqueB();
@@ -54,6 +55,25 @@ public class DeviceTest {
 		// test.updateObjectB();
 		// test.updateObjectC();
 	}
+	
+	public void queryPageTooralceB() {
+		try {
+			String sql = "SELECT p.id,p.BTNM_NUMBERS FROM NHWM_CONFIG_PORT P LEFT JOIN  NHWM_CONFIG_DEVICE D ON P.NHWM_DEVICE_ID=D.ID WHERE 1=1 ORDER BY D.DEVICE_TYPE,D.DEVICE_CNAME";
+			JdbcUtils db = new JdbcUtils(Port.class, new Page(1, 10),
+					JdbcUtils.ORACLE);
+			Page page = (Page) db.queryResultTo(con, sql, new LinkedHashMap());
+			LinkedHashMap result = (LinkedHashMap) page.getResult();
+			System.out.println(result);
+			
+			
+			writeLog(page);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBPool.close(con);
+		}
+	}
+
 
 	public void queryPageTooralce() {
 		try {
