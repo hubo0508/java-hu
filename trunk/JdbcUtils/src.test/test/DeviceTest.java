@@ -22,7 +22,9 @@ public class DeviceTest {
 	Connection con = pool.getConnection();
 
 	public static void main(String[] args) {
-		
+//		List list = null;
+//		for(int i=0,len=list.size();i<len;i++){
+//	}
 		DeviceTest test = new DeviceTest();
 
 		// test.queryPage();
