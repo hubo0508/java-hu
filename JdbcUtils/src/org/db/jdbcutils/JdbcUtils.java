@@ -2150,7 +2150,7 @@ public class JdbcUtils {
 	 * 
 	 * @author hubo.0508@gmail.com
 	 */
-	class SqlProcessor {
+	final class SqlProcessor {
 
 		/**
 		 * 数据映射模版，与数据库结果集的数据表相对应。
@@ -2447,8 +2447,8 @@ public class JdbcUtils {
 
 			Integer temp = null;
 
-			PropertyDescriptor[] proDesc = beanPro.propertyDescriptors(this
-					.getDataMappingClass());
+			PropertyDescriptor[] proDesc = beanPro
+					.propertyDescriptors(getDataMappingClass());
 			int len = proDesc.length;
 			for (int i = 0; i < len; i++) {
 				PropertyDescriptor pro = proDesc[i];
