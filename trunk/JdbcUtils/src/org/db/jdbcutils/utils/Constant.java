@@ -436,6 +436,29 @@ public final class Constant {
 		return value;
 	}
 
+	/**
+	 * convert types for some popular ones
+	 */
+	public static Object convertDate(Object value, Class clazz) {
+		
+		if(value == null){
+			return value;
+		}
+		
+		if (value instanceof java.util.Date) {
+			if (clazz.getName().equals("java.sql.Date")) {
+				value = new java.sql.Date(((java.util.Date) value).getTime());
+			} else if (clazz.getName().equals("java.sql.Time")) {
+				value = new java.sql.Time(((java.util.Date) value).getTime());
+			} else if (clazz.getName().equals("java.sql.Timestamp")) {
+				value = new java.sql.Timestamp(((java.util.Date) value)
+						.getTime());
+			}
+		}
+		
+		return value;
+	}
+
 	public static void main(String[] args) {
 		String URI = "class test.pojo.Port";
 		System.out.println(URI.substring(6));
