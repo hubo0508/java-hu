@@ -1981,15 +1981,13 @@ public class JdbcUtils {
 		 */
 		private PropertyDescriptor getProDescByName(String name)
 				throws SQLException {
-			PropertyDescriptor[] proDescs = this
-					.propertyDescriptors(getDataMappingClass());
+			PropertyDescriptor[] proDescs = propertyDescriptors(getDataMappingClass());
 			for (int i = 0; i < proDescs.length; i++) {
 				PropertyDescriptor pro = proDescs[i];
 				if (pro.getName().equals(name)) {
 					return pro;
 				}
 			}
-
 			throw new SQLException(getDataMappingClass().toString()
 					+ " : Cannot set " + name);
 		}
@@ -2028,7 +2026,7 @@ public class JdbcUtils {
 		 */
 		private Object callGetter(Object target, PropertyDescriptor prop)
 				throws SQLException {
-			
+
 			Method getter = prop.getReadMethod();
 			if (getter == null) {
 				return null;
@@ -2140,12 +2138,7 @@ public class JdbcUtils {
 		private Object newInstance(Class c) throws SQLException {
 			try {
 				return c.newInstance();
-
-			} catch (InstantiationException e) {
-				throw new SQLException("Cannot create " + c.getName() + ": "
-						+ e.getMessage());
-
-			} catch (IllegalAccessException e) {
+			} catch (Exception e) {
 				throw new SQLException("Cannot create " + c.getName() + ": "
 						+ e.getMessage());
 			}
