@@ -4,7 +4,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -528,7 +527,7 @@ public class JdbcUtils {
 		}
 
 		if (instanceCollectionOrClass == null) {
-			throw new SQLException("RESULT_TYPE_NULL_ERROR:Null result set");
+			throw new SQLException("JdbcUtils-0001：查询结果返回数据类型为空!");
 		}
 
 		if (!Constant.startsWithSelect(statement)) {
@@ -577,7 +576,6 @@ public class JdbcUtils {
 			try {
 				close(rs, stmt);
 			} catch (Exception e) {
-				close(rs, stmt);
 			}
 		}
 
@@ -1137,10 +1135,6 @@ public class JdbcUtils {
 		}
 	}
 
-	/** ******************************************************************************************** */
-	// ////////////////////////////////////////////////////////////////////////////////////////////////
-	/** ******************************************************************************************** */
-
 	/**
 	 * 取得Java Bean 与 SQL 映射模版（自动构造SQL时）、返回数据的映射模版（查询数据库结果集映谢到Java
 	 * Bean或其它Java类型），同查询数据库结果集的数据表相对应
@@ -1542,12 +1536,6 @@ public class JdbcUtils {
 		 */
 		private Object toUniqueBiscType(ResultSet rs, Class clazz)
 				throws SQLException {
-			// ResultSetMetaData rsmd = rs.getMetaData();
-			// int cols = rsmd.getColumnCount();
-			// if (cols >= 2) {
-			// throw new SQLException("Query column number greater than !");
-			// }
-
 			Object value = rs.getObject(1);
 			if (BigDecimal.class.isAssignableFrom(value.getClass())) {
 				return value;
@@ -1558,7 +1546,6 @@ public class JdbcUtils {
 								+ value.getClass() + " can not convert "
 								+ clazz);
 			}
-
 			return value;
 		}
 
@@ -1736,7 +1723,7 @@ public class JdbcUtils {
 		private void checkBeanname(String beanname, String field)
 				throws SQLException {
 			if (beanname == null) {
-				throw new SQLException("在'"
+				throw new SQLException("JdbcUtils-0002：在'"
 						+ Constant.getURI(getDataMappingClass())
 						+ "'中无法找到与SQL查询语句的列名称'" + field + "'相匹配，无法动态设置值。");
 			}
@@ -1748,7 +1735,7 @@ public class JdbcUtils {
 	 * 
 	 * @author hubo.0508@gmail.com
 	 */
-	class BeanProcessor {
+	final class BeanProcessor {
 
 		/**
 		 * 数据映射模版，与数据库结果集的数据表相对应。
@@ -2022,19 +2009,7 @@ public class JdbcUtils {
 				Method readMethod = target.getClass().getMethod(methodName,
 						new Class[] {});
 				return readMethod.invoke(target, new Object[] {});
-			} catch (IllegalArgumentException e) {
-				throw new SQLException("Cannot get " + methodName + ": "
-						+ e.getMessage());
-			} catch (IllegalAccessException e) {
-				throw new SQLException("Cannot get " + methodName + ": "
-						+ e.getMessage());
-			} catch (InvocationTargetException e) {
-				throw new SQLException("Cannot get " + methodName + ": "
-						+ e.getMessage());
-			} catch (SecurityException e) {
-				throw new SQLException("Cannot get " + methodName + ": "
-						+ e.getMessage());
-			} catch (NoSuchMethodException e) {
+			} catch (Exception e) {
 				throw new SQLException("Cannot get " + methodName + ": "
 						+ e.getMessage());
 			}
@@ -2053,7 +2028,7 @@ public class JdbcUtils {
 		 */
 		private Object callGetter(Object target, PropertyDescriptor prop)
 				throws SQLException {
-
+			
 			Method getter = prop.getReadMethod();
 			if (getter == null) {
 				return null;
@@ -2061,13 +2036,7 @@ public class JdbcUtils {
 
 			try {
 				return getter.invoke(target, new Object[] {});
-			} catch (IllegalArgumentException e) {
-				throw new SQLException("Cannot get " + prop.getName() + ": "
-						+ e.getMessage());
-			} catch (IllegalAccessException e) {
-				throw new SQLException("Cannot get " + prop.getName() + ": "
-						+ e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (Exception e) {
 				throw new SQLException("Cannot get " + prop.getName() + ": "
 						+ e.getMessage());
 			}
@@ -2094,24 +2063,7 @@ public class JdbcUtils {
 
 			Class[] params = setter.getParameterTypes();
 			try {
-				// convert types for some popular ones
-				if (value != null) {
-					if (value instanceof java.util.Date) {
-						if (params[0].getName().equals("java.sql.Date")) {
-							value = new java.sql.Date(((java.util.Date) value)
-									.getTime());
-						} else if (params[0].getName().equals("java.sql.Time")) {
-							value = new java.sql.Time(((java.util.Date) value)
-									.getTime());
-						} else if (params[0].getName().equals(
-								"java.sql.Timestamp")) {
-							value = new java.sql.Timestamp(
-									((java.util.Date) value).getTime());
-						}
-					}
-				}
-
-				// System.out.println(value + "|" + setter.getName());
+				value = Constant.convertDate(value, params[0]);
 
 				// Don't call setter if the value object isn't the right type
 				if (BigDecimal.class.isAssignableFrom(value.getClass())) {
@@ -2125,16 +2077,7 @@ public class JdbcUtils {
 								+ ": incompatible types.");
 					}
 				}
-
-			} catch (IllegalArgumentException e) {
-				throw new SQLException("Cannot set " + prop.getName() + ": "
-						+ e.getMessage());
-
-			} catch (IllegalAccessException e) {
-				throw new SQLException("Cannot set " + prop.getName() + ": "
-						+ e.getMessage());
-
-			} catch (InvocationTargetException e) {
+			} catch (Exception e) {
 				throw new SQLException("Cannot set " + prop.getName() + ": "
 						+ e.getMessage());
 			}
